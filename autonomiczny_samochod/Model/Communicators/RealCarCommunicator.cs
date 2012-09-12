@@ -33,6 +33,11 @@ namespace autonomiczny_samochod
             throw new NotImplementedException();
         }
 
+        public void InitEventsHandling()
+        {
+            throw new NotImplementedException();
+        }
+
 
         public ISpeedRegulator ISpeedRegulator
         {

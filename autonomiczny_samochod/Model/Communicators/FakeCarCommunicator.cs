@@ -41,12 +41,18 @@ namespace autonomiczny_samochod
 
             model = new FakeCarModel(this);
 
-            ISpeedRegulator.evNewSpeedSettingCalculated += new NewSpeedSettingCalculatedEventHandler(ISpeedRegulator_evNewSpeedSettingCalculated);
-            ISteeringWheelAngleRegulator.evNewSteeringWheelSettingCalculated += new NewSteeringWheelSettingCalculatedEventHandler(ISteeringWheelAngleRegulator_evNewSteeringWheelSettingCalculated);
-
             timer.Interval = TIMER_INTERVAL_IN_MS;
             timer.Tick += new EventHandler(timer_Tick);
             timer.Start();
+        }
+
+        /// <summary>
+        /// this has to be invoked before 1st use
+        /// </summary>
+        public void InitEventsHandling()
+        {
+            ISpeedRegulator.evNewSpeedSettingCalculated += new NewSpeedSettingCalculatedEventHandler(ISpeedRegulator_evNewSpeedSettingCalculated);
+            ISteeringWheelAngleRegulator.evNewSteeringWheelSettingCalculated += new NewSteeringWheelSettingCalculatedEventHandler(ISteeringWheelAngleRegulator_evNewSteeringWheelSettingCalculated);
         }
 
         void ISteeringWheelAngleRegulator_evNewSteeringWheelSettingCalculated(object sender, NewSteeringWheelSettingCalculateddEventArgs args)

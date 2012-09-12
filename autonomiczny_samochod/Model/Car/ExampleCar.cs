@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 
 namespace autonomiczny_samochod
 {
@@ -12,13 +11,19 @@ namespace autonomiczny_samochod
         public event TargetSteeringWheelAngleChangedEventHandler evTargetSteeringWheelAngleChanged;
 
         public ICarCommunicator CarComunicator { get; private set; }
+
         public CarController Controller { get; private set; }
+
         public bool IsAlertBrakeActive { get; private set; }
+
         public ISpeedRegulator SpeedRegulator { get; private set; }
+
         public ISteeringWheelAngleRegulator SteeringWheelAngleRegulator { get; private set; }
+
         public CarInformations carInfo { get; private set; }
 
         private double __targetSpeed__;
+
         private double TargetSpeed
         {
             get
@@ -38,6 +43,7 @@ namespace autonomiczny_samochod
         }
 
         private double __targetWheelAngle__;
+
         private double TargetWheelAngle
         {
             get
@@ -65,26 +71,27 @@ namespace autonomiczny_samochod
             SteeringWheelAngleRegulator = new SimpleSteeringWheelRegulator(this);
             CarComunicator.ISpeedRegulator = SpeedRegulator; //TODO: REFACTOR THIS SHIT!!!
             CarComunicator.ISteeringWheelAngleRegulator = SteeringWheelAngleRegulator; //TODO: AND THIS!!!
+            CarComunicator.InitEventsHandling(); //AND THIS!
 
             IsAlertBrakeActive = false;
-            carInfo = new CarInformations(-66.6, -66.6); 
+            carInfo = new CarInformations(-66.6, -66.6);
 
             evAlertBrake += new EventHandler(ExampleFakeCar_evAlertBrake);
             evTargetSpeedChanged += new TargetSpeedChangedEventHandler(ExampleFakeCar_evTargetSpeedChanged);
             evTargetSteeringWheelAngleChanged += new TargetSteeringWheelAngleChangedEventHandler(ExampleFakeCar_evTargetSteeringWheelAngleChanged);
         }
 
-        void ExampleFakeCar_evTargetSteeringWheelAngleChanged(object sender, TargetSteeringWheelAngleChangedEventArgs args)
+        private void ExampleFakeCar_evTargetSteeringWheelAngleChanged(object sender, TargetSteeringWheelAngleChangedEventArgs args)
         {
             Logger.Log(this, String.Format("target wheel angle changed to: {0}", args.GetTargetWheelAngle()));
         }
 
-        void ExampleFakeCar_evTargetSpeedChanged(object sender, TargetSpeedChangedEventArgs args)
+        private void ExampleFakeCar_evTargetSpeedChanged(object sender, TargetSpeedChangedEventArgs args)
         {
             Logger.Log(this, String.Format("target speed changed to: {0}", args.GetTargetSpeed()));
         }
 
-        void ExampleFakeCar_evAlertBrake(object sender, EventArgs e)
+        private void ExampleFakeCar_evAlertBrake(object sender, EventArgs e)
         {
             Logger.Log(this, "ALERT BRAKE!");
         }
