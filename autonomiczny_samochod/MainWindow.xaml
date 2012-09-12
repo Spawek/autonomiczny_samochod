@@ -3,6 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        
+        <Label Content="speed" Height="28" HorizontalAlignment="Left" Margin="12,64,0,0" Name="label4" VerticalAlignment="Top" />
+        <Label Content="angle" Height="28" HorizontalAlignment="Left" Margin="12,0,0,165" Name="label5" VerticalAlignment="Bottom" />
+        <Label Content="current" Height="28" HorizontalAlignment="Left" Margin="72,30,0,0" Name="label7" VerticalAlignment="Top" />
+        <Label Content="target" Height="28" HorizontalAlignment="Left" Margin="144,30,0,0" Name="label8" VerticalAlignment="Top" />
+        <Label Content="steering" Height="28" HorizontalAlignment="Left" Margin="213,30,0,0" Name="label9" VerticalAlignment="Top" />
+        <TextBlock Height="23" HorizontalAlignment="Left" Margin="72,69,0,0" Name="textBlock_currentSpeed" Text="TextBlock" VerticalAlignment="Top" />
+        <TextBlock Height="23" HorizontalAlignment="Right" Margin="0,69,309,0" Name="textBlock_targetSpeed" Text="TextBlock" VerticalAlignment="Top" />
+        <TextBlock Height="23" HorizontalAlignment="Left" Margin="72,123,0,0" Name="textBlock_currentAngle" Text="TextBlock" VerticalAlignment="Top" />
+        <TextBlock Height="23" HorizontalAlignment="Left" Margin="144,123,0,0" Name="textBlock_targetAngle" Text="TextBlock" VerticalAlignment="Top" />
+        <TextBlock Height="23" HorizontalAlignment="Right" Margin="0,69,240,0" Name="textBlock_steeringSpeed" Text="TextBlock" VerticalAlignment="Top" />
+        <TextBlock Height="23" HorizontalAlignment="Right" Margin="0,123,237,0" Name="textBlock_steeringAngle" Text="TextBlock" VerticalAlignment="Top" />
     </Grid>
 </Window>

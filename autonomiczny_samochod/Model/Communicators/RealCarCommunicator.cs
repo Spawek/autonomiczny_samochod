@@ -5,7 +5,7 @@ using System.Text;
 
 namespace autonomiczny_samochod
 {
-    public class RealCarCommunicator : ICarComunicator
+    public class RealCarCommunicator : ICarCommunicator
     {
 
         public void SendNewSpeedSettingMessage()
@@ -31,6 +31,31 @@ namespace autonomiczny_samochod
         public void SendNewSteeringWheelAngleSettingMessage(double angleSetting)
         {
             throw new NotImplementedException();
+        }
+
+
+        public ISpeedRegulator ISpeedRegulator
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public ISteeringWheelAngleRegulator ISteeringWheelAngleRegulator
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

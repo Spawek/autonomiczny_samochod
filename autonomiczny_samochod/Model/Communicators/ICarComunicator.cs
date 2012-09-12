@@ -40,10 +40,22 @@ namespace autonomiczny_samochod
 
     }
 
-    public interface ICarComunicator
+    public interface ICarCommunicator
     {
         event SpeedInfoReceivedEventHander evSpeedInfoReceived;
         event SteeringWheelAngleInfoReceivedEventHandler evSteeringWheelAngleInfoReceived;
+
+        ISpeedRegulator ISpeedRegulator
+        {
+            get;
+            set;
+        }
+
+        ISteeringWheelAngleRegulator ISteeringWheelAngleRegulator
+        {
+            get;
+            set;
+        }
 
         void SendNewSpeedSettingMessage(double speedSetting);
 

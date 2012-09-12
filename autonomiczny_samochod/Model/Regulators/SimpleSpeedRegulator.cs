@@ -10,7 +10,7 @@ namespace autonomiczny_samochod
         public event NewSpeedSettingCalculatedEventHandler evNewSpeedSettingCalculated;
 
         public ICar Car { get; private set; }
-        public ICarComunicator CarComunicator{ get; private set; }
+        public ICarCommunicator CarComunicator{ get; private set; }
 
         private double targetSpeedLocalCopy = -66.6;
         private double currentSpeedLocalCopy = -66.6;
@@ -19,8 +19,12 @@ namespace autonomiczny_samochod
         //it's P regulator -> only 1 factor
         private const double PFactor = 5.0;
 
+        private const double ALERT_BRAKE_SPEED = -100.0;
+
         private System.Windows.Forms.Timer mTimer = new System.Windows.Forms.Timer();
         private const int timerIntervalInMs = 10;
+
+        private bool alertBrakeActive = false;
         
         public SimpleSpeedRegulator(ICar parent)
         {
@@ -31,7 +35,7 @@ namespace autonomiczny_samochod
             Car.evTargetSpeedChanged += new TargetSpeedChangedEventHandler(Car_evTargetSpeedChanged);
             evNewSpeedSettingCalculated += new NewSpeedSettingCalculatedEventHandler(SimpleSpeedRegulator_evNewSpeedSettingCalculated);
             CarComunicator.evSpeedInfoReceived += new SpeedInfoReceivedEventHander(CarComunicator_evSpeedInfoReceived);
-
+            
             //timer init
             mTimer.Interval = timerIntervalInMs;
             mTimer.Tick += new EventHandler(mTimer_Tick);
@@ -41,22 +45,43 @@ namespace autonomiczny_samochod
         void CarComunicator_evSpeedInfoReceived(object sender, SpeedInfoReceivedEventArgs args)
         {
             currentSpeedLocalCopy = args.GetSpeedInfo();
-            Console.WriteLine(String.Format("[SimpleSpeedRegulator] new current speed value acquired: {0}", args.GetSpeedInfo()));
+            Logger.Log(this, String.Format("new current speed value acquired: {0}", args.GetSpeedInfo()));
         }
 
         void  SimpleSpeedRegulator_evNewSpeedSettingCalculated(object sender, NewSpeedSettingCalculatedEventArgs args)
         {
- 	        Console.WriteLine(String.Format("[SimpleSpeedRegulator] new speed setting calculated: {0}", args.getSpeedSetting()));
+ 	        Logger.Log(this, String.Format("new speed setting calculated: {0}", args.getSpeedSetting()));
         }
 
         void mTimer_Tick(object sender, EventArgs e)
         {
-            double calculatedSteeringSetting = CalculateSteeringSetting();
-
-            if(lastSteeringSeetingSend != calculatedSteeringSetting)
+            if (alertBrakeActive)
             {
-                evNewSpeedSettingCalculated(this, new NewSpeedSettingCalculatedEventArgs(calculatedSteeringSetting));
-                lastSteeringSeetingSend = calculatedSteeringSetting;
+                if (lastSteeringSeetingSend != ALERT_BRAKE_SPEED)
+                {
+                    NewSpeedSettingCalculatedEventHandler temp = evNewSpeedSettingCalculated;
+                    if (temp != null)
+                    {
+                        temp(this, new NewSpeedSettingCalculatedEventArgs(ALERT_BRAKE_SPEED));
+                    }
+
+                    lastSteeringSeetingSend = ALERT_BRAKE_SPEED;
+                }
+            }
+            else
+            {
+                double calculatedSteeringSetting = CalculateSteeringSetting();
+
+                if (lastSteeringSeetingSend != calculatedSteeringSetting)
+                {
+                    NewSpeedSettingCalculatedEventHandler temp = evNewSpeedSettingCalculated;
+                    if (temp != null)
+                    {
+                        temp(this, new NewSpeedSettingCalculatedEventArgs(calculatedSteeringSetting));
+                    }
+
+                    lastSteeringSeetingSend = calculatedSteeringSetting;
+                }
             }
         }
 
@@ -64,12 +89,12 @@ namespace autonomiczny_samochod
         {
             if(currentSpeedLocalCopy == -66.6)
             {
-                Console.WriteLine("[SimpleSpeedRegulator] currentSpeedLocalCopy is not initialized! Calculations will not be done");
+                Logger.Log(this, "currentSpeedLocalCopy is not initialized! Calculations will not be done");
                 return 0.0;
             }
             else if(targetSpeedLocalCopy == -66.6)
             {
-                Console.WriteLine("[SimpleSpeedRegulator] targetSpeedLocalCopy is not initialized! Calculations will not be done");
+                Logger.Log(this, "targetSpeedLocalCopy is not initialized! Calculations will not be done");
                 return 0.0;
             }
             else
@@ -81,12 +106,13 @@ namespace autonomiczny_samochod
         void Car_evTargetSpeedChanged(object sender, TargetSpeedChangedEventArgs args)
         {
             targetSpeedLocalCopy = args.GetTargetSpeed();
-            Console.WriteLine(String.Format("[SimpleSpeedRegulator] target speed changed to: {0}", args.GetTargetSpeed()));
+            Logger.Log(this, String.Format("target speed changed to: {0}", args.GetTargetSpeed()));
         }
 
         void Car_evAlertBrake(object sender, EventArgs e)
         {
-            Console.WriteLine("[SimpleSpeedRegulator] ALERT BRAKE!");
+            alertBrakeActive = true;
+            Logger.Log(this, "ALERT BRAKE!");
         }
     }
 }

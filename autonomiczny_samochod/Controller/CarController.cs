@@ -9,17 +9,31 @@ namespace autonomiczny_samochod
     //TODO: provide some logs
     public class CarController
     {
-        private ICar Model { get; set; }
+        public ICar Model { get; private set; }
         public MainWindow MainWindow { get; private set; }
+        private System.Threading.Thread mFakeSignalsSenderThread;
 
         public CarController(MainWindow window)
         {
             MainWindow = window;
 
             Model = new ExampleFakeCar(this);
-            Model.TurnOnAlertBrake();
+
+            mFakeSignalsSenderThread = new System.Threading.Thread(new System.Threading.ThreadStart(mFakeSignalsSenderFoo));
+            mFakeSignalsSenderThread.Start();
+        }
+
+        void mFakeSignalsSenderFoo()
+        {
+            System.Threading.Thread.Sleep(1000);
+
             Model.SetTargetSpeed(25.0);
             Model.SetTargetWheelAngle(60.0);
+
+            System.Threading.Thread.Sleep(1000);
+
+            Model.SetTargetSpeed(50.0);
+            Model.SetTargetWheelAngle(30.0);
         }
 
         public CarInformations GetCarInformation()

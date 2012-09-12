@@ -30,7 +30,7 @@ namespace autonomiczny_samochod
             get;
         }
 
-        ICarComunicator CarComunicator
+        ICarCommunicator CarComunicator
         {
             get;
         }

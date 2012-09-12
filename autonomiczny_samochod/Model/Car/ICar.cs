@@ -39,13 +39,10 @@ namespace autonomiczny_samochod
         }
     }
 
-
     public interface ICar
     {
         event EventHandler evAlertBrake;
-
         event TargetSpeedChangedEventHandler evTargetSpeedChanged;
-
         event TargetSteeringWheelAngleChangedEventHandler evTargetSteeringWheelAngleChanged;
 
         ISteeringWheelAngleRegulator SteeringWheelAngleRegulator
@@ -63,7 +60,7 @@ namespace autonomiczny_samochod
             get;
         }
 
-        ICarComunicator CarComunicator
+        ICarCommunicator CarComunicator
         {
             get;
         }

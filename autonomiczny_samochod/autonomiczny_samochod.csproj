@@ -60,9 +60,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Helpers\EnabledDisabledSwitcher.cs" />
+    <Compile Include="Helpers\Logger.cs" />
+    <Compile Include="Helpers\ShowMessageBoxWithExceptions.cs" />
     <Compile Include="Model\CarInformations.cs" />
     <Compile Include="Controller\CarController.cs" />
     <Compile Include="Model\Car\ExampleCar.cs" />
+    <Compile Include="Model\Communicators\dsa.cs" />
+    <Compile Include="Test\Fakes\FakeCarModel.cs" />
     <Compile Include="Model\Regulators\PIDSpeedRegulator.cs" />
     <Compile Include="Model\Regulators\PIDSteeringWheelAngleRegulator.cs" />
     <Compile Include="Model\Communicators\RealCarCommunicator.cs" />

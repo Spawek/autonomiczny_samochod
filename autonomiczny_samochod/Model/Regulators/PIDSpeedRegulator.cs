@@ -9,7 +9,7 @@ namespace autonomiczny_samochod
     {
         public event NewSpeedSettingCalculatedEventHandler evNewSpeedSettingCalculated;
 
-        public ICarComunicator communicator
+        public ICarCommunicator communicator
         {
             get
             {
@@ -31,7 +31,7 @@ namespace autonomiczny_samochod
         public ICar Car { get; private set; }
 
 
-        public ICarComunicator CarComunicator
+        public ICarCommunicator CarComunicator
         {
             get
             {

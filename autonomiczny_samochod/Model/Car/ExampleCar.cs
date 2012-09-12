@@ -11,7 +11,7 @@ namespace autonomiczny_samochod
 
         public event TargetSteeringWheelAngleChangedEventHandler evTargetSteeringWheelAngleChanged;
 
-        public ICarComunicator CarComunicator { get; private set; }
+        public ICarCommunicator CarComunicator { get; private set; }
         public CarController Controller { get; private set; }
         public bool IsAlertBrakeActive { get; private set; }
         public ISpeedRegulator SpeedRegulator { get; private set; }
@@ -28,7 +28,12 @@ namespace autonomiczny_samochod
             set
             {
                 __targetSpeed__ = value;
-                evTargetSpeedChanged(this, new TargetSpeedChangedEventArgs(value));
+
+                TargetSpeedChangedEventHandler temp = evTargetSpeedChanged;
+                if (temp != null)
+                {
+                    temp(this, new TargetSpeedChangedEventArgs(value));
+                }
             }
         }
 
@@ -42,16 +47,25 @@ namespace autonomiczny_samochod
             set
             {
                 __targetWheelAngle__ = value;
-                evTargetSteeringWheelAngleChanged(this, new TargetSteeringWheelAngleChangedEventArgs(value));
+
+                TargetSteeringWheelAngleChangedEventHandler temp = evTargetSteeringWheelAngleChanged;
+                if (temp != null)
+                {
+                    temp(this, new TargetSteeringWheelAngleChangedEventArgs(value));
+                }
             }
         }
 
         public ExampleFakeCar(CarController parent)
         {
             Controller = parent;
+
             CarComunicator = new FakeCarCommunicator();
             SpeedRegulator = new SimpleSpeedRegulator(this);
             SteeringWheelAngleRegulator = new SimpleSteeringWheelRegulator(this);
+            CarComunicator.ISpeedRegulator = SpeedRegulator; //TODO: REFACTOR THIS SHIT!!!
+            CarComunicator.ISteeringWheelAngleRegulator = SteeringWheelAngleRegulator; //TODO: AND THIS!!!
+
             IsAlertBrakeActive = false;
             carInfo = new CarInformations(-66.6, -66.6); 
 
@@ -62,22 +76,26 @@ namespace autonomiczny_samochod
 
         void ExampleFakeCar_evTargetSteeringWheelAngleChanged(object sender, TargetSteeringWheelAngleChangedEventArgs args)
         {
-            Console.WriteLine("[Example Car] target wheel angle changed to: {0}", args.GetTargetWheelAngle());
+            Logger.Log(this, String.Format("target wheel angle changed to: {0}", args.GetTargetWheelAngle()));
         }
 
         void ExampleFakeCar_evTargetSpeedChanged(object sender, TargetSpeedChangedEventArgs args)
         {
-            Console.WriteLine("[Example Car] target speed changed to: {0}", args.GetTargetSpeed());
+            Logger.Log(this, String.Format("target speed changed to: {0}", args.GetTargetSpeed()));
         }
 
         void ExampleFakeCar_evAlertBrake(object sender, EventArgs e)
         {
-            Console.WriteLine("[Example Car] ALERT BRAKE!");
+            Logger.Log(this, "ALERT BRAKE!");
         }
 
         public void TurnOnAlertBrake()
         {
-            evAlertBrake(this, EventArgs.Empty);
+            EventHandler temp = evAlertBrake;
+            if (temp != null)
+            {
+                temp(this, EventArgs.Empty);
+            }
         }
 
         public void SetTargetSpeed(double speed)

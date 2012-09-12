@@ -10,7 +10,7 @@ namespace autonomiczny_samochod
         public event NewSteeringWheelSettingCalculatedEventHandler evNewSteeringWheelSettingCalculated;
 
         public ICar Car { get; private set; }
-        public ICarComunicator CarComunicator { get; private set; }
+        public ICarCommunicator CarComunicator { get; private set; }
 
         //it's P regulator -> only 1 factor
         private const double PFactor = 5.0;
@@ -39,13 +39,13 @@ namespace autonomiczny_samochod
 
         void SimpleSteeringWheelRegulator_evNewSteeringWheelSettingCalculated(object sender, NewSteeringWheelSettingCalculateddEventArgs args)
         {
-            Console.WriteLine(String.Format("[SimpleSteeringWheelRegulator] New steering wheel setting calculated: {0}", args.getSteeringWheelAngleSetting()));
+            Logger.Log(this, String.Format("New steering wheel setting calculated: {0}", args.getSteeringWheelAngleSetting()));
         }
 
         void CarComunicator_evSteeringWheelAngleInfoReceived(object sender, SteeringWheelAngleInfoReceivedEventArgs args)
         {
             currentWheelAngle = args.GetAngle();
-            Console.WriteLine(String.Format("[SimpleSteeringWheelRegulator] steering wheel angle info received: {0}", args.GetAngle()));
+            Logger.Log(this, String.Format("steering wheel angle info received: {0}", args.GetAngle()));
         }
 
         void mTimer_Tick(object sender, EventArgs e)
@@ -54,7 +54,12 @@ namespace autonomiczny_samochod
 
             if (lastCalculatedSteeringWheelSetting != calculatedSteeringSetting)
             {
-                evNewSteeringWheelSettingCalculated(this, new NewSteeringWheelSettingCalculateddEventArgs(calculatedSteeringSetting));
+                NewSteeringWheelSettingCalculatedEventHandler temp = evNewSteeringWheelSettingCalculated;
+                if (temp != null)
+                {
+                    temp(this, new NewSteeringWheelSettingCalculateddEventArgs(calculatedSteeringSetting));
+                }
+
                 lastCalculatedSteeringWheelSetting = calculatedSteeringSetting;
             }
         }
@@ -63,12 +68,12 @@ namespace autonomiczny_samochod
         {
             if (targetWheelAngleLocalCopy == -66.6)
             {
-                Console.WriteLine("[SimpleSteeringWheelRegulator] target wheel angle is not initialized. Calculations will not be done");
+                Logger.Log(this, "target wheel angle is not initialized. Calculations will not be done");
                 return 0;
             }
             else if (currentWheelAngle == -66.6)
             {
-                Console.WriteLine("[SimpleSteeringWheelRegulator] current wheel angle is not initialized. Calculations will not be done");
+                Logger.Log(this, "current wheel angle is not initialized. Calculations will not be done");
                 return 0;
             }
             else
@@ -80,7 +85,7 @@ namespace autonomiczny_samochod
         void Car_evTargetSteeringWheelAngleChanged(object sender, TargetSteeringWheelAngleChangedEventArgs args)
         {
             targetWheelAngleLocalCopy = args.GetTargetWheelAngle();
-            Console.WriteLine(String.Format("[SimpleSteeringWheelRegulator] target wheel angle changed to: {0}", targetWheelAngleLocalCopy));
+            Logger.Log(this, String.Format("target wheel angle changed to: {0}", targetWheelAngleLocalCopy));
         }
     }
 }
