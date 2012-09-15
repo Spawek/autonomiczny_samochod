@@ -67,7 +67,8 @@ namespace autonomiczny_samochod
             Controller = parent;
 
             CarComunicator = new FakeCarCommunicator();
-            SpeedRegulator = new SimpleSpeedRegulator(this);
+            //SpeedRegulator = new SimpleSpeedRegulator(this);
+            SpeedRegulator = new PIDSpeedRegulator(this);
             SteeringWheelAngleRegulator = new SimpleSteeringWheelRegulator(this);
             CarComunicator.ISpeedRegulator = SpeedRegulator; //TODO: REFACTOR THIS SHIT!!!
             CarComunicator.ISteeringWheelAngleRegulator = SteeringWheelAngleRegulator; //TODO: AND THIS!!!

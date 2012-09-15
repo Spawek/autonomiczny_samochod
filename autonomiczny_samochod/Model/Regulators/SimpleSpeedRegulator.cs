@@ -17,7 +17,7 @@ namespace autonomiczny_samochod
         private double lastSteeringSeetingSend = -66.6;
 
         //it's P regulator -> only 1 factor
-        private const double PFactor = 5.0;
+        private const double PFactor = 25.0;
 
         private const double ALERT_BRAKE_SPEED = -100.0;
 

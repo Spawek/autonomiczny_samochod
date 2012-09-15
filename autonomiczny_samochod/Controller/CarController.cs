@@ -27,12 +27,12 @@ namespace autonomiczny_samochod
         {
             System.Threading.Thread.Sleep(1000);
 
-            Model.SetTargetSpeed(25.0);
+            Model.SetTargetSpeed(50.0);
             Model.SetTargetWheelAngle(60.0);
 
             System.Threading.Thread.Sleep(1000);
 
-            Model.SetTargetSpeed(50.0);
+            Model.SetTargetSpeed(25.0);
             Model.SetTargetWheelAngle(30.0);
         }
 

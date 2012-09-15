@@ -49,12 +49,7 @@ namespace autonomiczny_samochod
         void mTimer_Tick(object sender, EventArgs e)
         {
             timeFromProgramBeginning += TimeSpan.FromMilliseconds(TIMER_INTERVAL_IN_MS);
-            textBlock_time.Text = String.Format(
-                "{0}:{1}.{2}",
-                timeFromProgramBeginning.Minutes,
-                timeFromProgramBeginning.Seconds,
-                timeFromProgramBeginning.Milliseconds
-            );
+            textBlock_time.Text = String.Format(@"{0:mm\:ss\:ff}", timeFromProgramBeginning);
         }
 
         void SteeringWheelAngleRegulator_evNewSteeringWheelSettingCalculated(object sender, NewSteeringWheelSettingCalculateddEventArgs args)
@@ -116,7 +111,5 @@ namespace autonomiczny_samochod
                         String.Format("{0:0.###}", args.GetTargetSpeed())
             );
         }
-
-
     }
 }

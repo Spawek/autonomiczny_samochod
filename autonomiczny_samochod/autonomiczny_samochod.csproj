@@ -62,6 +62,7 @@
     <Compile Include="Helpers\EnabledDisabledSwitcher.cs" />
     <Compile Include="Helpers\Logger.cs" />
     <Compile Include="Helpers\ShowMessageBoxWithExceptions.cs" />
+    <Compile Include="Helpers\StatsCollector.cs" />
     <Compile Include="Model\CarInformations.cs" />
     <Compile Include="Controller\CarController.cs" />
     <Compile Include="Model\Car\ExampleCar.cs" />
