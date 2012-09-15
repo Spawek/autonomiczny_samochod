@@ -21,6 +21,10 @@ namespace autonomiczny_samochod
     {
         public CarController Controller { get; private set; }
 
+        private System.Windows.Forms.Timer mTimer = new System.Windows.Forms.Timer();
+        private const int TIMER_INTERVAL_IN_MS = 10;
+        private TimeSpan timeFromProgramBeginning = TimeSpan.Zero;
+
         public MainWindow()
         {
             Controller = new CarController(this);
@@ -35,6 +39,22 @@ namespace autonomiczny_samochod
 
             Controller.Model.SpeedRegulator.evNewSpeedSettingCalculated += new NewSpeedSettingCalculatedEventHandler(SpeedRegulator_evNewSpeedSettingCalculated);
             Controller.Model.SteeringWheelAngleRegulator.evNewSteeringWheelSettingCalculated += new NewSteeringWheelSettingCalculatedEventHandler(SteeringWheelAngleRegulator_evNewSteeringWheelSettingCalculated);
+
+            //initialize timer
+            mTimer.Interval = TIMER_INTERVAL_IN_MS;
+            mTimer.Tick += new EventHandler(mTimer_Tick);
+            mTimer.Start();
+        }
+
+        void mTimer_Tick(object sender, EventArgs e)
+        {
+            timeFromProgramBeginning += TimeSpan.FromMilliseconds(TIMER_INTERVAL_IN_MS);
+            textBlock_time.Text = String.Format(
+                "{0}:{1}.{2}",
+                timeFromProgramBeginning.Minutes,
+                timeFromProgramBeginning.Seconds,
+                timeFromProgramBeginning.Milliseconds
+            );
         }
 
         void SteeringWheelAngleRegulator_evNewSteeringWheelSettingCalculated(object sender, NewSteeringWheelSettingCalculateddEventArgs args)
@@ -43,7 +63,7 @@ namespace autonomiczny_samochod
                 new Action<TextBlock, string>((textBox, val)
                     => textBox.Text = val),
                         textBlock_steeringAngle,
-                        Convert.ToString(args.getSteeringWheelAngleSetting())
+                        String.Format("{0:0.###}", args.getSteeringWheelAngleSetting())
             );
         }
 
@@ -53,7 +73,7 @@ namespace autonomiczny_samochod
                 new Action<TextBlock, string>((textBox, val)
                     => textBox.Text = val),
                         textBlock_steeringSpeed,
-                        Convert.ToString(args.getSpeedSetting())
+                        String.Format("{0:0.###}", args.getSpeedSetting())
             );
         }
 
@@ -63,7 +83,7 @@ namespace autonomiczny_samochod
                 new Action<TextBlock, string>((textBox, val)
                     => textBox.Text = val),
                         textBlock_currentAngle,
-                        Convert.ToString(args.GetAngle())
+                        String.Format("{0:0.###}", args.GetAngle())
             );
         }
 
@@ -73,7 +93,7 @@ namespace autonomiczny_samochod
                 new Action<TextBlock, string>((textBox, val)
                     => textBox.Text = val),
                         textBlock_targetAngle,
-                        Convert.ToString(args.GetTargetWheelAngle())
+                        String.Format("{0:0.###}", args.GetTargetWheelAngle())
             );
         }
 
@@ -83,7 +103,7 @@ namespace autonomiczny_samochod
                 new Action<TextBlock, string>((textBox, val) 
                     => textBox.Text = val), 
                         textBlock_currentSpeed, 
-                        Convert.ToString(args.GetSpeedInfo())
+                        String.Format("{0:0.###}", args.GetSpeedInfo())
             );
         }
 
@@ -93,7 +113,7 @@ namespace autonomiczny_samochod
                 new Action<TextBlock, string>((textBox, val)
                     => textBox.Text = val),
                         textBlock_targetSpeed,
-                        Convert.ToString(args.GetTargetSpeed())
+                        String.Format("{0:0.###}", args.GetTargetSpeed())
             );
         }
 
