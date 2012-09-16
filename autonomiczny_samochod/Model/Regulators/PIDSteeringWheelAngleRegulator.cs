@@ -49,5 +49,24 @@ namespace autonomiczny_samochod
             add { throw new NotImplementedException(); }
             remove { throw new NotImplementedException(); }
         }
+
+
+        public int WheelAngleSteering
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+
+        double ISteeringWheelAngleRegulator.WheelAngleSteering
+        {
+            get { throw new NotImplementedException(); }
+        }
     }
 }

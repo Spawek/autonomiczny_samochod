@@ -114,5 +114,11 @@ namespace autonomiczny_samochod
             alertBrakeActive = true;
             Logger.Log(this, "ALERT BRAKE!");
         }
+
+
+        public double SpeedSteering
+        {
+            get { throw new NotImplementedException(); }
+        }
     }
 }

@@ -63,10 +63,10 @@
     <Compile Include="Helpers\Logger.cs" />
     <Compile Include="Helpers\ShowMessageBoxWithExceptions.cs" />
     <Compile Include="Helpers\StatsCollector.cs" />
+    <Compile Include="Helpers\Time.cs" />
     <Compile Include="Model\CarInformations.cs" />
     <Compile Include="Controller\CarController.cs" />
     <Compile Include="Model\Car\ExampleCar.cs" />
-    <Compile Include="Model\Communicators\dsa.cs" />
     <Compile Include="Test\Fakes\FakeCarModel.cs" />
     <Compile Include="Model\Regulators\PIDSpeedRegulator.cs" />
     <Compile Include="Model\Regulators\PIDSteeringWheelAngleRegulator.cs" />

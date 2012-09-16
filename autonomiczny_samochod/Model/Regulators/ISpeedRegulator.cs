@@ -34,5 +34,10 @@ namespace autonomiczny_samochod
         {
             get;
         }
+
+        double SpeedSteering
+        {
+            get;
+        }
     }
 }

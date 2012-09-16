@@ -12,6 +12,11 @@ namespace autonomiczny_samochod
         public ICar Car { get; private set; }
         public ICarCommunicator CarComunicator { get; private set; }
 
+        double ISteeringWheelAngleRegulator.WheelAngleSteering
+        {
+            get { return lastCalculatedSteeringWheelSetting; }
+        }
+
         //it's P regulator -> only 1 factor
         private const double PFactor = 5.0;
 
@@ -86,6 +91,19 @@ namespace autonomiczny_samochod
         {
             targetWheelAngleLocalCopy = args.GetTargetWheelAngle();
             Logger.Log(this, String.Format("target wheel angle changed to: {0}", targetWheelAngleLocalCopy));
+        }
+
+
+        public int WheelAngleSteering
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

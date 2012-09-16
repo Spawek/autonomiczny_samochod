@@ -11,10 +11,6 @@ namespace autonomiczny_samochod
         private System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
         private StatsCollector statsCollector = new StatsCollector();
 
-        private const int TIMER_INTERVAL_IN_MS = 15;
-
-        private int TICKS_TO_SAVE_STATS = 180;
-
         //steering parameters
         private double __speedSteering__ = 0;
         private double __wheelAngleSteering__ = 0;
@@ -119,26 +115,6 @@ namespace autonomiczny_samochod
             SteeringWheelAngle += WheelAngleSteering * STEERING_WHEEL_STEERING_FACTOR;
             WheelAngle = SteeringWheelAngle * STEERING_WHEEL_TO_WHEELS_TRANSMISSION;
             Logger.Log(this, String.Format("new speed has been modeled: {0}   (current speed steering: {1})", WheelAngle, WheelAngleSteering));
-
-            //stats collecting
-            statsCollector.PutNewStat("time", GetMsFromStart().TotalMilliseconds);
-            statsCollector.PutNewStat("current speed", __speed__);
-            statsCollector.PutNewStat("target speed", __targetSpeed__);
-            statsCollector.PutNewStat("speed steering", SpeedSteering);
-            statsCollector.PutNewStat("current angle", __wheelAngle__);
-            statsCollector.PutNewStat("target angle", __targetWheelAngle__);
-            statsCollector.PutNewStat("angle steering", WheelAngleSteering);
-
-            if (TICKS_TO_SAVE_STATS-- == 0)
-            {
-                statsCollector.WriteStatsToFile("stats.txt");
-                Logger.Log(this, "----------------------------------------------------------------");
-                Logger.Log(this, "----------------------------------------------------------------");
-                Logger.Log(this, String.Format("STATS HAS BEEN WRITTEN TO FILE: stats.txt"));
-                Logger.Log(this, "----------------------------------------------------------------");
-                Logger.Log(this, "----------------------------------------------------------------");
-            }
-
         }
 
         private DateTime StartingDateTime = DateTime.Now;

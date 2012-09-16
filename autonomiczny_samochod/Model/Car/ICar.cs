@@ -80,5 +80,9 @@ namespace autonomiczny_samochod
         double GetTargetSpeed();
 
         double GetTargetWheelAngle();
+
+        double GetSpeedSteering();
+
+        double GetWheelAngleSteering();
     }
 }

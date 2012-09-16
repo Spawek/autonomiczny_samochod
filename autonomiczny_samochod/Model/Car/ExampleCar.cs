@@ -22,8 +22,19 @@ namespace autonomiczny_samochod
 
         public CarInformations carInfo { get; private set; }
 
-        private double __targetSpeed__;
+        public double CurrentSpeed
+        {
+            get;
+            private set;
+        }
 
+        public double CurrentWheelAngle
+        {
+            get;
+            private set;
+        }
+
+        private double __targetSpeed__;
         private double TargetSpeed
         {
             get
@@ -43,7 +54,6 @@ namespace autonomiczny_samochod
         }
 
         private double __targetWheelAngle__;
-
         private double TargetWheelAngle
         {
             get
@@ -80,6 +90,18 @@ namespace autonomiczny_samochod
             evAlertBrake += new EventHandler(ExampleFakeCar_evAlertBrake);
             evTargetSpeedChanged += new TargetSpeedChangedEventHandler(ExampleFakeCar_evTargetSpeedChanged);
             evTargetSteeringWheelAngleChanged += new TargetSteeringWheelAngleChangedEventHandler(ExampleFakeCar_evTargetSteeringWheelAngleChanged);
+            CarComunicator.evSpeedInfoReceived += new SpeedInfoReceivedEventHander(CarComunicator_evSpeedInfoReceived);
+            CarComunicator.evSteeringWheelAngleInfoReceived += new SteeringWheelAngleInfoReceivedEventHandler(CarComunicator_evSteeringWheelAngleInfoReceived);
+        }
+
+        void CarComunicator_evSteeringWheelAngleInfoReceived(object sender, SteeringWheelAngleInfoReceivedEventArgs args)
+        {
+            CurrentWheelAngle = args.GetAngle();
+        }
+
+        void CarComunicator_evSpeedInfoReceived(object sender, SpeedInfoReceivedEventArgs args)
+        {
+            CurrentSpeed = args.GetSpeedInfo();
         }
 
         private void ExampleFakeCar_evTargetSteeringWheelAngleChanged(object sender, TargetSteeringWheelAngleChangedEventArgs args)
@@ -118,12 +140,12 @@ namespace autonomiczny_samochod
 
         public double GetWheelAngle()
         {
-            return carInfo.wheelAngle;
+            return CurrentWheelAngle;
         }
 
         public double GetCurrentSpeed()
         {
-            return carInfo.speed;
+            return CurrentSpeed;
         }
 
         public CarInformations GetCarInfo()
@@ -139,6 +161,16 @@ namespace autonomiczny_samochod
         public double GetTargetWheelAngle()
         {
             return TargetWheelAngle;
+        }
+
+        public double GetSpeedSteering()
+        {
+            return SpeedRegulator.SpeedSteering;
+        }
+
+        public double GetWheelAngleSteering()
+        {
+            return SteeringWheelAngleRegulator.WheelAngleSteering;
         }
     }
 }

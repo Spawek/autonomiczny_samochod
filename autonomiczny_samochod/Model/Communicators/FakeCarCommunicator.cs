@@ -30,11 +30,7 @@ namespace autonomiczny_samochod
         private const int TIMER_INTERVAL_IN_MS = 10;
 
         public FakeCarCommunicator()
-        {
-            evSpeedInfoReceived += new SpeedInfoReceivedEventHander(FakeCarCommunicator_evSpeedInfoReceived);
-            evSteeringWheelAngleInfoReceived += new SteeringWheelAngleInfoReceivedEventHandler(FakeCarCommunicator_evSteeringWheelAngleInfoReceived);
-
-            
+        {      
 
             //mFakeThread = new System.Threading.Thread(new ThreadStart(mFakeThreadTasks));
             //mFakeThread.Start();
@@ -82,17 +78,6 @@ namespace autonomiczny_samochod
             }
         }
 
-        //some internal event handler is needed
-        void FakeCarCommunicator_evSteeringWheelAngleInfoReceived(object sender, SteeringWheelAngleInfoReceivedEventArgs args)
-        {
-            //do nothing
-        }
-
-        //some internal event handler is needed
-        void FakeCarCommunicator_evSpeedInfoReceived(object sender, SpeedInfoReceivedEventArgs args)
-        {
-            //do nothing
-        }
 
         void mFakeThreadTasks()
         {

@@ -13,14 +13,51 @@ namespace autonomiczny_samochod
         public MainWindow MainWindow { get; private set; }
         private System.Threading.Thread mFakeSignalsSenderThread;
 
+        //stats collecting
+        private StatsCollector statsCollector = new StatsCollector();
+        private int TICKS_TO_SAVE_STATS = 250;
+        private System.Windows.Forms.Timer mStatsCollectorTimer = new System.Windows.Forms.Timer();
+        private const int TIMER_INTERVAL_IN_MS = 10;
+
         public CarController(MainWindow window)
         {
             MainWindow = window;
 
             Model = new ExampleFakeCar(this);
 
+            mStatsCollectorTimer.Interval = TIMER_INTERVAL_IN_MS;
+            mStatsCollectorTimer.Tick += new EventHandler(mStatsCollectorTimer_Tick);
+            mStatsCollectorTimer.Start();
+
             mFakeSignalsSenderThread = new System.Threading.Thread(new System.Threading.ThreadStart(mFakeSignalsSenderFoo));
             mFakeSignalsSenderThread.Start();
+        }
+
+        void mStatsCollectorTimer_Tick(object sender, EventArgs e)
+        {
+            //stats collecting
+            statsCollector.PutNewStat("time", Time.GetTimeFromProgramBeginnig().TotalMilliseconds);
+            statsCollector.PutNewStat("current speed", Model.GetCurrentSpeed());
+            statsCollector.PutNewStat("target speed", Model.GetTargetSpeed());
+            statsCollector.PutNewStat("speed steering", Model.GetSpeedSteering());
+            statsCollector.PutNewStat("current angle", Model.GetWheelAngle());
+            statsCollector.PutNewStat("target angle", Model.GetTargetWheelAngle());
+            statsCollector.PutNewStat("angle steering", Model.GetWheelAngleSteering());
+
+            if (TICKS_TO_SAVE_STATS-- == 0)
+            {
+                statsCollector.WriteStatsToFile("stats.txt");
+                Logger.Log(this, "----------------------------------------------------------------");
+                Logger.Log(this, "----------------------------------------------------------------");
+                Logger.Log(this, "----------------------------------------------------------------");
+                Logger.Log(this, "----------------------------------------------------------------");
+                Logger.Log(this, String.Format("STATS HAS BEEN WRITTEN TO FILE: stats.txt"));
+                Logger.Log(this, "----------------------------------------------------------------");
+                Logger.Log(this, "----------------------------------------------------------------");
+                Logger.Log(this, "----------------------------------------------------------------");
+                Logger.Log(this, "----------------------------------------------------------------");
+            }
+
         }
 
         void mFakeSignalsSenderFoo()

@@ -12,6 +12,11 @@ namespace autonomiczny_samochod
         public ICar Car { get; private set; }
         public ICarCommunicator CarComunicator{ get; private set; }
 
+        double ISpeedRegulator.SpeedSteering
+        {
+            get { return lastSteeringSeetingSend; }
+        }
+
         private double targetSpeedLocalCopy = -66.6;
         private double currentSpeedLocalCopy = -66.6;
         private double lastSteeringSeetingSend = -66.6;
@@ -144,6 +149,19 @@ namespace autonomiczny_samochod
         {
             alertBrakeActive = true;
             Logger.Log(this, "ALERT BRAKE!");
+        }
+
+
+        public int SpeedSteering
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }
