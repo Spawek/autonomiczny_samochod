@@ -76,5 +76,9 @@ namespace autonomiczny_samochod
         double GetCurrentSpeed();
 
         CarInformations GetCarInfo();
+
+        double GetTargetSpeed();
+
+        double GetTargetWheelAngle();
     }
 }

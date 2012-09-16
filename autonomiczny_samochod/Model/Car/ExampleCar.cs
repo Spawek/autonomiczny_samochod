@@ -130,5 +130,15 @@ namespace autonomiczny_samochod
         {
             return carInfo;
         }
+
+        public double GetTargetSpeed()
+        {
+            return TargetSpeed;
+        }
+
+        public double GetTargetWheelAngle()
+        {
+            return TargetWheelAngle;
+        }
     }
 }

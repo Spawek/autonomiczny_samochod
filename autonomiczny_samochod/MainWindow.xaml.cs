@@ -40,10 +40,42 @@ namespace autonomiczny_samochod
             Controller.Model.SpeedRegulator.evNewSpeedSettingCalculated += new NewSpeedSettingCalculatedEventHandler(SpeedRegulator_evNewSpeedSettingCalculated);
             Controller.Model.SteeringWheelAngleRegulator.evNewSteeringWheelSettingCalculated += new NewSteeringWheelSettingCalculatedEventHandler(SteeringWheelAngleRegulator_evNewSteeringWheelSettingCalculated);
 
+            this.KeyDown += new KeyEventHandler(MainWindow_KeyDown);
+
             //initialize timer
             mTimer.Interval = TIMER_INTERVAL_IN_MS;
             mTimer.Tick += new EventHandler(mTimer_Tick);
             mTimer.Start();
+        }
+
+        void MainWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Up:
+                case Key.W:
+                    Controller.ChangeTargetSpeed(1);
+                    break;
+
+                case Key.Down:
+                case Key.S:
+                    Controller.ChangeTargetSpeed(-1);
+                    break;
+
+                case Key.Left:
+                case Key.A:
+                    Controller.ChangeTargetWheelAngle(-5);
+                    break;
+
+                case Key.Right:
+                case Key.D:
+                    Controller.ChangeTargetWheelAngle(5);
+                    break;
+
+                case Key.Space:
+                    Controller.AlertBrake();
+                    break;
+            }
         }
 
         void mTimer_Tick(object sender, EventArgs e)

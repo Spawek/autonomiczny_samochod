@@ -60,5 +60,20 @@ namespace autonomiczny_samochod
         {
             Model.SetTargetSpeed(targetSpeed);
         }
+
+        public void ChangeTargetSpeed(double change)
+        {
+            Model.SetTargetSpeed(Model.GetTargetSpeed() + change);
+        }
+
+        public void ChangeTargetWheelAngle(double change)
+        {
+            Model.SetTargetWheelAngle(Model.GetTargetWheelAngle() + change);
+        }
+
+        public void AlertBrake()
+        {
+            Model.TurnOnAlertBrake();
+        }
     }
 }
