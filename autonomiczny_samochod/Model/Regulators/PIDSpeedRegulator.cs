@@ -104,9 +104,9 @@ namespace autonomiczny_samochod
         private double LastDiffBetwTargetAndCurrentValue = 0.0;
 
         //declared here to make logging possible
-        private double P_FACTOR;
-        private double I_FACTOR;
-        private double D_FACTOR;
+        private double P_factor;
+        private double I_factor;
+        private double D_factor;
 
         private double CalculateSteeringSetting()
         {
@@ -142,7 +142,7 @@ namespace autonomiczny_samochod
                 D_factor = D_Factor_sum * regulatorConsts.D_FACTOR_CONST;
 
                 //calculating and limiting regulator output
-                double PID_factor = P_FACTOR + I_FACTOR + D_FACTOR;
+                double PID_factor = P_factor + I_factor + D_factor;
                 double Limitted_PID_Factor = Limiter.ReturnLimmitedVar(PID_factor, regulatorConsts.MIN_FACTOR_CONST, regulatorConsts.MAX_FACTOR_CONST);
 
                 return Limitted_PID_Factor;
@@ -164,17 +164,11 @@ namespace autonomiczny_samochod
         public IDictionary<string, double> GetRegulatorParameters()
         {
             Dictionary<string, double> dict = new Dictionary<string, double>();
-            dict["P_FACTOR"] = P_FACTOR;
-            dict["I_FACTOR"] = I_FACTOR;
-            dict["D_FACTOR"] = D_FACTOR;
+            dict["P_FACTOR"] = P_factor;
+            dict["I_FACTOR"] = I_factor;
+            dict["D_FACTOR"] = D_factor;
 
             return dict;
         }
-
-        public double P_factor { get; set; }
-
-        public double I_factor { get; set; }
-
-        public double D_factor { get; set; }
     }
 }
