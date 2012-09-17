@@ -39,5 +39,7 @@ namespace autonomiczny_samochod
         {
             get;
         }
+
+        IDictionary<string, double> GetRegulatorParameters();
     }
 }

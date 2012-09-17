@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 
@@ -39,5 +39,7 @@ namespace autonomiczny_samochod
         {
             get;
         }
+
+        System.Collections.Generic.IDictionary<string, double> GetRegulatorParameters();
     }
 }

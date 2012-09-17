@@ -8,7 +8,7 @@ namespace autonomiczny_samochod
 {
     class StatsCollector
     {
-        private Dictionary<string, List<double>> dict = new Dictionary<string, List<double>>();
+        private IDictionary<string, List<double>> dict = new Dictionary<string, List<double>>();
         public void PutNewStat(string variable, double value)
         {
             //create vector for key if not exists

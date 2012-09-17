@@ -11,6 +11,8 @@ namespace autonomiczny_samochod
         private System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
         private StatsCollector statsCollector = new StatsCollector();
 
+        private static int TIMER_INTERVAL_IN_MS = 15;
+
         //steering parameters
         private double __speedSteering__ = 0;
         private double __wheelAngleSteering__ = 0;

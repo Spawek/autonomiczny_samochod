@@ -15,9 +15,7 @@ namespace autonomiczny_samochod
             throw new NotImplementedException();
         }
 
-
         public event EventHandler evNewSteeringWheelSettingCalculated;
-
 
         public ICar Car
         {
@@ -50,7 +48,7 @@ namespace autonomiczny_samochod
             remove { throw new NotImplementedException(); }
         }
 
-
+        
         public int WheelAngleSteering
         {
             get
@@ -67,6 +65,12 @@ namespace autonomiczny_samochod
         double ISteeringWheelAngleRegulator.WheelAngleSteering
         {
             get { throw new NotImplementedException(); }
+        }
+
+
+        public IDictionary<string, double> GetRegulatorParameters()
+        {
+            throw new NotImplementedException();
         }
     }
 }

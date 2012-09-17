@@ -44,6 +44,13 @@ namespace autonomiczny_samochod
             statsCollector.PutNewStat("target angle", Model.GetTargetWheelAngle());
             statsCollector.PutNewStat("angle steering", Model.GetWheelAngleSteering());
 
+            //collecting speed regulator parameters
+            var speedRegulatorParameters = Model.SpeedRegulator.GetRegulatorParameters();
+            foreach (string key in speedRegulatorParameters.Keys)
+            {
+                statsCollector.PutNewStat(String.Format("SpeedRegulator_{0}", key), speedRegulatorParameters[key]);
+            }
+
             if (TICKS_TO_SAVE_STATS-- == 0)
             {
                 statsCollector.WriteStatsToFile("stats.txt");

@@ -120,5 +120,11 @@ namespace autonomiczny_samochod
         {
             get { throw new NotImplementedException(); }
         }
+
+
+        public IDictionary<string, double> GetRegulatorParameters()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -23,6 +23,27 @@ namespace autonomiczny_samochod
 
         private const double ALERT_BRAKE_SPEED = -100.0;
 
+        //P part settings
+        private const double P_FACTOR_CONST = 80.0;
+
+        //I part settings
+        private const double I_FACTOR_CONST = 10.0; //2.0; //0.4; //hypys radzi, żeby to wyłączyć bo może być niestabilny (a tego baardzo nie chcemy)
+        private const double I_FACTOR_SUM_MAX_VAlUE_CONST = 250.0;
+        private const double I_FACTOR_SUM_SUPPRESING_CONST = 0.88; //1.0 = suppresing disabled
+
+        //D part settings
+        private const double D_FACTOR_CONST = 120.0;
+        private const double D_FACTOR_SUPPRESING_CONST = 0.78;
+
+        //steering limits
+        private const double MAX_FACTOR_CONST = 1000.0;
+        private const double MIN_FACTOR_CONST = -1000.0;
+
+        //declared here to make logging possible
+        private double P_FACTOR;
+        private double I_FACTOR;
+        private double D_FACTOR;
+
         private System.Windows.Forms.Timer mTimer = new System.Windows.Forms.Timer();
         private const int timerIntervalInMs = 10;
 
@@ -87,14 +108,7 @@ namespace autonomiczny_samochod
             }
         }
 
-        private const double P_FACTOR_CONST = 25.0;
-        private const double I_FACTOR_CONST = 0.4;
-        private const double D_FACTOR_CONST = 25.0; //disabled
-        private const double D_FACTOR_DECREASING_CONST = 0.6;
-
-        private const double MAX_FACTOR_CONST = 1000.0;
-        private const double MIN_FACTOR_CONST = -1000.0;
-
+        //variables needed in CalculateSteeringSetting() foo
         private double I_Factor_sum = 0.0;
         private double D_Factor_sum = 0.0;
         private double LastDiffBetwTargetAndCurrentValue = 0.0;
@@ -115,25 +129,24 @@ namespace autonomiczny_samochod
             {
                 double CurrentDiffBetwTargetAndCurrentValue = targetSpeedLocalCopy - currentSpeedLocalCopy;
                 double DiffBetwTargetAndCurrentValueChange = CurrentDiffBetwTargetAndCurrentValue - LastDiffBetwTargetAndCurrentValue;
+                LastDiffBetwTargetAndCurrentValue = CurrentDiffBetwTargetAndCurrentValue;
 
                 //I
+                I_Factor_sum *= I_FACTOR_SUM_SUPPRESING_CONST;
                 I_Factor_sum += CurrentDiffBetwTargetAndCurrentValue;
+                Limiter.Limit(ref I_Factor_sum, -I_FACTOR_SUM_MAX_VAlUE_CONST, I_FACTOR_SUM_MAX_VAlUE_CONST);
 
                 //D
-                D_Factor_sum *= D_FACTOR_DECREASING_CONST;
+                D_Factor_sum *= D_FACTOR_SUPPRESING_CONST;
                 D_Factor_sum += DiffBetwTargetAndCurrentValueChange;
 
 
-                double P_FACTOR = CurrentDiffBetwTargetAndCurrentValue * P_FACTOR_CONST;
-                double I_FACTOR = I_Factor_sum * I_FACTOR_CONST;
-                double D_FACTOR = D_Factor_sum * D_FACTOR_CONST;
+                P_FACTOR = CurrentDiffBetwTargetAndCurrentValue * P_FACTOR_CONST;
+                I_FACTOR = I_Factor_sum * I_FACTOR_CONST;
+                D_FACTOR = D_Factor_sum * D_FACTOR_CONST;
 
                 double PID_FACTOR = P_FACTOR + I_FACTOR + D_FACTOR;
-
-                if (PID_FACTOR > MAX_FACTOR_CONST)
-                    PID_FACTOR = MAX_FACTOR_CONST;
-                else if (PID_FACTOR < MIN_FACTOR_CONST)
-                    PID_FACTOR = MIN_FACTOR_CONST;
+                Limiter.Limit(ref PID_FACTOR, MIN_FACTOR_CONST, MAX_FACTOR_CONST);
 
                 return PID_FACTOR;
             }
@@ -151,17 +164,14 @@ namespace autonomiczny_samochod
             Logger.Log(this, "ALERT BRAKE!");
         }
 
-
-        public int SpeedSteering
+        public IDictionary<string, double> GetRegulatorParameters()
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            Dictionary<string, double> dict = new Dictionary<string, double>();
+            dict["P_FACTOR"] = P_FACTOR;
+            dict["I_FACTOR"] = I_FACTOR;
+            dict["D_FACTOR"] = D_FACTOR;
+
+            return dict;
         }
     }
 }
