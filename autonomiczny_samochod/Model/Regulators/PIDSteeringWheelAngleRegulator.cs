@@ -8,14 +8,7 @@ namespace autonomiczny_samochod
     public class PIDSteeringWheelAngleRegulator : ISteeringWheelAngleRegulator
     {
         public event EventHandler evTargetSteeringWheelAngleChanged;
-
-
-        public void GetCurrentSteeringWheelAngle()
-        {
-            throw new NotImplementedException();
-        }
-
-        public event EventHandler evNewSteeringWheelSettingCalculated;
+        public event NewSteeringWheelSettingCalculatedEventHandler evNewSteeringWheelSettingCalculated;
 
         public ICar Car
         {
@@ -28,8 +21,6 @@ namespace autonomiczny_samochod
                 throw new NotImplementedException();
             }
         }
-
-
         public ICarCommunicator CarComunicator
         {
             get
@@ -41,34 +32,17 @@ namespace autonomiczny_samochod
                 throw new NotImplementedException();
             }
         }
-
-        event NewSteeringWheelSettingCalculatedEventHandler ISteeringWheelAngleRegulator.evNewSteeringWheelSettingCalculated
-        {
-            add { throw new NotImplementedException(); }
-            remove { throw new NotImplementedException(); }
-        }
-
-        
-        public int WheelAngleSteering
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-
-        double ISteeringWheelAngleRegulator.WheelAngleSteering
+        public double WheelAngleSteering
         {
             get { throw new NotImplementedException(); }
         }
 
-
         public IDictionary<string, double> GetRegulatorParameters()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetCurrentSteeringWheelAngle()
         {
             throw new NotImplementedException();
         }

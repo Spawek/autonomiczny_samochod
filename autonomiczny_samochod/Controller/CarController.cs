@@ -37,12 +37,12 @@ namespace autonomiczny_samochod
         {
             //stats collecting
             statsCollector.PutNewStat("time", Time.GetTimeFromProgramBeginnig().TotalMilliseconds);
-            statsCollector.PutNewStat("current speed", Model.GetCurrentSpeed());
-            statsCollector.PutNewStat("target speed", Model.GetTargetSpeed());
-            statsCollector.PutNewStat("speed steering", Model.GetSpeedSteering());
-            statsCollector.PutNewStat("current angle", Model.GetWheelAngle());
-            statsCollector.PutNewStat("target angle", Model.GetTargetWheelAngle());
-            statsCollector.PutNewStat("angle steering", Model.GetWheelAngleSteering());
+            statsCollector.PutNewStat("current speed", Model.CarInfo.CurrentSpeed);
+            statsCollector.PutNewStat("target speed", Model.CarInfo.TargetSpeed);
+            statsCollector.PutNewStat("speed steering", Model.CarInfo.SpeedSteering);
+            statsCollector.PutNewStat("current angle", Model.CarInfo.CurrentWheelAngle);
+            statsCollector.PutNewStat("target angle", Model.CarInfo.TargetWheelAngle);
+            statsCollector.PutNewStat("angle steering", Model.CarInfo.WheelAngleSteering);
 
             //collecting speed regulator parameters
             var speedRegulatorParameters = Model.SpeedRegulator.GetRegulatorParameters();
@@ -107,12 +107,12 @@ namespace autonomiczny_samochod
 
         public void ChangeTargetSpeed(double change)
         {
-            Model.SetTargetSpeed(Model.GetTargetSpeed() + change);
+            Model.SetTargetSpeed(Model.CarInfo.TargetSpeed + change);
         }
 
         public void ChangeTargetWheelAngle(double change)
         {
-            Model.SetTargetWheelAngle(Model.GetTargetWheelAngle() + change);
+            Model.SetTargetWheelAngle(Model.CarInfo.TargetWheelAngle + change);
         }
 
         public void AlertBrake()

@@ -13,17 +13,8 @@ namespace autonomiczny_samochod
 
         private FakeCarModel model;
 
-        public ISpeedRegulator ISpeedRegulator
-        {
-            get;
-            set;
-        }
-
-        public ISteeringWheelAngleRegulator ISteeringWheelAngleRegulator
-        {
-            get;
-            set;
-        }
+        public ISpeedRegulator ISpeedRegulator { get; set; }
+        public ISteeringWheelAngleRegulator ISteeringWheelAngleRegulator { get; set; }
 
         private System.Threading.Thread mFakeThread;
         private System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();

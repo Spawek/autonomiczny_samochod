@@ -49,40 +49,34 @@ namespace autonomiczny_samochod
         {
             get;
         }
-
-        CarController Controller
-        {
-            get;
-        }
-
         ISpeedRegulator SpeedRegulator
         {
             get;
         }
-
+        CarController Controller
+        {
+            get;
+        }
         ICarCommunicator CarComunicator
         {
             get;
         }
-    
-        double GetWheelAngle();
 
+        CarInformations CarInfo
+        {
+            get;
+        }
         void SetTargetWheelAngle(double targetAngle);
 
         void SetTargetSpeed(double targetSpeed);
 
         void TurnOnAlertBrake();
 
-        double GetCurrentSpeed();
-
-        CarInformations GetCarInfo();
-
-        double GetTargetSpeed();
-
-        double GetTargetWheelAngle();
-
-        double GetSpeedSteering();
-
-        double GetWheelAngleSteering();
+        //double GetTargetSpeed();
+        //double GetSpeedSteering();
+        //double GetWheelAngle();
+        //double GetCurrentSpeed();
+        //double GetTargetWheelAngle();
+        //double GetWheelAngleSteering();
     }
 }

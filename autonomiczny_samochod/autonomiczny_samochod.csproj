@@ -63,7 +63,7 @@
     <Compile Include="Helpers\Logger.cs" />
     <Compile Include="Helpers\StatsCollector.cs" />
     <Compile Include="Helpers\Time.cs" />
-    <Compile Include="Model\CarInformations.cs" />
+    <Compile Include="Model\Car\CarInformations.cs" />
     <Compile Include="Controller\CarController.cs" />
     <Compile Include="Model\Car\ExampleCar.cs" />
     <Compile Include="Test\Fakes\FakeCarModel.cs" />
