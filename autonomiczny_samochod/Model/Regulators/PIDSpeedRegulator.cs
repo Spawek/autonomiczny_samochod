@@ -12,42 +12,25 @@ namespace autonomiczny_samochod
         public ICar Car { get; private set; }
         public ICarCommunicator CarComunicator{ get; private set; }
 
-        double ISpeedRegulator.SpeedSteering
+        private SpeedRegulatorPIDParameters regulatorConsts { get; set; }
+
+        public double SpeedSteering
         {
             get { return lastSteeringSeetingSend; }
         }
 
+        //copies of speed informations
         private double targetSpeedLocalCopy = -66.6;
         private double currentSpeedLocalCopy = -66.6;
         private double lastSteeringSeetingSend = -66.6;
 
+        //alert brake fields
         private const double ALERT_BRAKE_SPEED = -100.0;
-
-        //P part settings
-        private const double P_FACTOR_CONST = 80.0;
-
-        //I part settings
-        private const double I_FACTOR_CONST = 10.0; //2.0; //0.4; //hypys radzi, żeby to wyłączyć bo może być niestabilny (a tego baardzo nie chcemy)
-        private const double I_FACTOR_SUM_MAX_VAlUE_CONST = 250.0;
-        private const double I_FACTOR_SUM_SUPPRESING_CONST = 0.88; //1.0 = suppresing disabled
-
-        //D part settings
-        private const double D_FACTOR_CONST = 120.0;
-        private const double D_FACTOR_SUPPRESING_CONST = 0.78;
-
-        //steering limits
-        private const double MAX_FACTOR_CONST = 1000.0;
-        private const double MIN_FACTOR_CONST = -1000.0;
-
-        //declared here to make logging possible
-        private double P_FACTOR;
-        private double I_FACTOR;
-        private double D_FACTOR;
-
-        private System.Windows.Forms.Timer mTimer = new System.Windows.Forms.Timer();
-        private const int timerIntervalInMs = 10;
-
         private bool alertBrakeActive = false;
+
+        //timer initialization
+        private System.Windows.Forms.Timer mTimer = new System.Windows.Forms.Timer();
+        private const int TIMER_INTERVAL_IN_MS = 10;
 
         public PIDSpeedRegulator(ICar parent)
         {
@@ -60,36 +43,43 @@ namespace autonomiczny_samochod
             CarComunicator.evSpeedInfoReceived += new SpeedInfoReceivedEventHander(CarComunicator_evSpeedInfoReceived);
             
             //timer init
-            mTimer.Interval = timerIntervalInMs;
+            mTimer.Interval = TIMER_INTERVAL_IN_MS;
             mTimer.Tick += new EventHandler(mTimer_Tick);
             mTimer.Start();
+
+            regulatorConsts = new SpeedRegulatorPIDParameters();
         }
 
+        //handling external events
         void CarComunicator_evSpeedInfoReceived(object sender, SpeedInfoReceivedEventArgs args)
         {
             currentSpeedLocalCopy = args.GetSpeedInfo();
             Logger.Log(this, String.Format("new current speed value acquired: {0}", args.GetSpeedInfo()));
         }
-
-        void  SimpleSpeedRegulator_evNewSpeedSettingCalculated(object sender, NewSpeedSettingCalculatedEventArgs args)
+        void SimpleSpeedRegulator_evNewSpeedSettingCalculated(object sender, NewSpeedSettingCalculatedEventArgs args)
         {
  	        Logger.Log(this, String.Format("new speed setting calculated: {0}", args.getSpeedSetting()));
         }
 
+        /// <summary>
+        /// if ALERT_BRAKE is not active 
+        ///     calculate speed steering
+        ///     if (speed steering changed)
+        ///         send it everywhere (by invoking event)
+        ///     end
+        /// end
+        /// </summary>
         void mTimer_Tick(object sender, EventArgs e)
         {
             if (alertBrakeActive)
             {
-                if (lastSteeringSeetingSend != ALERT_BRAKE_SPEED)
+                NewSpeedSettingCalculatedEventHandler alertBrakeSpeedSendingEvent = evNewSpeedSettingCalculated;
+                if (alertBrakeSpeedSendingEvent != null)
                 {
-                    NewSpeedSettingCalculatedEventHandler temp = evNewSpeedSettingCalculated;
-                    if (temp != null)
-                    {
-                        temp(this, new NewSpeedSettingCalculatedEventArgs(ALERT_BRAKE_SPEED));
-                    }
-
-                    lastSteeringSeetingSend = ALERT_BRAKE_SPEED;
+                    alertBrakeSpeedSendingEvent(this, new NewSpeedSettingCalculatedEventArgs(ALERT_BRAKE_SPEED));
                 }
+
+                lastSteeringSeetingSend = ALERT_BRAKE_SPEED;
             }
             else
             {
@@ -97,10 +87,10 @@ namespace autonomiczny_samochod
 
                 if (lastSteeringSeetingSend != calculatedSteeringSetting)
                 {
-                    NewSpeedSettingCalculatedEventHandler temp = evNewSpeedSettingCalculated;
-                    if (temp != null)
+                    NewSpeedSettingCalculatedEventHandler newSpeedCalculatedEvent = evNewSpeedSettingCalculated;
+                    if (newSpeedCalculatedEvent != null)
                     {
-                        temp(this, new NewSpeedSettingCalculatedEventArgs(calculatedSteeringSetting));
+                        newSpeedCalculatedEvent(this, new NewSpeedSettingCalculatedEventArgs(calculatedSteeringSetting));
                     }
 
                     lastSteeringSeetingSend = calculatedSteeringSetting;
@@ -112,6 +102,11 @@ namespace autonomiczny_samochod
         private double I_Factor_sum = 0.0;
         private double D_Factor_sum = 0.0;
         private double LastDiffBetwTargetAndCurrentValue = 0.0;
+
+        //declared here to make logging possible
+        private double P_FACTOR;
+        private double I_FACTOR;
+        private double D_FACTOR;
 
         private double CalculateSteeringSetting()
         {
@@ -127,28 +122,30 @@ namespace autonomiczny_samochod
             }
             else
             {
+                //common side calculations
                 double CurrentDiffBetwTargetAndCurrentValue = targetSpeedLocalCopy - currentSpeedLocalCopy;
                 double DiffBetwTargetAndCurrentValueChange = CurrentDiffBetwTargetAndCurrentValue - LastDiffBetwTargetAndCurrentValue;
                 LastDiffBetwTargetAndCurrentValue = CurrentDiffBetwTargetAndCurrentValue;
 
-                //I
-                I_Factor_sum *= I_FACTOR_SUM_SUPPRESING_CONST;
-                I_Factor_sum += CurrentDiffBetwTargetAndCurrentValue;
-                Limiter.Limit(ref I_Factor_sum, -I_FACTOR_SUM_MAX_VAlUE_CONST, I_FACTOR_SUM_MAX_VAlUE_CONST);
+                //I side calculations
+                I_Factor_sum *= regulatorConsts.I_FACTOR_SUM_SUPPRESING_CONST; //integral suppresing 
+                I_Factor_sum += CurrentDiffBetwTargetAndCurrentValue; //adding new value to intergral
+                Limiter.Limit(ref I_Factor_sum, regulatorConsts.I_FACTOR_SUM_MIN_VAlUE_CONST, regulatorConsts.I_FACTOR_SUM_MAX_VAlUE_CONST); //limiting intergal
 
-                //D
-                D_Factor_sum *= D_FACTOR_SUPPRESING_CONST;
-                D_Factor_sum += DiffBetwTargetAndCurrentValueChange;
+                //D side calculatios
+                D_Factor_sum *= regulatorConsts.D_FACTOR_SUPPRESING_CONST; //"integral" suppresing
+                D_Factor_sum += DiffBetwTargetAndCurrentValueChange; //adding new value to "integral"
 
+                //calculating P, I, D factors
+                P_factor = CurrentDiffBetwTargetAndCurrentValue * regulatorConsts.P_FACTOR_CONST;
+                I_factor = I_Factor_sum * regulatorConsts.I_FACTOR_CONST;
+                D_factor = D_Factor_sum * regulatorConsts.D_FACTOR_CONST;
 
-                P_FACTOR = CurrentDiffBetwTargetAndCurrentValue * P_FACTOR_CONST;
-                I_FACTOR = I_Factor_sum * I_FACTOR_CONST;
-                D_FACTOR = D_Factor_sum * D_FACTOR_CONST;
+                //calculating and limiting regulator output
+                double PID_factor = P_FACTOR + I_FACTOR + D_FACTOR;
+                double Limitted_PID_Factor = Limiter.ReturnLimmitedVar(PID_factor, regulatorConsts.MIN_FACTOR_CONST, regulatorConsts.MAX_FACTOR_CONST);
 
-                double PID_FACTOR = P_FACTOR + I_FACTOR + D_FACTOR;
-                Limiter.Limit(ref PID_FACTOR, MIN_FACTOR_CONST, MAX_FACTOR_CONST);
-
-                return PID_FACTOR;
+                return Limitted_PID_Factor;
             }
         }
 
@@ -173,5 +170,11 @@ namespace autonomiczny_samochod
 
             return dict;
         }
+
+        public double P_factor { get; set; }
+
+        public double I_factor { get; set; }
+
+        public double D_factor { get; set; }
     }
 }
