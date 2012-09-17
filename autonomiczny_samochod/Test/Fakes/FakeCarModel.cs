@@ -120,9 +120,5 @@ namespace autonomiczny_samochod
         }
 
         private DateTime StartingDateTime = DateTime.Now;
-        private TimeSpan GetMsFromStart()
-        {
-            return DateTime.Now - StartingDateTime;
-        }
     }
 }

@@ -9,9 +9,7 @@ namespace autonomiczny_samochod
     class Logger
     {
         private static string logFile = "Log.txt";
-        private static string statsFile = "Stats.txt";
         private static bool isItFirstLog = true;
-        private static DateTime firstLogTime;
 
         public static void Log(Object loggingObj, string msg)
         {
@@ -25,13 +23,11 @@ namespace autonomiczny_samochod
                     File.Delete(logFile);
                 }
 
-                //save loging time of first log
-                firstLogTime = DateTime.Now;
             }
 
             string msgWithDateAndObjectName = String.Format("[{0}]:<<'{1}'>>:   {2}",
                 loggingObj.ToString(),
-                String.Format(@"{0:mm\:ss\:ff}", GetTimeFromFirstLog()),
+                String.Format(@"{0:mm\:ss\:ff}", Time.GetTimeFromProgramBeginnig()),
                 msg
             );
             
@@ -50,9 +46,5 @@ namespace autonomiczny_samochod
             }
         }
 
-        private static TimeSpan GetTimeFromFirstLog()
-        {
-            return DateTime.Now - firstLogTime;
-        }
     }
 }

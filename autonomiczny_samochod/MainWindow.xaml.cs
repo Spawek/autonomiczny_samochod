@@ -23,7 +23,6 @@ namespace autonomiczny_samochod
 
         private System.Windows.Forms.Timer mTimer = new System.Windows.Forms.Timer();
         private const int TIMER_INTERVAL_IN_MS = 10;
-        private TimeSpan timeFromProgramBeginning = TimeSpan.Zero;
 
         public MainWindow()
         {
@@ -80,8 +79,7 @@ namespace autonomiczny_samochod
 
         void mTimer_Tick(object sender, EventArgs e)
         {
-            timeFromProgramBeginning += TimeSpan.FromMilliseconds(TIMER_INTERVAL_IN_MS);
-            textBlock_time.Text = String.Format(@"{0:mm\:ss\:ff}", timeFromProgramBeginning);
+            textBlock_time.Text = String.Format(@"{0:mm\:ss\:ff}", Time.GetTimeFromProgramBeginnig());
         }
 
         void SteeringWheelAngleRegulator_evNewSteeringWheelSettingCalculated(object sender, NewSteeringWheelSettingCalculateddEventArgs args)

@@ -59,10 +59,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Helpers\EnabledDisabledSwitcher.cs" />
     <Compile Include="Helpers\Limiter.cs" />
     <Compile Include="Helpers\Logger.cs" />
-    <Compile Include="Helpers\ShowMessageBoxWithExceptions.cs" />
     <Compile Include="Helpers\StatsCollector.cs" />
     <Compile Include="Helpers\Time.cs" />
     <Compile Include="Model\CarInformations.cs" />
