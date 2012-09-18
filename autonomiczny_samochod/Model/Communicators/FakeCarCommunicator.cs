@@ -36,7 +36,7 @@ namespace autonomiczny_samochod
         /// <summary>
         /// this has to be invoked before 1st use
         /// </summary>
-        public void InitEventsHandling()
+        public void InitRegulatorsEventsHandling()
         {
             ISpeedRegulator.evNewSpeedSettingCalculated += new NewSpeedSettingCalculatedEventHandler(ISpeedRegulator_evNewSpeedSettingCalculated);
             ISteeringWheelAngleRegulator.evNewSteeringWheelSettingCalculated += new NewSteeringWheelSettingCalculatedEventHandler(ISteeringWheelAngleRegulator_evNewSteeringWheelSettingCalculated);

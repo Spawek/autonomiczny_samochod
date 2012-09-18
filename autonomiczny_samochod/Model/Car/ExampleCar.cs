@@ -29,7 +29,7 @@ namespace autonomiczny_samochod
             SteeringWheelAngleRegulator = new SimpleSteeringWheelRegulator(this);
             CarComunicator.ISpeedRegulator = SpeedRegulator; //TODO: REFACTOR THIS SHIT!!!
             CarComunicator.ISteeringWheelAngleRegulator = SteeringWheelAngleRegulator; //TODO: AND THIS!!!
-            CarComunicator.InitEventsHandling(); //AND THIS!
+            CarComunicator.InitRegulatorsEventsHandling(); //AND THIS!
 
             //internal event handling initialization
             evAlertBrake += new EventHandler(ExampleFakeCar_evAlertBrake);

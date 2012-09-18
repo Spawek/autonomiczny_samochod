@@ -61,6 +61,6 @@ namespace autonomiczny_samochod
 
         void SendNewSteeringWheelAngleSettingMessage(double angleSetting);
 
-        void InitEventsHandling();
+        void InitRegulatorsEventsHandling();
     }
 }

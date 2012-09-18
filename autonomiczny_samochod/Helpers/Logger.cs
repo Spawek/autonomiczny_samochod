@@ -6,7 +6,7 @@ using System.IO;
 
 namespace autonomiczny_samochod
 {
-    class Logger
+    static class Logger
     {
         private static string logFile = "Log.txt";
         private static bool isItFirstLog = true;

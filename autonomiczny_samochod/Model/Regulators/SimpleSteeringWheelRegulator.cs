@@ -12,16 +12,16 @@ namespace autonomiczny_samochod
         public ICar Car { get; private set; }
         public ICarCommunicator CarComunicator { get; private set; }
 
-        double ISteeringWheelAngleRegulator.WheelAngleSteering
+        public double WheelAngleSteering
         {
             get { return lastCalculatedSteeringWheelSetting; }
         }
 
+        private System.Windows.Forms.Timer mTimer = new System.Windows.Forms.Timer();
+
         //it's P regulator -> only 1 factor
         private const double PFactor = 5.0;
-
-        private System.Windows.Forms.Timer mTimer = new System.Windows.Forms.Timer();
-        private const int timerIntervalInMs = 10;
+        private const int TIMER_INTERVAL_IN_MS = 10;
 
         private double targetWheelAngleLocalCopy = -66.6;
         private double currentWheelAngle = -66.6;
@@ -29,30 +29,22 @@ namespace autonomiczny_samochod
 
         public SimpleSteeringWheelRegulator(ICar parent)
         {
+            //attributes init
             Car = parent;
             CarComunicator = parent.CarComunicator;
 
+            //event handling
             Car.evTargetSteeringWheelAngleChanged += new TargetSteeringWheelAngleChangedEventHandler(Car_evTargetSteeringWheelAngleChanged);
             evNewSteeringWheelSettingCalculated += new NewSteeringWheelSettingCalculatedEventHandler(SimpleSteeringWheelRegulator_evNewSteeringWheelSettingCalculated);
             CarComunicator.evSteeringWheelAngleInfoReceived += new SteeringWheelAngleInfoReceivedEventHandler(CarComunicator_evSteeringWheelAngleInfoReceived);
 
             //timer init
-            mTimer.Interval = timerIntervalInMs;
+            mTimer.Interval = TIMER_INTERVAL_IN_MS;
             mTimer.Tick += new EventHandler(mTimer_Tick);
             mTimer.Start();
         }
 
-        void SimpleSteeringWheelRegulator_evNewSteeringWheelSettingCalculated(object sender, NewSteeringWheelSettingCalculateddEventArgs args)
-        {
-            Logger.Log(this, String.Format("New steering wheel setting calculated: {0}", args.getSteeringWheelAngleSetting()));
-        }
-
-        void CarComunicator_evSteeringWheelAngleInfoReceived(object sender, SteeringWheelAngleInfoReceivedEventArgs args)
-        {
-            currentWheelAngle = args.GetAngle();
-            Logger.Log(this, String.Format("steering wheel angle info received: {0}", args.GetAngle()));
-        }
-
+        //internal events handling
         void mTimer_Tick(object sender, EventArgs e)
         {
             double calculatedSteeringSetting = CalculatSteeringSetting();
@@ -67,6 +59,22 @@ namespace autonomiczny_samochod
 
                 lastCalculatedSteeringWheelSetting = calculatedSteeringSetting;
             }
+        }
+        void SimpleSteeringWheelRegulator_evNewSteeringWheelSettingCalculated(object sender, NewSteeringWheelSettingCalculateddEventArgs args)
+        {
+            Logger.Log(this, String.Format("New steering wheel setting calculated: {0}", args.getSteeringWheelAngleSetting()));
+        }
+
+        //external events handling
+        void CarComunicator_evSteeringWheelAngleInfoReceived(object sender, SteeringWheelAngleInfoReceivedEventArgs args)
+        {
+            currentWheelAngle = args.GetAngle();
+            Logger.Log(this, String.Format("steering wheel angle info received: {0}", args.GetAngle()));
+        }
+        void Car_evTargetSteeringWheelAngleChanged(object sender, TargetSteeringWheelAngleChangedEventArgs args)
+        {
+            targetWheelAngleLocalCopy = args.GetTargetWheelAngle();
+            Logger.Log(this, String.Format("target wheel angle changed to: {0}", targetWheelAngleLocalCopy));
         }
 
         private double CalculatSteeringSetting()
@@ -86,26 +94,6 @@ namespace autonomiczny_samochod
                 return (targetWheelAngleLocalCopy - currentWheelAngle) * PFactor;
             }
         }
-
-        void Car_evTargetSteeringWheelAngleChanged(object sender, TargetSteeringWheelAngleChangedEventArgs args)
-        {
-            targetWheelAngleLocalCopy = args.GetTargetWheelAngle();
-            Logger.Log(this, String.Format("target wheel angle changed to: {0}", targetWheelAngleLocalCopy));
-        }
-
-
-        public int WheelAngleSteering
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
 
         public IDictionary<string, double> GetRegulatorParameters()
         {

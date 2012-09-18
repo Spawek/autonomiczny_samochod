@@ -5,7 +5,7 @@ using System.Text;
 
 namespace autonomiczny_samochod
 {
-    class Limiter
+    static class Limiter
     {
         /// <summary>
         /// makes sure that variable is in range of [lowerLimit, upperLimit]

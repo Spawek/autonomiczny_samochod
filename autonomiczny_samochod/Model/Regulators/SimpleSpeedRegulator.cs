@@ -5,16 +5,16 @@ using System.Text;
 
 namespace autonomiczny_samochod
 {
+    /// <summary>
+    /// use PIDSpeedRegulator
+    /// </summary>
+    [Obsolete]
     public class SimpleSpeedRegulator : ISpeedRegulator
     {
         public event NewSpeedSettingCalculatedEventHandler evNewSpeedSettingCalculated;
 
         public ICar Car { get; private set; }
         public ICarCommunicator CarComunicator{ get; private set; }
-
-        private double targetSpeedLocalCopy = -66.6;
-        private double currentSpeedLocalCopy = -66.6;
-        private double lastSteeringSeetingSend = -66.6;
 
         //it's P regulator -> only 1 factor
         private const double PFactor = 25.0;
@@ -84,6 +84,10 @@ namespace autonomiczny_samochod
                 }
             }
         }
+
+        private double targetSpeedLocalCopy = -66.6;
+        private double currentSpeedLocalCopy = -66.6;
+        private double lastSteeringSeetingSend = -66.6;
 
         private double CalculateSteeringSetting()
         {

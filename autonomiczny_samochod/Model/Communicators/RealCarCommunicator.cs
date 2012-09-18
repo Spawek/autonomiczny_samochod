@@ -33,7 +33,7 @@ namespace autonomiczny_samochod
             throw new NotImplementedException();
         }
 
-        public void InitEventsHandling()
+        public void InitRegulatorsEventsHandling()
         {
             throw new NotImplementedException();
         }
