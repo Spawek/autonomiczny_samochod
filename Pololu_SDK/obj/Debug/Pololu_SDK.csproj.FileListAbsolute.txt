@@ -1,0 +1,13 @@
+D:\maciek\programowanie\C_sharp\autonomiczny_samochod\Pololu_SDK\obj\Debug\Pololu_SDK.csprojResolveAssemblyReference.cache
+D:\maciek\programowanie\C_sharp\autonomiczny_samochod\Pololu_SDK\bin\Debug\Pololu_SDK.dll
+D:\maciek\programowanie\C_sharp\autonomiczny_samochod\Pololu_SDK\bin\Debug\Pololu_SDK.pdb
+D:\maciek\programowanie\C_sharp\autonomiczny_samochod\Pololu_SDK\bin\Debug\Sequencer.dll
+D:\maciek\programowanie\C_sharp\autonomiczny_samochod\Pololu_SDK\bin\Debug\UsbWrapper.dll
+D:\maciek\programowanie\C_sharp\autonomiczny_samochod\Pololu_SDK\bin\Debug\Usc.dll
+D:\maciek\programowanie\C_sharp\autonomiczny_samochod\Pololu_SDK\bin\Debug\Sequencer.pdb
+D:\maciek\programowanie\C_sharp\autonomiczny_samochod\Pololu_SDK\bin\Debug\Sequencer.xml
+D:\maciek\programowanie\C_sharp\autonomiczny_samochod\Pololu_SDK\bin\Debug\UsbWrapper.xml
+D:\maciek\programowanie\C_sharp\autonomiczny_samochod\Pololu_SDK\bin\Debug\Usc.pdb
+D:\maciek\programowanie\C_sharp\autonomiczny_samochod\Pololu_SDK\bin\Debug\Usc.xml
+D:\maciek\programowanie\C_sharp\autonomiczny_samochod\Pololu_SDK\obj\Debug\Pololu_SDK.dll
+D:\maciek\programowanie\C_sharp\autonomiczny_samochod\Pololu_SDK\obj\Debug\Pololu_SDK.pdb

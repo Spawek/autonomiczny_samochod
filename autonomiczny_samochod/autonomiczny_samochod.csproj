@@ -116,7 +116,12 @@
     </None>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Pololu_SDK\Pololu_SDK.csproj">
+      <Project>{D5FC0F68-CE19-4BB2-9D90-48B78E54B9EC}</Project>
+      <Name>Pololu_SDK</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
