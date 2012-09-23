@@ -11,8 +11,21 @@ namespace autonomiczny_samochod
         public event SpeedInfoReceivedEventHander evSpeedInfoReceived;
         public event SteeringWheelAngleInfoReceivedEventHandler evSteeringWheelAngleInfoReceived;
 
-        public ISpeedRegulator ISpeedRegulator { get; set; }
-        public ISteeringWheelAngleRegulator ISteeringWheelAngleRegulator { get; set; }
+        public ISpeedRegulator ISpeedRegulator 
+        { 
+            get
+            {
+                return ICar.SpeedRegulator;
+            } 
+        }
+        public ISteeringWheelAngleRegulator ISteeringWheelAngleRegulator
+        { 
+            get
+            {
+                return ICar.SteeringWheelAngleRegulator;
+            }
+        }
+
         public ICar ICar { get; private set; }
 
         //sub-communicators

@@ -30,11 +30,6 @@ namespace autonomiczny_samochod
             get;
         }
 
-        ICarCommunicator CarComunicator
-        {
-            get;
-        }
-
         double WheelAngleSteering
         {
             get;

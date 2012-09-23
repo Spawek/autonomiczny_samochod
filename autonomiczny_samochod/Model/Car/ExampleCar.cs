@@ -24,12 +24,10 @@ namespace autonomiczny_samochod
             IsAlertBrakeActive = false;
 
             //regulators and communicator initiation
-            CarComunicator = new FakeCarCommunicator();
+            CarComunicator = new FakeCarCommunicator(this); // = new RealCarCommunicator(this);
             SpeedRegulator = new PIDSpeedRegulator(this);
             SteeringWheelAngleRegulator = new SimpleSteeringWheelRegulator(this);
-            CarComunicator.ISpeedRegulator = SpeedRegulator; //TODO: REFACTOR THIS SHIT!!!
-            CarComunicator.ISteeringWheelAngleRegulator = SteeringWheelAngleRegulator; //TODO: AND THIS!!!
-            CarComunicator.InitRegulatorsEventsHandling(); //AND THIS!
+            CarComunicator.InitRegulatorsEventsHandling();  //TODO: REFACTOR THIS SHIT!!! //for now its needed, because reagulators does not exists when communicator constructor is invoked
 
             //internal event handling initialization
             evAlertBrake += new EventHandler(ExampleFakeCar_evAlertBrake);

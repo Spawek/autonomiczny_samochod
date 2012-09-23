@@ -13,16 +13,28 @@ namespace autonomiczny_samochod
 
         private FakeCarModel model;
 
-        public ISpeedRegulator ISpeedRegulator { get; set; }
-        public ISteeringWheelAngleRegulator ISteeringWheelAngleRegulator { get; set; }
+        public ICar ICar { get; private set; }
+        public ISpeedRegulator ISpeedRegulator
+        {
+            get
+            {
+                return ICar.SpeedRegulator;
+            }
+        }
+        public ISteeringWheelAngleRegulator ISteeringWheelAngleRegulator
+        {
+            get
+            {
+                return ICar.SteeringWheelAngleRegulator;
+            }
+        }
 
-        private System.Threading.Thread mFakeThread;
         private System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
         private const int TIMER_INTERVAL_IN_MS = 10;
 
-        public FakeCarCommunicator()
-        {      
-
+        public FakeCarCommunicator(ICar car)
+        {
+            ICar = car;
             //mFakeThread = new System.Threading.Thread(new ThreadStart(mFakeThreadTasks));
             //mFakeThread.Start();
 
@@ -40,8 +52,6 @@ namespace autonomiczny_samochod
         {
             ISpeedRegulator.evNewSpeedSettingCalculated += new NewSpeedSettingCalculatedEventHandler(ISpeedRegulator_evNewSpeedSettingCalculated);
             ISteeringWheelAngleRegulator.evNewSteeringWheelSettingCalculated += new NewSteeringWheelSettingCalculatedEventHandler(ISteeringWheelAngleRegulator_evNewSteeringWheelSettingCalculated);
-
-            model.SubscribeForTargetParams();
         }
 
         void ISteeringWheelAngleRegulator_evNewSteeringWheelSettingCalculated(object sender, NewSteeringWheelSettingCalculateddEventArgs args)
@@ -105,11 +115,6 @@ namespace autonomiczny_samochod
             throw new NotImplementedException();
         }
 
-
-        public ICar ICar
-        {
-            get { throw new NotImplementedException(); }
-        }
     }
 }
 

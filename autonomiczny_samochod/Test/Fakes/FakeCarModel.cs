@@ -17,10 +17,6 @@ namespace autonomiczny_samochod
         private double __speedSteering__ = 0;
         private double __wheelAngleSteering__ = 0;
 
-        //target parameters (needed for stats only)
-        private double __targetSpeed__ = 0;
-        private double __targetWheelAngle__ = 0;
-
         //steering parameters
         public double SpeedSteering
         {
@@ -88,22 +84,6 @@ namespace autonomiczny_samochod
             timer.Interval = TIMER_INTERVAL_IN_MS;
             timer.Tick += new EventHandler(timer_Tick);
             timer.Start();
-        }
-
-        public void SubscribeForTargetParams()
-        {
-            communicator.ISpeedRegulator.Car.evTargetSpeedChanged += new TargetSpeedChangedEventHandler(Car_evTargetSpeedChanged);
-            communicator.ISpeedRegulator.Car.evTargetSteeringWheelAngleChanged += new TargetSteeringWheelAngleChangedEventHandler(Car_evTargetSteeringWheelAngleChanged);
-        }
-
-        void Car_evTargetSteeringWheelAngleChanged(object sender, TargetSteeringWheelAngleChangedEventArgs args)
-        {
-            __targetWheelAngle__ = args.GetTargetWheelAngle();
-        }
-
-        void Car_evTargetSpeedChanged(object sender, TargetSpeedChangedEventArgs args)
-        {
-            __targetSpeed__ = args.GetTargetSpeed();
         }
 
         void timer_Tick(object sender, EventArgs e)

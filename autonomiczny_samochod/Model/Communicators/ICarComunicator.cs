@@ -45,18 +45,6 @@ namespace autonomiczny_samochod
         event SpeedInfoReceivedEventHander evSpeedInfoReceived;
         event SteeringWheelAngleInfoReceivedEventHandler evSteeringWheelAngleInfoReceived;
 
-        ISpeedRegulator ISpeedRegulator
-        {
-            get;
-            set;
-        }
-
-        ISteeringWheelAngleRegulator ISteeringWheelAngleRegulator
-        {
-            get;
-            set;
-        }
-
         ICar ICar
         {
             get;
