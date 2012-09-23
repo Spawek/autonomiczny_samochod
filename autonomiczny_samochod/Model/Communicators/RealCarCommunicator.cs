@@ -13,14 +13,16 @@ namespace autonomiczny_samochod
 
         public ISpeedRegulator ISpeedRegulator { get; set; }
         public ISteeringWheelAngleRegulator ISteeringWheelAngleRegulator { get; set; }
+        public ICar ICar { get; private set; }
 
         //sub-communicators
         private BrakePedalCommunicator brakePedalCommunicator { get; set; }
         private AccelerationPedalCommunivator accelerationPedalCommunivator { get; set; }
         private SteeringWheelCommunicator steeringWheelCommunicator { get; set; }
 
-        public RealCarCommunicator()
+        public RealCarCommunicator(ICar parent)
         {
+            ICar = parent;
             brakePedalCommunicator = new BrakePedalCommunicator(this);
             accelerationPedalCommunivator = new AccelerationPedalCommunivator(this);
             steeringWheelCommunicator = new SteeringWheelCommunicator(this);
@@ -40,5 +42,11 @@ namespace autonomiczny_samochod
         {
             throw new NotImplementedException();
         }
+
+        public bool IsInitiated()
+        {
+            return (brakePedalCommunicator.IsInitiated() && accelerationPedalCommunivator.IsInitiated() && steeringWheelCommunicator.IsInitiated());
+        }
+
     }
 }

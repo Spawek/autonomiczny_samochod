@@ -27,5 +27,9 @@ namespace autonomiczny_samochod.Model.Communicators
             throw new NotImplementedException();
         }
 
+        public bool IsInitiated()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

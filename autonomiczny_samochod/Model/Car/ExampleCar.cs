@@ -64,7 +64,7 @@ namespace autonomiczny_samochod
         }
 
         //vehicle steering
-        public void TurnOnAlertBrake()
+        public void ActivateAlertBrake()
         {
             EventHandler temp = evAlertBrake;
             if (temp != null)

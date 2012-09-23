@@ -70,13 +70,6 @@ namespace autonomiczny_samochod
 
         void SetTargetSpeed(double targetSpeed);
 
-        void TurnOnAlertBrake();
-
-        //double GetTargetSpeed();
-        //double GetSpeedSteering();
-        //double GetWheelAngle();
-        //double GetCurrentSpeed();
-        //double GetTargetWheelAngle();
-        //double GetWheelAngleSteering();
+        void ActivateAlertBrake();
     }
 }

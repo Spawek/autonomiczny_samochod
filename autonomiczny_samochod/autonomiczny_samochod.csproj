@@ -66,6 +66,9 @@
     <Compile Include="Model\Car\CarInformations.cs" />
     <Compile Include="Controller\CarController.cs" />
     <Compile Include="Model\Car\ExampleCar.cs" />
+    <Compile Include="Model\Communicators\AccelerationPedalCommunivator.cs" />
+    <Compile Include="Model\Communicators\BrakePedalCommunicator.cs" />
+    <Compile Include="Model\Communicators\SteeringWheelCommunicator.cs" />
     <Compile Include="Model\Regulators\PIDConsts.cs" />
     <Compile Include="Test\Fakes\FakeCarModel.cs" />
     <Compile Include="Model\Regulators\PIDSpeedRegulator.cs" />

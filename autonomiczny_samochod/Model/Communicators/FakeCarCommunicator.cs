@@ -98,6 +98,18 @@ namespace autonomiczny_samochod
             model.WheelAngleSteering = angleSetting;
         }
 
+
+
+        public bool IsInitiated()
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public ICar ICar
+        {
+            get { throw new NotImplementedException(); }
+        }
     }
 }
 

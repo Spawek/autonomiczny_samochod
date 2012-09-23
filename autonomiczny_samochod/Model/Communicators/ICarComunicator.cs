@@ -57,10 +57,17 @@ namespace autonomiczny_samochod
             set;
         }
 
+        ICar ICar
+        {
+            get;
+        }
+
         void SendNewSpeedSettingMessage(double speedSetting);
 
         void SendNewSteeringWheelAngleSettingMessage(double angleSetting);
 
         void InitRegulatorsEventsHandling();
+
+        bool IsInitiated();
     }
 }

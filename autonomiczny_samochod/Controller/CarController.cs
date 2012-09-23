@@ -117,7 +117,7 @@ namespace autonomiczny_samochod
 
         public void AlertBrake()
         {
-            Model.TurnOnAlertBrake();
+            Model.ActivateAlertBrake();
         }
     }
 }
