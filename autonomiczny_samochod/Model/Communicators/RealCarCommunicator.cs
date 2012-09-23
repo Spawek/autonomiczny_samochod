@@ -2,26 +2,34 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using autonomiczny_samochod.Model.Communicators;
 
 namespace autonomiczny_samochod
 {
     public class RealCarCommunicator : ICarCommunicator
     {
-
-        public void SendNewSpeedSettingMessage()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SendNewSteeringWheelAngleSettingMessage()
-        {
-            throw new NotImplementedException();
-        }
-
         public event SpeedInfoReceivedEventHander evSpeedInfoReceived;
-
         public event SteeringWheelAngleInfoReceivedEventHandler evSteeringWheelAngleInfoReceived;
 
+        public ISpeedRegulator ISpeedRegulator { get; set; }
+        public ISteeringWheelAngleRegulator ISteeringWheelAngleRegulator { get; set; }
+
+        //sub-communicators
+        private BrakePedalCommunicator brakePedalCommunicator { get; set; }
+        private AccelerationPedalCommunivator accelerationPedalCommunivator { get; set; }
+        private SteeringWheelCommunicator steeringWheelCommunicator { get; set; }
+
+        public RealCarCommunicator()
+        {
+            brakePedalCommunicator = new BrakePedalCommunicator(this);
+            accelerationPedalCommunivator = new AccelerationPedalCommunivator(this);
+            steeringWheelCommunicator = new SteeringWheelCommunicator(this);
+        }
+        
+        public void InitRegulatorsEventsHandling()
+        {
+            throw new NotImplementedException();
+        }
 
         public void SendNewSpeedSettingMessage(double speedSetting)
         {
@@ -31,36 +39,6 @@ namespace autonomiczny_samochod
         public void SendNewSteeringWheelAngleSettingMessage(double angleSetting)
         {
             throw new NotImplementedException();
-        }
-
-        public void InitRegulatorsEventsHandling()
-        {
-            throw new NotImplementedException();
-        }
-
-
-        public ISpeedRegulator ISpeedRegulator
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public ISteeringWheelAngleRegulator ISteeringWheelAngleRegulator
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
         }
     }
 }
