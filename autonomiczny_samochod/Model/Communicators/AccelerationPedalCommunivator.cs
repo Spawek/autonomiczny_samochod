@@ -5,7 +5,7 @@ using System.Text;
 
 namespace autonomiczny_samochod.Model.Communicators
 {
-    class AccelerationPedalCommunivator
+    class AccelerationPedalCommunivator : ComponentCommunicator
     {
         private ICarCommunicator CarCommunicator;
 

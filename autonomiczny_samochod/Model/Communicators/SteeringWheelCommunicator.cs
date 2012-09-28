@@ -6,7 +6,7 @@ using System.Text;
 namespace autonomiczny_samochod.Model.Communicators
 {
     //it could implement some interface, but for now i can't see any need to do that
-    class SteeringWheelCommunicator
+    class SteeringWheelCommunicator : ComponentCommunicator
     {
         private ICarCommunicator CarCommunicator;
 

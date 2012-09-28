@@ -5,7 +5,7 @@ using System.Text;
 
 namespace autonomiczny_samochod.Model.Communicators
 {
-    class BrakePedalCommunicator
+    class BrakePedalCommunicator : ComponentCommunicator
     {
         private ICarCommunicator CarCommunicator;
 
@@ -23,11 +23,17 @@ namespace autonomiczny_samochod.Model.Communicators
             InitSteeringMechanism();
         }
 
+        /// <summary>
+        /// initializes steering mechanism in a new thread
+        /// </summary>
         private void InitSteeringMechanism()
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// initializes steering mechanism in a new thread
+        /// </summary>
         private void InitSensors()
         {
             throw new NotImplementedException();
