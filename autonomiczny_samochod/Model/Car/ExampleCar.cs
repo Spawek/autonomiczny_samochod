@@ -23,7 +23,7 @@ namespace autonomiczny_samochod
             CarInfo = new CarInformations();
             IsAlertBrakeActive = false;
 
-            //regulators and communicator initiation
+            //regulators and communicator initiation 
             CarComunicator = new FakeCarCommunicator(this); // = new RealCarCommunicator(this);
             SpeedRegulator = new PIDSpeedRegulator(this);
             SteeringWheelAngleRegulator = new SimpleSteeringWheelRegulator(this);
