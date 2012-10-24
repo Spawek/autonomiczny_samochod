@@ -10,6 +10,10 @@ using Pololu.UsbWrapper;
 
 namespace Pololu_SDK
 {
+    /*
+     * NOTE: IMPORTANT: TODO: I'M NOT SURE IF THIS PROJECT WILL BE NEEDED AT ALL
+     * IN CASE AFTER ALL HARDWARE TESTS IT WILL NOT BE USED AT ALL - IT SHOULD BE REMOVED
+     */
     public class Pololu_USB_SDK
     {
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using System;
+using Helpers;
 
 namespace autonomiczny_samochod
 {
@@ -27,7 +28,7 @@ namespace autonomiczny_samochod
             CarComunicator = new FakeCarCommunicator(this); // = new RealCarCommunicator(this);
             SpeedRegulator = new PIDSpeedRegulator(this);
             SteeringWheelAngleRegulator = new SimpleSteeringWheelRegulator(this);
-            CarComunicator.InitRegulatorsEventsHandling();  //TODO: REFACTOR THIS SHIT!!! //for now its needed, because reagulators does not exists when communicator constructor is invoked
+            CarComunicator.InitRegulatorsEventsHandling();  //TODO: REFACTOR THIS SHIT!!! //for now this is needed, because reagulators does not exists when communicator constructor is invoked
 
             //internal event handling initialization
             evAlertBrake += new EventHandler(ExampleFakeCar_evAlertBrake);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Helpers;
 
 namespace car_communicator
 {
@@ -54,32 +55,59 @@ namespace car_communicator
         {
             switch (gearToSet)
             {
-                case 'p':
+                case 'p': //parking
                     Servo.setTarget(0, Const.GEAR_P);
                     starting_gear = gearToSet;
                     break;
 
-                case 'r':
+                case 'r': //reverse
                     Servo.setTarget(0, Const.GEAR_R);
                     starting_gear = gearToSet;
                     break;
 
-                case 'n':
+                case 'n': //neutral 
                     Servo.setTarget(0, Const.GEAR_N);
                     starting_gear = gearToSet;
                     break;
 
-                case 'd':
+                case 'd': //drive
                     Servo.setTarget(0, Const.GEAR_D);
                     starting_gear = gearToSet;
                     break;
             }
             //bieg = gear;
         }
+        
+        /// <summary>
+        /// regulator is localised in main_project/model/regulators
+        /// use send_wanted_wheel_position_instead
+        /// </summary>
+        /// <param name="pos"></param>
+        [Obsolete] 
         static void set_wheel_position(double pos)
         {
             // PID REGULATOR
             ExtendCard.setPortAO(Const.WHEEL_CHANNEL, pos);
+        }
+
+        /// <summary>
+        /// sends information to servos to set wheel position
+        /// </summary>
+        /// <param name="wanted_position">
+        /// position has to be in range of (-100, 100), in case its not, 
+        ///     it will be limited to that, and information about it 
+        ///     will be logged as imoportant msg
+        /// </param>
+        static void send_wanted_wheel_position(double wanted_position)
+        {
+            if (Limiter.LimitAndReturnTrueIfLimitted(ref wanted_position, -100.0, 100.0))
+            {
+                Logger.Log(null, String.Format("wanted wheel position was out of limits ({0})", wanted_position), 1);
+            }
+
+            ReScaller.ReScale(ref wanted_position, -100.0, 100.0, Const.WHEEL_MIN, Const.WHEEL_MAX);
+
+            ExtendCard.setPortAO(Const.WHEEL_CHANNEL, wanted_position);
         }
 
         static void set_break_position(double pod)

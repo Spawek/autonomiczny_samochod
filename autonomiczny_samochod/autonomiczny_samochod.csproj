@@ -59,10 +59,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Helpers\Limiter.cs" />
-    <Compile Include="Helpers\Logger.cs" />
-    <Compile Include="Helpers\StatsCollector.cs" />
-    <Compile Include="Helpers\Time.cs" />
     <Compile Include="Model\Car\CarInformations.cs" />
     <Compile Include="Controller\CarController.cs" />
     <Compile Include="Model\Car\ExampleCar.cs" />
@@ -121,6 +117,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Helpers\Helpers.csproj">
+      <Project>{AC8330CF-3F32-45C6-B8E8-5BE9F8AFF33D}</Project>
+      <Name>Helpers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Pololu_SDK\Pololu_SDK.csproj">
       <Project>{D5FC0F68-CE19-4BB2-9D90-48B78E54B9EC}</Project>
       <Name>Pololu_SDK</Name>

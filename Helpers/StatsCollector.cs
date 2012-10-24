@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace autonomiczny_samochod
+namespace Helpers
 {
-    class StatsCollector
+    public class StatsCollector
     {
         private IDictionary<string, List<double>> dict = new Dictionary<string, List<double>>();
         public void PutNewStat(string variable, double value)
