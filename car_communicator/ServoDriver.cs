@@ -15,20 +15,36 @@ namespace car_communicator
         public void Initialize()
         {
             List<DeviceListItem> list = Usc.getConnectedDevices();
-            if (list.Count > 0)
-            { //TODO: przerobić to, bo jest logicznie bez sensu (bierze pierwsze urządzenie), a w 3 liniach 2 są niepotrzebne [Spawek]
-                DeviceListItem item = null;
-                item = list[0]; //TODO: dorobić tutaj sprawdzanie ID urządzenia [Spawek]
-                Driver = new Usc(item);
-            }
-            else
+            
+            if(list.Count != 1)
             {
-                Console.WriteLine("Pololu Servo Driver is disconnected");
+                throw new ApplicationException("there are 0 or more than 1 connected devices - probably servos are not connected");
             }
+
+            var Driver = new Usc(list[0]);
         }
 
         public void setTarget(byte channel, ushort target)
         {
+            if (channel == 0)
+            {
+                if (!(target == Const.GEAR_P || target == Const.GEAR_R || target == Const.GEAR_N || target == Const.GEAR_D))
+                {
+                    throw new ApplicationException("wrong target");
+                }
+                else if (channel == 1)
+                {
+                    if (target < Const.MIN_THROTTLE || target > Const.MAX_THROTTLE)
+                    {
+                        throw new ApplicationException("wrong target");
+                    }
+                }
+            }
+            else
+            {
+                throw new ApplicationException("unknown target");
+            }
+
             Driver.setTarget(channel, target);
         }
 

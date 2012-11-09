@@ -65,8 +65,10 @@
     <Compile Include="Model\Communicators\AccelerationPedalCommunivator.cs" />
     <Compile Include="Model\Communicators\BrakePedalCommunicator.cs" />
     <Compile Include="Model\Communicators\ComponentComunicator.cs" />
+    <Compile Include="Model\Communicators\ExtentionsCardCommunicator.cs" />
     <Compile Include="Model\Communicators\SteeringWheelCommunicator.cs" />
     <Compile Include="Model\Regulators\PIDConsts.cs" />
+    <Compile Include="Model\Communicators\SpeedMeterCommunicator.cs" />
     <Compile Include="Test\Fakes\FakeCarModel.cs" />
     <Compile Include="Model\Regulators\PIDSpeedRegulator.cs" />
     <Compile Include="Model\Regulators\PIDSteeringWheelAngleRegulator.cs" />
@@ -117,6 +119,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\car_communicator\car_communicator.csproj">
+      <Project>{804493BE-F174-4453-B575-8728EC5973C1}</Project>
+      <Name>car_communicator</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Helpers\Helpers.csproj">
       <Project>{AC8330CF-3F32-45C6-B8E8-5BE9F8AFF33D}</Project>
       <Name>Helpers</Name>

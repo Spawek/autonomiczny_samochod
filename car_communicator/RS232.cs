@@ -31,11 +31,21 @@ namespace RS232
         {
             Console.WriteLine(port.ReadExisting());
         }
+
+        /// <summary>
+        /// TODO: odptytywanie przez RS w czasie rzeczywistym
+        /// </summary>
+        /// <returns></returns>
         public double get_wheel_position()
         //reutrns wheel pos from rs232 module
         {
             return 0.00;
         }
+
+        /// <summary>
+        /// TODO: the same
+        /// </summary>
+        /// <returns></returns>
         public double get_break_position()
         //reutrns break pos from rs232 module
         {

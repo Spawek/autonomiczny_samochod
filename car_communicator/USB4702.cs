@@ -6,33 +6,42 @@ using Automation.BDaq;
 
 namespace car_communicator
 {
+    /// <summary>
+    /// extension card connector
+    /// </summary>
     public class USB4702
     {
         static int buffer;
         static InstantAoCtrl instantAoCtrl = new InstantAoCtrl(); //for initialize analog outputs
         static InstantDoCtrl instantDoCtrl = new InstantDoCtrl(); //for initialize digital outputs
-        static EventCounterCtrl eventCounterCtrl = new EventCounterCtrl(); // for initialize counter
+        static EventCounterCtrl eventSpeedCounterCtrl = new EventCounterCtrl(); // for initialize counter
 
         public void Initialize()
         {
-            string deviceDescription = "USB-4702,BID#0";
+            string deviceDescription = "USB-4702,BID#0"; // '0' -> 1st extension card
 
             //Analog outputs
             instantAoCtrl.SelectedDevice = new DeviceInformation(deviceDescription); // AO0
 
             //Digital output
             instantDoCtrl.SelectedDevice = new DeviceInformation(deviceDescription);
-            //buffer = 0;   //Initialize all digital outputs with low level
-            //instantDoCtrl.Write(0,(byte) buffer);
 
             //Counter
-            eventCounterCtrl.SelectedDevice = new DeviceInformation(deviceDescription);
-            eventCounterCtrl.Channel = 0;
-            eventCounterCtrl.Enabled = false; // block counter
+            eventSpeedCounterCtrl.SelectedDevice = new DeviceInformation(deviceDescription);
+            eventSpeedCounterCtrl.Channel = 0;
+            eventSpeedCounterCtrl.Enabled = false; // block counter
         }
-
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="channel"></param>
+        /// <param name="value">0-5V (will be checked anyway - throws if bad)</param>
         public void setPortAO(int channel, double value)
         {
+            if (value > 5 || value < 0)
+                throw new ArgumentException("value is not in range", "value");
+
             instantAoCtrl.Write(channel, value);
         }
 
@@ -52,16 +61,19 @@ namespace car_communicator
             }
         }
 
-        public void RestartCounter()
+        //working
+        public void RestartSpeedCounter()
         {
-            eventCounterCtrl.Enabled = false;
-            eventCounterCtrl.Enabled = true;
+            eventSpeedCounterCtrl.Enabled = false;
+            eventSpeedCounterCtrl.Enabled = true;
         }
 
-        public int getCounterStatus()
+        public int getSpeedCounterStatus()
         {
-            return eventCounterCtrl.Value;
+            return eventSpeedCounterCtrl.Value;
         }
+
+
     }
 
 }

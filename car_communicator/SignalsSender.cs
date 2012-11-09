@@ -8,8 +8,11 @@ namespace car_communicator
 {
     static class Const
     {
+        //servos
         public const int GEARBOX_CHANNEL = 0;
         public const int THROTTLE_CHANNEL = 1;
+
+        //extension cards
         public const int BREAK_CHANNEL = 0;
         public const int WHEEL_CHANNEL = 1;
 
@@ -17,8 +20,8 @@ namespace car_communicator
         public const int MIN_THROTTLE = 3900;
         public const double MAX_BRAKE = 5.00;
         public const double MIN_BRAKE = 0.00;
-        public const double WHEEL_MIN = 1.5;
-        public const double WHEEL_MID = 2.5;
+        public const double WHEEL_MIN = 1.5; // lewo / prawo //TODO: sprawdzić
+        public const double WHEEL_MID = 2.5; // środek
         public const double WHEEL_MAX = 3.5;
         public const int GEAR_P = 4000;
         public const int GEAR_R = 5500;
@@ -333,12 +336,12 @@ namespace car_communicator
 
             while (true)
             {
-                ExtendCard.RestartCounter();
+                ExtendCard.RestartSpeedCounter();
                 System.Threading.Thread.Sleep(1000);
                 //droga=ExtendCard.getCounterStatus()*0.37;
                 //Console.Write(droga * 2 * 36 /10);
                 //Console.WriteLine("km / h");
-                Console.WriteLine(ExtendCard.getCounterStatus());
+                Console.WriteLine(ExtendCard.getSpeedCounterStatus());
             }
 
         }
