@@ -40,6 +40,9 @@ namespace autonomiczny_samochod
         private AccelerationPedalCommunivator accelerationPedalCommunivator { get; set; }
         private SteeringWheelCommunicator steeringWheelCommunicator { get; set; }
         private USB4702 extentionCardCommunicator { get; set; }
+        private ServoDriver servoDriver { get; set; }
+        private RS232 angleAndSpeedMeter { get; set; }
+
 
         //car speed receiving
         System.Windows.Forms.Timer SpeedMeasuringTimer = new System.Windows.Forms.Timer();
@@ -55,7 +58,9 @@ namespace autonomiczny_samochod
             accelerationPedalCommunivator = new AccelerationPedalCommunivator(this);
             steeringWheelCommunicator = new SteeringWheelCommunicator(this);
             extentionCardCommunicator.Initialize();
-
+            servoDriver.Initialize();
+            angleAndSpeedMeter.Initialize();
+            
             SpeedMeasuringTimer.Interval = SPEED_MEASURING_TIMER_INTERVAL_IN_MS;
             SpeedMeasuringTimer.Tick += new EventHandler(SpeedMeasuringTimer_Tick);
         }

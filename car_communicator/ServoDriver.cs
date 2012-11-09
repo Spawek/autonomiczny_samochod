@@ -24,7 +24,7 @@ namespace car_communicator
             var Driver = new Usc(list[0]);
         }
 
-        public void setTarget(byte channel, ushort target)
+        private void setTarget(byte channel, ushort target)
         {
             if (channel == 0)
             {
@@ -46,6 +46,47 @@ namespace car_communicator
             }
 
             Driver.setTarget(channel, target);
+        }
+
+        public void setThrottle(double valueInPercents)
+        {
+            if(valueInPercents < 0 || valueInPercents > 100)
+                throw new ApplicationException("wrong values - it should be in range 0 to 100%");
+
+            Helpers.ReScaller.ReScale(ref valueInPercents, 0, 100, (double)Const.MIN_THROTTLE, (double)Const.MAX_THROTTLE);
+
+            setTarget(1, (ushort)valueInPercents);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gear">
+        /// p - parking
+        /// r - reverse
+        /// n - neutral
+        /// d - tylko 1 bieg
+        /// </param>
+        public void setGear(char gear) //TODO: make some enum
+        {
+            switch(gear)
+            {
+                case 'p':
+                    setTarget(0, Const.GEAR_P);
+                    break;
+
+                case 'r':
+                    setTarget(0, Const.GEAR_R);
+                    break;
+
+                case 'n':
+                    setTarget(0, Const.GEAR_P);
+                    break;
+                
+                case 'd':
+                    setTarget(0, Const.GEAR_N);
+                    break;
+            }   
         }
 
     }
