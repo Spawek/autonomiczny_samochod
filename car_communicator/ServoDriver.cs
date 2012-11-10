@@ -86,11 +86,11 @@ namespace car_communicator
                     break;
 
                 case 'n':
-                    setTarget(0, Const.GEAR_P);
+                    setTarget(0, Const.GEAR_N);
                     break;
                 
                 case 'd':
-                    setTarget(0, Const.GEAR_N);
+                    setTarget(0, Const.GEAR_D);
                     break;
             }
    

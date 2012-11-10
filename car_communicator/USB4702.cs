@@ -17,6 +17,9 @@ namespace car_communicator
         static InstantDoCtrl instantDoCtrl = new InstantDoCtrl(); //for initialize digital outputs
         static EventCounterCtrl eventSpeedCounterCtrl = new EventCounterCtrl(); // for initialize counter
 
+        static const double STEERING_WHEEL_MIN_SET_VALUE_IN_VOLTS = 1; 
+        static const double STEERING_WHEEL_MAX_SET_VALUE_IN_VOLTS = 4; 
+
         public void Initialize()
         {
             string deviceDescription = "USB-4702,BID#0"; // '0' -> 1st extension card
@@ -51,7 +54,7 @@ namespace car_communicator
         /// <param name="value">0-5V (will be checked anyway - throws if bad)</param>
         public void setPortAO(int channel, double value)
         {
-            if (value > 5 || value < 0)
+            if (value > 4 || value < 1)
                 throw new ArgumentException("value is not in range", "value");
 
             instantAoCtrl.Write(channel, value);
@@ -85,7 +88,25 @@ namespace car_communicator
             return eventSpeedCounterCtrl.Value;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="strength">
+        /// -1 max left
+        /// 1 max right
+        /// </param>
+        public void setSteeringWheel(double strength)
+        {
+            if (strength < -1 || strength > 1)
+            {
+                Logger.Log(this, "strength is not in range", 2);
+                throw new ArgumentException("strenght is not in range");
+            }
 
+            Helpers.ReScaller.ReScale(ref strength, -1, 1, STEERING_WHEEL_MIN_SET_VALUE_IN_VOLTS, STEERING_WHEEL_MAX_SET_VALUE_IN_VOLTS);
+
+            setPortAO(0, strength);
+        }
     }
 
 }
