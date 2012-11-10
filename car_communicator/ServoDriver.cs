@@ -86,7 +86,8 @@ namespace car_communicator
                 case 'd':
                     setTarget(0, Const.GEAR_N);
                     break;
-            }   
+            }
+   
         }
 
     }

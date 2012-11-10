@@ -65,7 +65,6 @@
     <Compile Include="Model\Communicators\AccelerationPedalCommunivator.cs" />
     <Compile Include="Model\Communicators\BrakePedalCommunicator.cs" />
     <Compile Include="Model\Communicators\ComponentComunicator.cs" />
-    <Compile Include="Model\Communicators\ExtentionsCardCommunicator.cs" />
     <Compile Include="Model\Communicators\SteeringWheelCommunicator.cs" />
     <Compile Include="Model\Regulators\PIDConsts.cs" />
     <Compile Include="Model\Communicators\SpeedMeterCommunicator.cs" />

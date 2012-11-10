@@ -46,40 +46,40 @@ namespace car_communicator
             Servo.Initialize();
 
             //STARTING VALUES
-            set_speed(starting_throttle_pos); // it will be the minimum value of speed
-            set_wheel_position(starting_wheel_pos);
-            set_gear(starting_gear);
-            set_break_position(starting_break_pos);
+            //set_speed(starting_throttle_pos); // it will be the minimum value of speed
+            //set_wheel_position(starting_wheel_pos);
+            //set_gear(starting_gear);
+            //set_break_position(starting_break_pos);
 
         }
 
 
-        static void set_gear(char gearToSet)
-        {
-            switch (gearToSet)
-            {
-                case 'p': //parking
-                    Servo.setTarget(0, Const.GEAR_P);
-                    starting_gear = gearToSet;
-                    break;
+        //static void set_gear(char gearToSet)
+        //{
+        //    switch (gearToSet)
+        //    {
+        //        case 'p': //parking
+        //            Servo.setTarget(0, Const.GEAR_P);
+        //            starting_gear = gearToSet;
+        //            break;
 
-                case 'r': //reverse
-                    Servo.setTarget(0, Const.GEAR_R);
-                    starting_gear = gearToSet;
-                    break;
+        //        case 'r': //reverse
+        //            Servo.setTarget(0, Const.GEAR_R);
+        //            starting_gear = gearToSet;
+        //            break;
 
-                case 'n': //neutral 
-                    Servo.setTarget(0, Const.GEAR_N);
-                    starting_gear = gearToSet;
-                    break;
+        //        case 'n': //neutral 
+        //            Servo.setTarget(0, Const.GEAR_N);
+        //            starting_gear = gearToSet;
+        //            break;
 
-                case 'd': //drive
-                    Servo.setTarget(0, Const.GEAR_D);
-                    starting_gear = gearToSet;
-                    break;
-            }
-            //bieg = gear;
-        }
+        //        case 'd': //drive
+        //            Servo.setTarget(0, Const.GEAR_D);
+        //            starting_gear = gearToSet;
+        //            break;
+        //    }
+        //    //bieg = gear;
+        //}
         
         /// <summary>
         /// regulator is localised in main_project/model/regulators
@@ -120,24 +120,24 @@ namespace car_communicator
             ExtendCard.setPortDO(1, 0); // direction
             ExtendCard.setPortAO(1, 0); //value
         }
-        static void set_speed(int speed)
-        {
-            if (speed > Const.MAX_THROTTLE)
-            {
-                Servo.setTarget(Const.THROTTLE_CHANNEL, (ushort)Const.MAX_THROTTLE);
-            }
-            else
-            {
-                if (speed < Const.MIN_THROTTLE)
-                {
-                    Servo.setTarget(Const.THROTTLE_CHANNEL, (ushort)Const.MIN_THROTTLE);
-                }
-                else
-                {
-                    Servo.setTarget(Const.THROTTLE_CHANNEL, (ushort)speed);
-                }
-            }
-        }
+        //static void set_speed(int speed)
+        //{
+        //    if (speed > Const.MAX_THROTTLE)
+        //    {
+        //        Servo.setTarget(Const.THROTTLE_CHANNEL, (ushort)Const.MAX_THROTTLE);
+        //    }
+        //    else
+        //    {
+        //        if (speed < Const.MIN_THROTTLE)
+        //        {
+        //            Servo.setTarget(Const.THROTTLE_CHANNEL, (ushort)Const.MIN_THROTTLE);
+        //        }
+        //        else
+        //        {
+        //            Servo.setTarget(Const.THROTTLE_CHANNEL, (ushort)speed);
+        //        }
+        //    }
+        //}
         /*
         //############################################################################//
         // for simulation

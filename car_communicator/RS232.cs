@@ -8,7 +8,7 @@ using Helpers;
 
 namespace autonomiczny_samochod
 {
-    public class RS232
+    public class RS232Controller
     {
         // Create the serial port with basic settings 
         private SerialPort port = new SerialPort("COM6", 9600, Parity.None, 8, StopBits.One); //TODO: add choosing COM no from form
@@ -20,14 +20,14 @@ namespace autonomiczny_samochod
         char[] giveMeBrakeDiagnosisMsg = new char[] { '2', 'D', (char)13 };
 
         //consts
-        private const TimeSpan SLEEP_PER_READ_LOOP = new TimeSpan(0, 0, 0, 0, 5); //5ms
+        private TimeSpan SLEEP_PER_READ_LOOP = new TimeSpan(0, 0, 0, 0, 5); //5ms
         private const int LOOPS_BETWEEN_DIAGNOSIS = 100; //mby go more
         private const int READ_TIMEOUT_IN_MS = 100;
         private const int WRITE_TIMEOUT_IN_MS = 100;
 
         //read values
-        int SteeringWheelRead { set; }
-        int BrakeRead {set; }
+        int SteeringWheelRead { get; set; }
+        int BrakeRead { get;  set; }
 
         //just buffer
         char[] buffer = new char[4];

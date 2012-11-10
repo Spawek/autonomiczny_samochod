@@ -34,6 +34,7 @@ namespace autonomiczny_samochod
         const int SPEED_TABLE_SIZE = 100;
         const double WHEEL_CIRCUIT_IN_M = 1.3822996; //44cm * pi //TODO: check it - its probably wrong
         const int NO_OF_HAAL_METERS = 5;
+        const int TICKS_TO_RESTART = 10000; 
 
         //sub-communicators
         private BrakePedalCommunicator brakePedalCommunicator { get; set; }
@@ -41,7 +42,7 @@ namespace autonomiczny_samochod
         private SteeringWheelCommunicator steeringWheelCommunicator { get; set; }
         private USB4702 extentionCardCommunicator { get; set; }
         private ServoDriver servoDriver { get; set; }
-        private RS232 angleAndSpeedMeter { get; set; }
+        private RS232Controller angleAndSpeedMeter { get; set; }
 
 
         //car speed receiving
@@ -78,7 +79,7 @@ namespace autonomiczny_samochod
 
             double speed = WHEEL_CIRCUIT_IN_M / NO_OF_HAAL_METERS * lastTicksMeasurements.Sum() / (SPEED_TABLE_SIZE * SPEED_MEASURING_TIMER_INTERVAL_IN_MS);
 
-            if(ticks > 10000)
+            if(ticks > TICKS_TO_RESTART)
             {
                 extentionCardCommunicator.RestartSpeedCounter();
                 lastTicks = 0;
