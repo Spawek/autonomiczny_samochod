@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Automation.BDaq;
+using Helpers;
 
 namespace car_communicator
 {
@@ -20,16 +21,27 @@ namespace car_communicator
         {
             string deviceDescription = "USB-4702,BID#0"; // '0' -> 1st extension card
 
-            //Analog outputs
-            instantAoCtrl.SelectedDevice = new DeviceInformation(deviceDescription); // AO0
+            try
+            {
+                //Analog outputs
+                instantAoCtrl.SelectedDevice = new DeviceInformation(deviceDescription); // AO0
 
-            //Digital output
-            instantDoCtrl.SelectedDevice = new DeviceInformation(deviceDescription);
+                //Digital output
+                instantDoCtrl.SelectedDevice = new DeviceInformation(deviceDescription);
 
-            //Counter
-            eventSpeedCounterCtrl.SelectedDevice = new DeviceInformation(deviceDescription);
-            eventSpeedCounterCtrl.Channel = 0;
-            eventSpeedCounterCtrl.Enabled = false; // block counter
+                //Counter
+                eventSpeedCounterCtrl.SelectedDevice = new DeviceInformation(deviceDescription);
+
+                eventSpeedCounterCtrl.Channel = 0;
+                eventSpeedCounterCtrl.Enabled = false; // block counter
+            }
+            catch (Exception e)
+            {
+                Logger.Log(this, "cannot initialize connection for USB4702", 2);
+                Logger.Log(this, String.Format("Exception received: {0}", e.Message), 2);
+
+                //throw; //TODO: IMPORTANT: TEMPORARY!!
+            }
         }
         
         /// <summary>

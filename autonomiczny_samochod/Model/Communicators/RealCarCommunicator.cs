@@ -37,7 +37,7 @@ namespace autonomiczny_samochod
         const int TICKS_TO_RESTART = 10000; 
 
         //sub-communicators
-        private BrakePedalCommunicator brakePedalCommunicator { get; set; }
+       // private BrakePedalCommunicator brakePedalCommunicator { get; set; } //obsolete
         private AccelerationPedalCommunivator accelerationPedalCommunivator { get; set; }
         private SteeringWheelCommunicator steeringWheelCommunicator { get; set; }
         private USB4702 extentionCardCommunicator { get; set; }
@@ -55,9 +55,14 @@ namespace autonomiczny_samochod
         public RealCarCommunicator(ICar parent)
         {
             ICar = parent;
-            brakePedalCommunicator = new BrakePedalCommunicator(this);
-            accelerationPedalCommunivator = new AccelerationPedalCommunivator(this);
-            steeringWheelCommunicator = new SteeringWheelCommunicator(this);
+            //brakePedalCommunicator = new BrakePedalCommunicator(this); //obsolete
+            //accelerationPedalCommunivator = new AccelerationPedalCommunivator(this);
+            //steeringWheelCommunicator = new SteeringWheelCommunicator(this);
+            extentionCardCommunicator = new USB4702();
+            servoDriver = new ServoDriver();
+            angleAndSpeedMeter = new RS232Controller();
+
+            //TODO: make thread for every initialization
             extentionCardCommunicator.Initialize();
             servoDriver.Initialize();
             angleAndSpeedMeter.Initialize();
@@ -92,10 +97,24 @@ namespace autonomiczny_samochod
                 SpeedEvent(this, new SpeedInfoReceivedEventArgs(speed));
             }
         }
-        
+
+        /// <summary>
+        /// this has to be invoked before 1st use
+        /// </summary>
         public void InitRegulatorsEventsHandling()
         {
-            throw new NotImplementedException();
+            ISpeedRegulator.evNewSpeedSettingCalculated += new NewSpeedSettingCalculatedEventHandler(ISpeedRegulator_evNewSpeedSettingCalculated);
+            ISteeringWheelAngleRegulator.evNewSteeringWheelSettingCalculated += new NewSteeringWheelSettingCalculatedEventHandler(ISteeringWheelAngleRegulator_evNewSteeringWheelSettingCalculated);
+        }
+
+        void ISteeringWheelAngleRegulator_evNewSteeringWheelSettingCalculated(object sender, NewSteeringWheelSettingCalculateddEventArgs args)
+        {
+            //model.WheelAngleSteering = args.getSteeringWheelAngleSetting(); //TODO: remake it
+        }
+
+        void ISpeedRegulator_evNewSpeedSettingCalculated(object sender, NewSpeedSettingCalculatedEventArgs args)
+        {
+            //model.SpeedSteering = args.getSpeedSetting(); //TODO: remake it
         }
 
         public void SendNewSpeedSettingMessage(double speedSetting)
@@ -110,7 +129,8 @@ namespace autonomiczny_samochod
 
         public bool IsInitiated()
         {
-            return (brakePedalCommunicator.IsInitiated() && accelerationPedalCommunivator.IsInitiated() && steeringWheelCommunicator.IsInitiated());
+            return true; //TODO: fix it
+           // return (brakePedalCommunicator.IsInitiated() && accelerationPedalCommunivator.IsInitiated() && steeringWheelCommunicator.IsInitiated());
         }
 
     }

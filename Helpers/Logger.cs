@@ -8,7 +8,8 @@ namespace Helpers
 {
     public static class Logger
     {
-        private static string logFile = "Log.txt";
+        private static string logFileName = "Log";
+        private static string logFileExtension = ".txt";
         private static bool isItFirstLog = true;
         private static int MAX_PRIORITY = 10;
 
@@ -30,9 +31,9 @@ namespace Helpers
                 //removing old log files
                 for (int i = 0; i <= MAX_PRIORITY; i++) //for priorities > 0
                 {
-                    if (File.Exists(logFile + Convert.ToString(i)))
+                    if (File.Exists(logFileName + Convert.ToString(i)))
                     {
-                        File.Delete(logFile + Convert.ToString(i));
+                        File.Delete(logFileName + Convert.ToString(i));
                     }    
                 }
 
@@ -63,14 +64,14 @@ namespace Helpers
             {
                 try
                 {
-                    using (StreamWriter sw = new StreamWriter(logFile + Convert.ToString(i), true)) //TODO: add some buffors or something, files are being oppened and closed all the time now
+                    using (StreamWriter sw = new StreamWriter(logFileName + Convert.ToString(i) + logFileExtension, true)) //TODO: add some buffors or something, files are being oppened and closed all the time now
                     {
                         sw.WriteLine(msgWithDateAndObjectName);
                     } 
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Logger couldn't write above msg to log");
+                    Console.WriteLine(String.Format("Logger couldn't write above msg to log, error msg: {0}", e.Message)); //TODO: //IMPORTANT: IT HAPPEN SOMETIMES - it shouldnt
                 }
             }
 

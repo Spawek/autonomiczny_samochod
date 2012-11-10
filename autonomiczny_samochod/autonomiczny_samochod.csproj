@@ -25,6 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -59,9 +60,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\Regulators\FakeSteeringWheelRegulator.cs" />
+    <Compile Include="Model\Regulators\FakeSpeedRegulator.cs" />
     <Compile Include="Model\Car\CarInformations.cs" />
     <Compile Include="Controller\CarController.cs" />
     <Compile Include="Model\Car\ExampleCar.cs" />
+    <Compile Include="Model\Car\RealCar.cs" />
     <Compile Include="Model\Communicators\AccelerationPedalCommunivator.cs" />
     <Compile Include="Model\Communicators\BrakePedalCommunicator.cs" />
     <Compile Include="Model\Communicators\ComponentComunicator.cs" />

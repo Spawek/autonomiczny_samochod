@@ -24,7 +24,8 @@ namespace autonomiczny_samochod
         {
             MainWindow = window;
 
-            Model = new ExampleFakeCar(this);
+            //Model = new ExampleFakeCar(this);
+            Model = new autonomiczny_samochod.Model.Car.RealCar(this);
 
             mStatsCollectorTimer.Interval = TIMER_INTERVAL_IN_MS;
             mStatsCollectorTimer.Tick += new EventHandler(mStatsCollectorTimer_Tick);

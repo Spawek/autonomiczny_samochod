@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Pololu.UsbWrapper;
 using Pololu.Usc;
+using Helpers;
 
 //Created by Mateusz Nowakowski
 //Refactored and merged by Maciej (Spawek) Oziebly 
@@ -15,13 +16,18 @@ namespace car_communicator
         public void Initialize()
         {
             List<DeviceListItem> list = Usc.getConnectedDevices();
-            
-            if(list.Count != 1)
-            {
-                throw new ApplicationException("there are 0 or more than 1 connected devices - probably servos are not connected");
-            }
 
-            var Driver = new Usc(list[0]);
+            if (list.Count != 1)
+            {
+                Logger.Log(this, "there are 0 or more than 1 connected devices - probably servos are not connected", 2);
+
+                //throw new ApplicationException("there are 0 or more than 1 connected devices - probably servos are not connected"); 
+                //TODO: //IMPORTANT: TEMPORARY DISABLED 
+            }
+            else
+            {
+                var Driver = new Usc(list[0]);
+            }
         }
 
         private void setTarget(byte channel, ushort target)

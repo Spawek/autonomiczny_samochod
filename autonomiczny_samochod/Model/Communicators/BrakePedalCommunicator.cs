@@ -6,6 +6,7 @@ using Helpers;
 
 namespace autonomiczny_samochod.Model.Communicators
 {
+    [Obsolete]
     class BrakePedalCommunicator : ComponentCommunicator
     {
         private ICarCommunicator CarCommunicator;
