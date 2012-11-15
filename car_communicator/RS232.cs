@@ -35,9 +35,6 @@ namespace autonomiczny_samochod
         int steeringWheelRead;
         int brakeRead;
 
-        //just buffer
-        char[] buffer = new char[4];
-
         //transmission thread
         System.Threading.Thread transsmissionThread;
         
@@ -51,6 +48,7 @@ namespace autonomiczny_samochod
             port.DataReceived += new SerialDataReceivedEventHandler(port_DataReceived);
             port.ReadTimeout = READ_TIMEOUT_IN_MS;
             port.WriteTimeout = WRITE_TIMEOUT_IN_MS;
+            port.Encoding = Encoding.UTF8; //it probably fixes bug with "i cant receive/send values bigger than 127 - i get 63 instead of it"
 
             //thread start
             transsmissionThread = new System.Threading.Thread(new System.Threading.ThreadStart(startDataTransmission));
@@ -114,22 +112,22 @@ namespace autonomiczny_samochod
         {
             port.Write(giveMeBrakeAngleMsg, 0, giveMeBrakeAngleMsg.Length);
 
-            buffer = readWordFromRS232().ToCharArray();
-            if (buffer.Length != 4)
+            List<int> readMsg = readWordFromRS232();
+            if (readMsg.Count != 4)
             {
-                Logger.Log(this, String.Format("wrong received message length: {0}", buffer.Length, 1));
+                Logger.Log(this, String.Format("wrong received message length: {0}", readMsg.Count, 1));
             }
             else
             {
-                if (buffer[0] == 'A' && buffer[3] == 13)
+                if (readMsg[0] == 'A' && readMsg[3] == 13)
                 {
-                    brakeRead = (Convert.ToInt32(buffer[1])) * 64 + Convert.ToInt32(buffer[2]);
+                    brakeRead = readMsg[1] * 64 + readMsg[2];
                     Logger.Log(this, String.Format("Brake possition received from RS232: {0}", brakeRead));
-                    Logger.Log(this, String.Format("buff[0]: {0}, buff[1]: {1}, buff[2]: {2}, buff[3]: {3}", (byte)buffer[0], (byte)buffer[1], (byte)buffer[2], (byte)buffer[3]));
+                    Logger.Log(this, String.Format("buff[0]: {0}, buff[1]: {1}, buff[2]: {2}, buff[3]: {3}", readMsg[0], readMsg[1], readMsg[2], readMsg[3]));
                 }
                 else
                 {
-                    if (buffer[0] == 'E') //check that condition
+                    if (readMsg[0] == 'E') //check that condition
                     {
                         Logger.Log(this, "RS232 received an errror from brakes", 2);
                         //TODO: some handling?
@@ -137,7 +135,7 @@ namespace autonomiczny_samochod
 
                     port.DiscardInBuffer();
                     port.DiscardOutBuffer();
-                    Logger.Log(this, String.Format("BRAKE - RS232 is desonchronised! Read is not done. Msg received: {0} {1} {2} {3}", (byte)buffer[0], (byte)buffer[1], (byte)buffer[2], (byte)buffer[3]), 1);
+                    Logger.Log(this, String.Format("BRAKE - RS232 is desonchronised! Read is not done. Msg received: {0} {1} {2} {3}", readMsg[0], readMsg[1], readMsg[2], readMsg[3]), 1);
                 }
             }
             System.Threading.Thread.Sleep(SLEEP_PER_READ_LOOP);
@@ -147,22 +145,22 @@ namespace autonomiczny_samochod
         {
             port.Write(giveMeSteeringWheelAngleMsg, 0, giveMeSteeringWheelAngleMsg.Length);
 
-            buffer = readWordFromRS232().ToCharArray();
-            if (buffer.Length != 4)
+            List<int> readMsg = readWordFromRS232();
+            if (readMsg.Count!= 4)
             {
-                Logger.Log(this, String.Format("wrong received message length: {0}", buffer.Length, 1));
+                Logger.Log(this, String.Format("wrong received message length: {0}", readMsg.Count, 1));
             }
             else
             {
-                if (buffer[0] == 'A' && buffer[3] == 13)
+                if (readMsg[0] == 'A' && readMsg[3] == 13)
                 {
-                    brakeRead = (Convert.ToInt32(buffer[1])) * 64 + Convert.ToInt32(buffer[2]);
+                    brakeRead = readMsg[1] * 64 + readMsg[2];
                     Logger.Log(this, String.Format("Steering wheel possition received from RS232: {0}", steeringWheelRead));
-                    Logger.Log(this, String.Format("buff[0]: {0}, buff[1]: {1}, buff[2]: {2}, buff[3]: {3}", (byte)buffer[0], (byte)buffer[1], (byte)buffer[2], (byte)buffer[3]));
+                    Logger.Log(this, String.Format("buff[0]: {0}, buff[1]: {1}, buff[2]: {2}, buff[3]: {3}", readMsg[0], readMsg[1], readMsg[2], readMsg[3]));
                 }
                 else
                 {
-                    if (buffer[0] == 'E') //check that condition
+                    if (readMsg[0] == 'E') //check that condition
                     {
                         Logger.Log(this, "RS232 received an errror from steering wheel", 2);
                         //TODO: some handling?
@@ -170,7 +168,7 @@ namespace autonomiczny_samochod
 
                     port.DiscardInBuffer();
                     port.DiscardOutBuffer();
-                    Logger.Log(this, String.Format("STEERING WHEEL - RS232 is desonchronised! Read is not done. Msg received: {0} {1} {2} {3}", (byte)buffer[0], (byte)buffer[1], (byte)buffer[2], (byte)buffer[3]), 1);
+                    Logger.Log(this, String.Format("STEERING WHEEL - RS232 is desonchronised! Read is not done. Msg received: {0} {1} {2} {3}", readMsg[0], readMsg[1], readMsg[2], readMsg[3]), 1);
                     System.Threading.Thread.Sleep(SLEEP_ON_RS232_DESYNC_IN_MS);
                 }
             }
@@ -194,26 +192,26 @@ namespace autonomiczny_samochod
         {
             port.Write(giveMeSteeringWheelDiagnosisMsg, 0, giveMeSteeringWheelDiagnosisMsg.Length);
 
-            buffer = readWordFromRS232().ToCharArray();
-            if (buffer.Length != 4)
+            List<int> readMsg = readWordFromRS232();
+            if (readMsg.Count != 4)
             {
-                Logger.Log(this, String.Format("wrong received message length: {0}", buffer, 1));
+                Logger.Log(this, String.Format("wrong received message length: {0}", readMsg, 1));
             }
             else
             {
-                if (buffer[0] == 0)
+                if (readMsg[0] == 0)
                 {
                     Logger.Log(this, "RS232 sterring wheel diagnosis bit 0 error", 1);
                 }
-                if (buffer[1] == 1)
+                if (readMsg[1] == 1)
                 {
                     Logger.Log(this, "RS232 sterring wheel diagnosis bit 1 error", 1);
                 }
-                if (buffer[2] == 1)
+                if (readMsg[2] == 1)
                 {
                     Logger.Log(this, "RS232 sterring wheel diagnosis bit 2 error - magnet is too strong or too close", 1);
                 }
-                if (buffer[3] == 1)
+                if (readMsg[3] == 1)
                 {
                     Logger.Log(this, "RS232 sterring wheel diagnosis bit 3 error - magnet is too weak or too far", 1);
                 }
@@ -225,26 +223,26 @@ namespace autonomiczny_samochod
         {
             port.Write(giveMeBrakeDiagnosisMsg, 0, giveMeBrakeDiagnosisMsg.Length);
 
-            buffer = readWordFromRS232().ToCharArray();
-            if (buffer.Length != 4)
+            List<int> readMsg = readWordFromRS232();
+            if (readMsg.Count != 4)
             {
-                Logger.Log(this, String.Format("wrong received message length: {0}", buffer, 1));
+                Logger.Log(this, String.Format("wrong received message length: {0}", readMsg, 1));
             }
             else
             {
-                if (buffer[0] == 0)
+                if (readMsg[0] == 0)
                 {
                     Logger.Log(this, "RS232 brake diagnosis bit 0 error", 1);
                 }
-                if (buffer[1] == 1)
+                if (readMsg[1] == 1)
                 {
                     Logger.Log(this, "RS232 brake diagnosis bit 1 error", 1);
                 }
-                if (buffer[2] == 1)
+                if (readMsg[2] == 1)
                 {
                     Logger.Log(this, "RS232 brake diagnosis bit 2 error - magnet is too strong or too close", 1);
                 }
-                if (buffer[3] == 1)
+                if (readMsg[3] == 1)
                 {
                     Logger.Log(this, "RS232 brake diagnosis bit 3 error - magnet is too weak or too far", 1);
                 }
@@ -268,48 +266,98 @@ namespace autonomiczny_samochod
                 TryOppeningPortUntilItSucceds(waitBeforeNextTryInMs);
             }
         }
+       
+     /* it has been rewriten below due to reciving values > 127 problems //and that it was piece shit written in garage
 
-        private volatile string inBuffer = string.Empty;
-        private volatile string receivedWord = string.Empty;
+    private volatile string inBuffer = string.Empty;
+    private volatile string receivedWord = string.Empty;
 
-        /// <summary>
-        /// its NOT THREAD-SAFE - cant work on different threads
-        /// uses volatile vars "inBuffer" and "receivedWord"
-        /// </summary>
-        /// <returns></returns>
-        private string readWordFromRS232()
+    /// <summary>
+    /// its NOT THREAD-SAFE - cant work on different threads
+    /// uses volatile vars "inBuffer" and "receivedWord"
+    /// </summary>
+    /// <returns></returns>
+    private string readWordFromRS232()
+    {
+        while (receivedWord == string.Empty)
+            System.Threading.Thread.Sleep(SLEEP_WHILE_WAITING_FOR_READ_IN_MS);
+
+        string temp = receivedWord;
+        receivedWord = string.Empty;
+
+        return temp;
+    }
+
+        
+    //http://stackoverflow.com/questions/5848907/received-byte-never-over-127-in-serial-port <--- use just read();
+    private void port_DataReceived(object sender, SerialDataReceivedEventArgs e)
+    {
+        string temp = port.ReadExisting(); //<-------- to nie dziala -> powyzej 128 daje 63
+        //int temp = port.ReadChar();
+        Console.WriteLine(temp);
+        //inBuffer = inBuffer + Convert.ToChar(temp);
+        inBuffer = inBuffer + temp;
+        if (inBuffer != string.Empty)
         {
-            while (receivedWord == string.Empty)
-                System.Threading.Thread.Sleep(SLEEP_WHILE_WAITING_FOR_READ_IN_MS);
-
-            string temp = receivedWord;
-            receivedWord = string.Empty;
-
-            return temp;
-        }
-
-        //http://stackoverflow.com/questions/5848907/received-byte-never-over-127-in-serial-port <--- use just read();
-        private void port_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
-            string temp = port.ReadExisting(); //<-------- to nie dziala -> powyzej 128 daje 63
-            //int temp = port.ReadChar();
-            Console.WriteLine(temp);
-            //inBuffer = inBuffer + Convert.ToChar(temp);
-            inBuffer = inBuffer + temp;
-            if (inBuffer != string.Empty)
+            if (inBuffer[inBuffer.Length - 1] == 13)
+            //if(temp == 13)
             {
-                if (inBuffer[inBuffer.Length - 1] == 13)
-                //if(temp == 13)
+                if (receivedWord != string.Empty)
                 {
-                    if (receivedWord != string.Empty)
-                    {
-                        Logger.Log(this, String.Format("message from RS232 was not read: {0}", receivedWord), 1);
-                    }
-                    receivedWord = inBuffer;
-                    inBuffer = string.Empty;
+                    Logger.Log(this, String.Format("message from RS232 was not read: {0}", receivedWord), 1);
                 }
+                receivedWord = inBuffer;
+                inBuffer = string.Empty;
             }
         }
+    }
+    */
+        
 
+        /// <summary>
+        /// this is rewriten function from above
+        /// IMPORTANT: TODO: TEST IT!!!!!
+        /// </summary>
+        volatile LinkedList<int> RS232SignalsInputList = new LinkedList<int>();
+        volatile bool RS232dataIsBeingRead = false; //to dont allow data reading start twice
+
+        private void port_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        { 
+            /* due to: http://msdn.microsoft.com/en-us/library/y2sxhat8.aspx 
+             * changing encoding to "UTF8Encoding" fixes bug with getting "63" instead of values bigger than 127
+             */
+            if (!RS232dataIsBeingRead)
+            { //TODO think about doing it in new thread
+                RS232dataIsBeingRead = true;
+                int byteRead;
+                while ((byteRead = port.ReadByte()) != -1) //-1 is when there is end of stream
+                {
+                    RS232SignalsInputList.AddLast(byteRead);
+                }
+                RS232dataIsBeingRead = false;
+            } 
+            //else just end 
+        }
+
+        private List<int> readWordFromRS232()
+        {
+            LinkedListNode<int> node;
+
+            while ((node = RS232SignalsInputList.Find(13)) == null)
+                Thread.Sleep(SLEEP_WHILE_WAITING_FOR_READ_IN_MS);
+
+            //if some "\n" == 13 == end of line was found cut and send left part of list from 1st node with 13
+            List<int> output = new List<int>();
+
+            int temp;
+            while ((temp = RS232SignalsInputList.First.Value) != 13)
+            {
+                output.Add(temp);
+                RS232SignalsInputList.RemoveFirst();
+            }
+            RS232SignalsInputList.RemoveFirst(); //remove also \n == 13 value
+
+            return output;
+        }
     }
 }
