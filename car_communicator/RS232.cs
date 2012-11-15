@@ -113,17 +113,17 @@ namespace autonomiczny_samochod
             port.Write(giveMeBrakeAngleMsg, 0, giveMeBrakeAngleMsg.Length);
 
             List<int> readMsg = readWordFromRS232();
-            if (readMsg.Count != 4)
+            if (readMsg.Count != 3)
             {
                 Logger.Log(this, String.Format("wrong received message length: {0}", readMsg.Count, 1));
             }
             else
             {
-                if (readMsg[0] == 'A' && readMsg[3] == 13)
+                if (readMsg[0] == 'A')
                 {
                     brakeRead = readMsg[1] * 64 + readMsg[2];
                     Logger.Log(this, String.Format("Brake possition received from RS232: {0}", brakeRead));
-                    Logger.Log(this, String.Format("buff[0]: {0}, buff[1]: {1}, buff[2]: {2}, buff[3]: {3}", readMsg[0], readMsg[1], readMsg[2], readMsg[3]));
+                    Logger.Log(this, String.Format("buff[0]: {0}, buff[1]: {1}, buff[2]: {2}", readMsg[0], readMsg[1], readMsg[2]));
                 }
                 else
                 {
@@ -135,7 +135,7 @@ namespace autonomiczny_samochod
 
                     port.DiscardInBuffer();
                     port.DiscardOutBuffer();
-                    Logger.Log(this, String.Format("BRAKE - RS232 is desonchronised! Read is not done. Msg received: {0} {1} {2} {3}", readMsg[0], readMsg[1], readMsg[2], readMsg[3]), 1);
+                    Logger.Log(this, String.Format("BRAKE - RS232 is desonchronised! Read is not done. Msg received: {0} {1} {2}", readMsg[0], readMsg[1], readMsg[2]), 1);
                 }
             }
             System.Threading.Thread.Sleep(SLEEP_PER_READ_LOOP);
@@ -146,17 +146,17 @@ namespace autonomiczny_samochod
             port.Write(giveMeSteeringWheelAngleMsg, 0, giveMeSteeringWheelAngleMsg.Length);
 
             List<int> readMsg = readWordFromRS232();
-            if (readMsg.Count!= 4)
+            if (readMsg.Count != 3)
             {
                 Logger.Log(this, String.Format("wrong received message length: {0}", readMsg.Count, 1));
             }
             else
             {
-                if (readMsg[0] == 'A' && readMsg[3] == 13)
+                if (readMsg[0] == 'A')
                 {
                     brakeRead = readMsg[1] * 64 + readMsg[2];
                     Logger.Log(this, String.Format("Steering wheel possition received from RS232: {0}", steeringWheelRead));
-                    Logger.Log(this, String.Format("buff[0]: {0}, buff[1]: {1}, buff[2]: {2}, buff[3]: {3}", readMsg[0], readMsg[1], readMsg[2], readMsg[3]));
+                    Logger.Log(this, String.Format("buff[0]: {0}, buff[1]: {1}, buff[2]: {2}", readMsg[0], readMsg[1], readMsg[2]));
                 }
                 else
                 {
@@ -168,7 +168,7 @@ namespace autonomiczny_samochod
 
                     port.DiscardInBuffer();
                     port.DiscardOutBuffer();
-                    Logger.Log(this, String.Format("STEERING WHEEL - RS232 is desonchronised! Read is not done. Msg received: {0} {1} {2} {3}", readMsg[0], readMsg[1], readMsg[2], readMsg[3]), 1);
+                    Logger.Log(this, String.Format("STEERING WHEEL - RS232 is desonchronised! Read is not done. Msg received: {0} {1} {2}", readMsg[0], readMsg[1], readMsg[2]), 1);
                     System.Threading.Thread.Sleep(SLEEP_ON_RS232_DESYNC_IN_MS);
                 }
             }
@@ -266,7 +266,9 @@ namespace autonomiczny_samochod
                 TryOppeningPortUntilItSucceds(waitBeforeNextTryInMs);
             }
         }
-       
+     
+
+        //TODO: REMOVE BELOW CODE AFTER TESTING THAT CURRENT CODE WORKS
      /* it has been rewriten below due to reciving values > 127 problems //and that it was piece shit written in garage
 
     private volatile string inBuffer = string.Empty;
@@ -323,11 +325,15 @@ namespace autonomiczny_samochod
 
         private void port_DataReceived(object sender, SerialDataReceivedEventArgs e)
         { 
-            /* due to: http://msdn.microsoft.com/en-us/library/y2sxhat8.aspx 
+            /* 
+             * due to: http://msdn.microsoft.com/en-us/library/y2sxhat8.aspx 
              * changing encoding to "UTF8Encoding" fixes bug with getting "63" instead of values bigger than 127
+             * 
+             * due to StackOverflow:
+             * only Read() should be used (returns byte, not char - chars bugs the code!)
              */
             if (!RS232dataIsBeingRead)
-            { //TODO think about doing it in new thread
+            { //TODO: think about doing it in new thread
                 RS232dataIsBeingRead = true;
                 int byteRead;
                 while ((byteRead = port.ReadByte()) != -1) //-1 is when there is end of stream
@@ -339,6 +345,10 @@ namespace autonomiczny_samochod
             //else just end 
         }
 
+        /// <summary>
+        /// returns read word (every word ends with "13") - it cuts "13" and dont return that
+        /// </summary>
+        /// <returns></returns>
         private List<int> readWordFromRS232()
         {
             LinkedListNode<int> node;
