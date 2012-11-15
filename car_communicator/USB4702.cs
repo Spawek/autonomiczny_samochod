@@ -17,8 +17,8 @@ namespace car_communicator
         static InstantDoCtrl instantDoCtrl = new InstantDoCtrl(); //for initialize digital outputs
         static EventCounterCtrl eventSpeedCounterCtrl = new EventCounterCtrl(); // for initialize counter
 
-        static const double STEERING_WHEEL_MIN_SET_VALUE_IN_VOLTS = 1; 
-        static const double STEERING_WHEEL_MAX_SET_VALUE_IN_VOLTS = 4; 
+        const double STEERING_WHEEL_MIN_SET_VALUE_IN_VOLTS = 1; 
+        const double STEERING_WHEEL_MAX_SET_VALUE_IN_VOLTS = 4; 
 
         public void Initialize()
         {
