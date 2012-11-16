@@ -40,6 +40,10 @@
     <StartupObject>autonomiczny_samochod.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Automation.BDaq, Version=1.0.1.0, Culture=neutral, PublicKeyToken=463f5928d60183a0, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\Automation.BDaq.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Forms" />
@@ -51,6 +55,12 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="UsbWrapper">
+      <HintPath>..\libs\UsbWrapper_Windows\UsbWrapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Usc">
+      <HintPath>..\libs\Usc.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -61,18 +71,15 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Model\Communicators\RS232.cs" />
+    <Compile Include="Model\Communicators\ServoDriver.cs" />
+    <Compile Include="Model\Communicators\USB4702.cs" />
     <Compile Include="Model\Regulators\FakeSteeringWheelRegulator.cs" />
     <Compile Include="Model\Regulators\FakeSpeedRegulator.cs" />
     <Compile Include="Model\Car\CarInformations.cs" />
     <Compile Include="Controller\CarController.cs" />
     <Compile Include="Model\Car\ExampleCar.cs" />
     <Compile Include="Model\Car\RealCar.cs" />
-    <Compile Include="Model\Communicators\AccelerationPedalCommunivator.cs" />
-    <Compile Include="Model\Communicators\BrakePedalCommunicator.cs" />
-    <Compile Include="Model\Communicators\ComponentComunicator.cs" />
-    <Compile Include="Model\Communicators\SteeringWheelCommunicator.cs" />
     <Compile Include="Model\Regulators\PIDConsts.cs" />
-    <Compile Include="Model\Communicators\SpeedMeterCommunicator.cs" />
     <Compile Include="Test\Fakes\FakeCarModel.cs" />
     <Compile Include="Model\Regulators\PIDSpeedRegulator.cs" />
     <Compile Include="Model\Regulators\PIDSteeringWheelAngleRegulator.cs" />
@@ -123,17 +130,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\car_communicator\car_communicator.csproj">
-      <Project>{804493BE-F174-4453-B575-8728EC5973C1}</Project>
-      <Name>car_communicator</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Helpers\Helpers.csproj">
       <Project>{AC8330CF-3F32-45C6-B8E8-5BE9F8AFF33D}</Project>
       <Name>Helpers</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Pololu_SDK\Pololu_SDK.csproj">
-      <Project>{D5FC0F68-CE19-4BB2-9D90-48B78E54B9EC}</Project>
-      <Name>Pololu_SDK</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

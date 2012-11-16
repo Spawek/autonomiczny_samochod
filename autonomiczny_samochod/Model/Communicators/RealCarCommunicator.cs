@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using autonomiczny_samochod.Model.Communicators;
 using car_communicator;
 
 namespace autonomiczny_samochod
