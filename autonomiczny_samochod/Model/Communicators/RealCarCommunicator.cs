@@ -11,6 +11,7 @@ namespace autonomiczny_samochod
     {
         public event SpeedInfoReceivedEventHander evSpeedInfoReceived;
         public event SteeringWheelAngleInfoReceivedEventHandler evSteeringWheelAngleInfoReceived;
+        public event BrakePositionReceivedEventHandler evBrakePositionReceived;
 
         public ISpeedRegulator ISpeedRegulator 
         { 
@@ -38,8 +39,6 @@ namespace autonomiczny_samochod
 
         //sub-communicators
        // private BrakePedalCommunicator brakePedalCommunicator { get; set; } //obsolete
-        private AccelerationPedalCommunivator accelerationPedalCommunivator { get; set; }
-        private SteeringWheelCommunicator steeringWheelCommunicator { get; set; }
         private USB4702 extentionCardCommunicator { get; set; }
         private ServoDriver servoDriver { get; set; }
         private RS232Controller angleAndSpeedMeter { get; set; }
@@ -55,14 +54,12 @@ namespace autonomiczny_samochod
         public RealCarCommunicator(ICar parent)
         {
             ICar = parent;
-            //brakePedalCommunicator = new BrakePedalCommunicator(this); //obsolete
-            //accelerationPedalCommunivator = new AccelerationPedalCommunivator(this);
-            //steeringWheelCommunicator = new SteeringWheelCommunicator(this);
+
             extentionCardCommunicator = new USB4702();
             servoDriver = new ServoDriver();
-            angleAndSpeedMeter = new RS232Controller();
+            angleAndSpeedMeter = new RS232Controller(this);
 
-            //TODO: make thread for every initialization
+            //TODO: make thread for every initialization //its actually done for angleAndSpeedMeter
             extentionCardCommunicator.Initialize();
             servoDriver.Initialize();
             angleAndSpeedMeter.Initialize();
@@ -133,5 +130,22 @@ namespace autonomiczny_samochod
            // return (brakePedalCommunicator.IsInitiated() && accelerationPedalCommunivator.IsInitiated() && steeringWheelCommunicator.IsInitiated());
         }
 
+        internal void WheelAngleAcquired(double angle)
+        {
+            SteeringWheelAngleInfoReceivedEventHandler evWheelAngleReceived = evSteeringWheelAngleInfoReceived;
+            if (evWheelAngleReceived != null)
+            {
+                evWheelAngleReceived(this, new SteeringWheelAngleInfoReceivedEventArgs(angle));
+            }
+        }
+
+        internal void BrakePositionsAcquired(double position)
+        {
+            BrakePositionReceivedEventHandler brakePosReceived = evBrakePositionReceived;
+            if (brakePosReceived != null)
+            {
+                brakePosReceived(this, new BrakePositionReceivedEventArgs(position));
+            }
+        }
     }
 }

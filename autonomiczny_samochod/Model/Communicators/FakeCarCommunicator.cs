@@ -11,6 +11,7 @@ namespace autonomiczny_samochod
     {
         public event SpeedInfoReceivedEventHander evSpeedInfoReceived;
         public event SteeringWheelAngleInfoReceivedEventHandler evSteeringWheelAngleInfoReceived;
+        public event BrakePositionReceivedEventHandler evBrakePositionReceived;
 
         private FakeCarModel model;
 
