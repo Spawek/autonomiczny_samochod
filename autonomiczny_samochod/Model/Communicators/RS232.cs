@@ -12,7 +12,7 @@ namespace autonomiczny_samochod
     public class RS232Controller
     {
         // Create the serial port with basic settings 
-        private SerialPort port = new SerialPort("COM4", 9600, Parity.None, 8, StopBits.One); //TODO: add choosing COM no from form
+        private SerialPort port = new SerialPort("COM5", 9600, Parity.None, 8, StopBits.One); //TODO: add choosing COM no from form
 
         //messages
         char[] giveMeSteeringWheelAngleMsg = new char[] { '1', 'P', (char)13 };
@@ -164,7 +164,7 @@ namespace autonomiczny_samochod
             List<int> readMsg = readWordFromRS232();
             if (readMsg.Count != 3)
             {
-                Logger.Log(this, String.Format("wrong received message length: {0}", readMsg.Count, 1));
+                Logger.Log(this, String.Format("wrong received message length: {0}", readMsg.Count), 1);
             }
             else
             {
@@ -197,13 +197,13 @@ namespace autonomiczny_samochod
             List<int> readMsg = readWordFromRS232();
             if (readMsg.Count != 3)
             {
-                Logger.Log(this, String.Format("wrong received message length: {0}", readMsg.Count, 1));
+                Logger.Log(this, String.Format("wrong received message length: {0}", readMsg.Count), 1);
             }
             else
             {
                 if (readMsg[0] == 'A')
                 {
-                    BrakeRead = readMsg[1] * 64 + readMsg[2];
+                    SteeringWheelRead = readMsg[1] * 64 + readMsg[2];
                     Logger.Log(this, String.Format("Steering wheel possition received from RS232: {0}", SteeringWheelRead));
                     Logger.Log(this, String.Format("buff[0]: {0}, buff[1]: {1}, buff[2]: {2}", readMsg[0], readMsg[1], readMsg[2]));
                 }
@@ -381,17 +381,29 @@ namespace autonomiczny_samochod
              * due to StackOverflow:
              * only Read() should be used (returns byte, not char - chars bugs the code!)
              */
-            if (!RS232dataIsBeingRead)
-            { //TODO: think about doing it in new thread
-                RS232dataIsBeingRead = true;
-                int byteRead;
-                while ((byteRead = port.ReadByte()) != -1) //-1 is when there is end of stream
-                {
-                    RS232SignalsInputList.AddLast(byteRead);
+                if (!RS232dataIsBeingRead)
+                { //TODO: think about doing it in new thread
+                    RS232dataIsBeingRead = true;
+                    int byteRead;
+                    try
+                    {
+                        while ((byteRead = port.ReadByte()) != -1) //-1 is when there is end of stream
+                        {
+                            RS232SignalsInputList.AddLast(byteRead);
+                        }
+                        RS232dataIsBeingRead = false;
+                    }
+                    catch (System.TimeoutException)
+                    {
+                        Logger.Log(this, "RS232 timeout has occured", 2);
+                    }
+                    finally
+                    {
+                        RS232dataIsBeingRead = false;
+                    }
                 }
-                RS232dataIsBeingRead = false;
-            } 
-            //else just end 
+                //else just end 
+          
         }
 
         /// <summary>

@@ -26,6 +26,13 @@ namespace autonomiczny_samochod
                 return ICar.SteeringWheelAngleRegulator;
             }
         }
+        public IBrakeRegulator BrakeRegulator
+        {
+            get
+            {
+                return ICar.BrakeRegulator;
+            }
+        }
 
         public ICar ICar { get; private set; }
 
@@ -101,6 +108,12 @@ namespace autonomiczny_samochod
         {
             ISpeedRegulator.evNewSpeedSettingCalculated += new NewSpeedSettingCalculatedEventHandler(ISpeedRegulator_evNewSpeedSettingCalculated);
             ISteeringWheelAngleRegulator.evNewSteeringWheelSettingCalculated += new NewSteeringWheelSettingCalculatedEventHandler(ISteeringWheelAngleRegulator_evNewSteeringWheelSettingCalculated);
+            BrakeRegulator.evNewBrakeSettingCalculated += new NewBrakeSettingCalculatedEventHandler(BrakeRegulator_evNewBrakeSettingCalculated);
+        }
+
+        void BrakeRegulator_evNewBrakeSettingCalculated(object sender, NewBrakeSettingCalculatedEventArgs args)
+        {
+            extentionCardCommunicator.SetBrake(args.GetBrakeSetting());
         }
 
         void ISteeringWheelAngleRegulator_evNewSteeringWheelSettingCalculated(object sender, NewSteeringWheelSettingCalculateddEventArgs args)

@@ -5,6 +5,7 @@ using System.Text;
 using Pololu.UsbWrapper;
 using Pololu.Usc;
 using Helpers;
+using autonomiczny_samochod;
 
 //Created by Mateusz Nowakowski
 //Refactored and merged by Maciej (Spawek) Oziebly 
@@ -32,6 +33,7 @@ namespace car_communicator
         public const int GEAR_D = 7800;
 
         Usc Driver = null;
+
         public void Initialize()
         {
             List<DeviceListItem> list = Usc.getConnectedDevices();

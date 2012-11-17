@@ -26,14 +26,14 @@ namespace autonomiczny_samochod.Model.Regulators
 
         private PIDSettings settigs;
 
-        private string reulatorgName;
+        private string reulatorName;
 
         public double CalculatedSteering { get; private set; }
         
         public PIDRegulator(PIDSettings stgs, string regName)
         {
             settigs = stgs;
-            reulatorgName = regName;
+            reulatorName = regName;
         }
 
         /// <summary>
@@ -44,6 +44,7 @@ namespace autonomiczny_samochod.Model.Regulators
         /// <returns>steering setting</returns>
         public double ProvideObjectCurrentValueToRegulator(double currValue)
         {
+            Logger.Log(this, String.Format("New object current value has been acquired: {0}", currValue));
             return CalculateSteering(currValue);
         }
 
@@ -54,13 +55,14 @@ namespace autonomiczny_samochod.Model.Regulators
         /// <returns></returns>
         public double SetTargetValue(double target)
         {
+            Logger.Log(this, String.Format("New target value has been set: {0}", target));
             targetValue = target;
             return CalculateSteering(lastObjectValueReceived); //calculates steering with new target value and old current value
         }
 
         private double CalculateSteering(double currValue)
         {
-            TimeSpan timeFromLastValueReceived = lastObjectValueReceivedTime - DateTime.Now;
+            TimeSpan timeFromLastValueReceived = DateTime.Now - lastObjectValueReceivedTime;
             double deviation = targetValue - currValue;
 
             //P
@@ -93,6 +95,16 @@ namespace autonomiczny_samochod.Model.Regulators
             lastDeviation = deviation; //nice option to check is letting lastDeviation always be 0
 
             return CalculatedSteering;
+        }
+
+        internal IDictionary<string, double> GetRegulatorParameters()
+        {
+            Dictionary<string, double> dict = new Dictionary<string, double>();
+            dict[reulatorName + "_P_FACTOR"] = P_Factor;
+            dict[reulatorName + "_I_FACTOR"] = I_Factor;
+            dict[reulatorName + "_D_FACTOR"] = D_Factor;
+
+            return dict;
         }
     }
 }

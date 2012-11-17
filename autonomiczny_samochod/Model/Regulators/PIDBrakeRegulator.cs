@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using Helpers;
 
 namespace autonomiczny_samochod.Model.Regulators
 {
@@ -23,9 +23,9 @@ namespace autonomiczny_samochod.Model.Regulators
 
         public ICar ICar { get; set; }
 
-        public void GetRegulatorParameters()
+        public IDictionary<string, double> GetRegulatorParameters()
         {
-            throw new NotImplementedException();
+            return regulator.GetRegulatorParameters();
         }
 
         private class Settings : PIDSettings
@@ -62,6 +62,12 @@ namespace autonomiczny_samochod.Model.Regulators
 
             ICar.evTargetSteeringWheelAngleChanged += new TargetSteeringWheelAngleChangedEventHandler(ICar_evTargetSteeringWheelAngleChanged);
             ICar.CarComunicator.evBrakePositionReceived += new BrakePositionReceivedEventHandler(CarComunicator_evBrakePositionReceived);
+            evNewBrakeSettingCalculated += new NewBrakeSettingCalculatedEventHandler(PIDBrakeRegulator_evNewBrakeSettingCalculated);
+        }
+
+        void PIDBrakeRegulator_evNewBrakeSettingCalculated(object sender, NewBrakeSettingCalculatedEventArgs args)
+        {
+            Logger.Log(this, String.Format("New brake steering has been calculated: {0}", args.GetBrakeSetting()));
         }
 
         public void SetTarget(double target)
