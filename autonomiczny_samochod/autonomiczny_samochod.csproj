@@ -70,6 +70,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\Regulators\IBrakeRegulator.cs" />
     <Compile Include="Model\Communicators\RS232.cs" />
     <Compile Include="Model\Communicators\ServoDriver.cs" />
     <Compile Include="Model\Communicators\USB4702.cs" />
@@ -80,6 +81,9 @@
     <Compile Include="Model\Car\ExampleCar.cs" />
     <Compile Include="Model\Car\RealCar.cs" />
     <Compile Include="Model\Regulators\PIDConsts.cs" />
+    <Compile Include="Model\Regulators\PIDRegulator.cs" />
+    <Compile Include="Model\Regulators\PIDSettings.cs" />
+    <Compile Include="Model\Regulators\PIDBrakeRegulator.cs" />
     <Compile Include="Test\Fakes\FakeCarModel.cs" />
     <Compile Include="Model\Regulators\PIDSpeedRegulator.cs" />
     <Compile Include="Model\Regulators\PIDSteeringWheelAngleRegulator.cs" />

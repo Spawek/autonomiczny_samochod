@@ -66,6 +66,12 @@ namespace autonomiczny_samochod
         {
             get;
         }
+
+        IBrakeRegulator BrakeRegulator
+        {
+            get;
+        }
+    
         void SetTargetWheelAngle(double targetAngle);
 
         void SetTargetSpeed(double targetSpeed);

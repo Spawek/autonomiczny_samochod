@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Helpers;
+using autonomiczny_samochod.Model.Regulators;
 
 namespace autonomiczny_samochod.Model.Car
 {
@@ -16,6 +17,7 @@ namespace autonomiczny_samochod.Model.Car
         public CarController Controller { get; private set; }
         public ISpeedRegulator SpeedRegulator { get; private set; }
         public ISteeringWheelAngleRegulator SteeringWheelAngleRegulator { get; private set; }
+        public IBrakeRegulator BrakeRegulator { get; private set; }
 
         public bool IsAlertBrakeActive { get; private set; }
         public CarInformations CarInfo { get; private set; }
@@ -35,6 +37,8 @@ namespace autonomiczny_samochod.Model.Car
 
             //SteeringWheelAngleRegulator = new SimpleSteeringWheelRegulator(this);
             SteeringWheelAngleRegulator = new FakeSteeringWheelRegulator();
+
+            BrakeRegulator = new PIDBrakeRegulator(this);
 
             CarComunicator.InitRegulatorsEventsHandling();  //TODO: REFACTOR THIS SHIT!!! //for now this is needed, because reagulators does not exists when communicator constructor is invoked
 
