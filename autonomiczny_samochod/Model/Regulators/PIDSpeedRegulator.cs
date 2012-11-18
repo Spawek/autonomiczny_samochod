@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Helpers;
+using autonomiczny_samochod.Model.Regulators;
 
 namespace autonomiczny_samochod
 {
@@ -21,22 +22,51 @@ namespace autonomiczny_samochod
         }
 
         //copies of speed informations
-        private double targetSpeedLocalCopy = -66.6;
-        private double currentSpeedLocalCopy = -66.6;
-        private double lastSteeringSeetingSend = -66.6;
+        private double targetSpeedLocalCopy = 0.0;
+        private double currentSpeedLocalCopy = 0.0;
+        private double lastSteeringSeetingSend = 0.0;
 
         //alert brake fields
-        private const double ALERT_BRAKE_SPEED = -100.0;
+        private const double ALERT_BRAKE_SPEED = 0.0;
         private bool alertBrakeActive = false;
 
         //timer initialization
         private System.Windows.Forms.Timer mTimer = new System.Windows.Forms.Timer();
         private const int TIMER_INTERVAL_IN_MS = 10;
 
+        private class Settings : PIDSettings
+        {
+            public Settings()
+            {
+                //P part settings
+                P_FACTOR_MULTIPLER = 1;
+
+                //I part settings
+                I_FACTOR_MULTIPLER = 0; //hypys radzi, żeby to wyłączyć bo może być niestabilny (a tego baardzo nie chcemy)
+                I_FACTOR_SUM_MAX_VALUE = 0;
+                I_FACTOR_SUM_MIN_VALUE = 0;
+                I_FACTOR_SUM_SUPPRESSION_PER_SEC = 0; // = 0.88; //1.0 = suppresing disabled
+
+                //D part settings
+                D_FACTOR_MULTIPLER = 0;
+                D_FACTOR_SUPPRESSION_PER_SEC = 0;
+                D_FACTOR_SUM_MIN_VALUE = 0;
+                D_FACTOR_SUM_MAX_VALUE = 0;
+
+                //steering limits
+                MAX_FACTOR_CONST = 100; // = 100.0; //MAX throtle
+                MIN_FACTOR_CONST = -100; // = -100.0; //MAX brake
+            }
+        }
+
+        private PIDRegulator regulator;
+
         public PIDSpeedRegulator(ICar parent)
         {
             Car = parent;
             CarComunicator = parent.CarComunicator;
+
+            regulator = new PIDRegulator(new Settings(), "speed PID regulator");
 
             Car.evAlertBrake += new EventHandler(Car_evAlertBrake);
             Car.evTargetSpeedChanged += new TargetSpeedChangedEventHandler(Car_evTargetSpeedChanged);
@@ -84,7 +114,7 @@ namespace autonomiczny_samochod
             }
             else
             {
-                double calculatedSteeringSetting = CalculateSteeringSetting();
+                double calculatedSteeringSetting = regulator.ProvideObjectCurrentValueToRegulator(currentSpeedLocalCopy);
 
                 if (lastSteeringSeetingSend != calculatedSteeringSetting)
                 {
@@ -96,57 +126,6 @@ namespace autonomiczny_samochod
 
                     lastSteeringSeetingSend = calculatedSteeringSetting;
                 }
-            }
-        }
-
-        //variables needed in CalculateSteeringSetting() foo
-        private double I_Factor_sum = 0.0;
-        private double D_Factor_sum = 0.0;
-        private double LastDiffBetwTargetAndCurrentValue = 0.0;
-
-        //declared here to make logging possible
-        private double P_factor;
-        private double I_factor;
-        private double D_factor;
-
-        private double CalculateSteeringSetting()
-        {
-            if(currentSpeedLocalCopy == -66.6)
-            {
-                Logger.Log(this, "currentSpeedLocalCopy is not initialized! Calculations will not be done");
-                return 0.0;
-            }
-            else if(targetSpeedLocalCopy == -66.6)
-            {
-                Logger.Log(this, "targetSpeedLocalCopy is not initialized! Calculations will not be done");
-                return 0.0;
-            }
-            else
-            {
-                //common side calculations
-                double CurrentDiffBetwTargetAndCurrentValue = targetSpeedLocalCopy - currentSpeedLocalCopy;
-                double DiffBetwTargetAndCurrentValueChange = CurrentDiffBetwTargetAndCurrentValue - LastDiffBetwTargetAndCurrentValue;
-                LastDiffBetwTargetAndCurrentValue = CurrentDiffBetwTargetAndCurrentValue;
-
-                //I side calculations
-                I_Factor_sum *= regulatorConsts.I_FACTOR_SUM_SUPPRESING_CONST; //integral suppresing 
-                I_Factor_sum += CurrentDiffBetwTargetAndCurrentValue; //adding new value to intergral
-                Limiter.Limit(ref I_Factor_sum, regulatorConsts.I_FACTOR_SUM_MIN_VAlUE_CONST, regulatorConsts.I_FACTOR_SUM_MAX_VAlUE_CONST); //limiting intergal
-
-                //D side calculatios
-                D_Factor_sum *= regulatorConsts.D_FACTOR_SUPPRESING_CONST; //"integral" suppresing
-                D_Factor_sum += DiffBetwTargetAndCurrentValueChange; //adding new value to "integral"
-
-                //calculating P, I, D factors
-                P_factor = CurrentDiffBetwTargetAndCurrentValue * regulatorConsts.P_FACTOR_CONST;
-                I_factor = I_Factor_sum * regulatorConsts.I_FACTOR_CONST;
-                D_factor = D_Factor_sum * regulatorConsts.D_FACTOR_CONST;
-
-                //calculating and limiting regulator output
-                double PID_factor = P_factor + I_factor + D_factor;
-                double Limitted_PID_Factor = Limiter.ReturnLimmitedVar(PID_factor, regulatorConsts.MIN_FACTOR_CONST, regulatorConsts.MAX_FACTOR_CONST);
-
-                return Limitted_PID_Factor;
             }
         }
 
@@ -164,12 +143,7 @@ namespace autonomiczny_samochod
 
         public IDictionary<string, double> GetRegulatorParameters()
         {
-            Dictionary<string, double> dict = new Dictionary<string, double>();
-            dict["P_FACTOR"] = P_factor;
-            dict["I_FACTOR"] = I_factor;
-            dict["D_FACTOR"] = D_factor;
-
-            return dict;
+            return regulator.GetRegulatorParameters();
         }
     }
 }

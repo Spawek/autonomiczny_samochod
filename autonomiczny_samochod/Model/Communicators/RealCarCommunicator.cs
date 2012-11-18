@@ -118,12 +118,19 @@ namespace autonomiczny_samochod
 
         void ISteeringWheelAngleRegulator_evNewSteeringWheelSettingCalculated(object sender, NewSteeringWheelSettingCalculateddEventArgs args)
         {
-            //model.WheelAngleSteering = args.getSteeringWheelAngleSetting(); //TODO: remake it
+            extentionCardCommunicator.SetSteeringWheel(args.getSteeringWheelAngleSetting());
         }
 
         void ISpeedRegulator_evNewSpeedSettingCalculated(object sender, NewSpeedSettingCalculatedEventArgs args)
         {
-            //model.SpeedSteering = args.getSpeedSetting(); //TODO: remake it
+            if (args.getSpeedSetting() > 0)
+            {
+                servoDriver.setThrottle(args.getSpeedSetting());
+            }
+            else
+            {
+                servoDriver.setThrottle(0.0);
+            }
         }
 
         public void SendNewSpeedSettingMessage(double speedSetting)

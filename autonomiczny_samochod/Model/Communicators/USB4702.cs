@@ -73,27 +73,43 @@ namespace car_communicator
         /// </summary>
         /// <param name="channel"></param>
         /// <param name="value">0-5V (will be checked anyway - throws if bad)</param>
-        public void setPortAO(int channel, double value)
+        private void setPortAO(int channel, double value)
         {
             if (value > 4 || value < 1)
                 throw new ArgumentException("value is not in range", "value");
 
-            instantAoCtrl.Write(channel, value);
+            try
+            {
+                instantAoCtrl.Write(channel, value);
+
+            }
+            catch (InvalidCastException)
+            {
+                Logger.Log(this, "msg couldn't been send via USB4702 - probably because of no connection", 2);
+            }
         }
 
-        public void setPortDO(int port, byte level)
+        private void setPortDO(int port, byte level)
         {
-            if (level == 1)
+            try
             {
-                buffer |= (1 << port);
-                Console.WriteLine(buffer);
-                instantDoCtrl.Write(0, (byte)buffer);
+                if (level == 1)
+                {
+                    buffer |= (1 << port);
+                    Console.WriteLine(buffer);
+                    instantDoCtrl.Write(0, (byte)buffer);
+                }
+                else
+                {
+                    buffer &= ~(1 << port);
+                    Console.WriteLine(buffer);
+                    instantDoCtrl.Write(0, (byte)buffer);
+                }
+
             }
-            else
+            catch (Exception)
             {
-                buffer &= ~(1 << port);
-                Console.WriteLine(buffer);
-                instantDoCtrl.Write(0, (byte)buffer);
+                Logger.Log(this, "msg couldn't been send via USB4702 - probably because of no connection", 2);
             }
         }
 
@@ -116,7 +132,7 @@ namespace car_communicator
         /// -100 max left [in percents]
         /// 100 max right [in percents]
         /// </param>
-        public void setSteeringWheel(double strength)
+        public void SetSteeringWheel(double strength)
         {
             if (strength < -100 || strength > 100)
             {

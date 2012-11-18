@@ -14,7 +14,7 @@ namespace Helpers
                 throw new ArgumentException("calue is not in current range");
             }
 
-            return value = value * (targetMaxValue - targetMinValue) / (currMaxValue - currMinValue) + targetMinValue - currMinValue;
+            return value = (value - currMinValue) * (targetMaxValue - targetMinValue) / (currMaxValue - currMinValue) + targetMinValue;
         }
     }
 }

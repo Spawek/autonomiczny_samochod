@@ -21,7 +21,7 @@ namespace autonomiczny_samochod.Model.Regulators
             }
         }
 
-        public ICar ICar { get; set; }
+        public ICar ICar { get; private set; }
 
         public IDictionary<string, double> GetRegulatorParameters()
         {
@@ -60,9 +60,35 @@ namespace autonomiczny_samochod.Model.Regulators
             ICar = car;
             regulator = new PIDRegulator(new Settings(), "brake PID regulator");
 
-            ICar.evTargetSteeringWheelAngleChanged += new TargetSteeringWheelAngleChangedEventHandler(ICar_evTargetSteeringWheelAngleChanged);
+            ICar.evTargetSpeedChanged += new TargetSpeedChangedEventHandler(ICar_evTargetSpeedChanged);
+            ICar.SpeedRegulator.evNewSpeedSettingCalculated += new NewSpeedSettingCalculatedEventHandler(SpeedRegulator_evNewSpeedSettingCalculated);
             ICar.CarComunicator.evBrakePositionReceived += new BrakePositionReceivedEventHandler(CarComunicator_evBrakePositionReceived);
             evNewBrakeSettingCalculated += new NewBrakeSettingCalculatedEventHandler(PIDBrakeRegulator_evNewBrakeSettingCalculated);
+        }
+
+        void SpeedRegulator_evNewSpeedSettingCalculated(object sender, NewSpeedSettingCalculatedEventArgs args)
+        {
+            if (args.getSpeedSetting() > 0)
+            {
+                SetTarget(0);
+            }
+            else
+            {
+                SetTarget(-1 * args.getSpeedSetting());
+            }
+        }
+
+        private bool stopModeOn = false;
+
+        void ICar_evTargetSpeedChanged(object sender, TargetSpeedChangedEventArgs args)
+        {
+            double targetSpeed = args.GetTargetSpeed();
+
+            if (targetSpeed > 0.1 && targetSpeed < 0.1)
+                stopModeOn = true;
+            else
+                stopModeOn = false;
+
         }
 
         void PIDBrakeRegulator_evNewBrakeSettingCalculated(object sender, NewBrakeSettingCalculatedEventArgs args)
@@ -70,9 +96,28 @@ namespace autonomiczny_samochod.Model.Regulators
             Logger.Log(this, String.Format("New brake steering has been calculated: {0}", args.GetBrakeSetting()));
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target">has to be in range[0, 100][%]</param>
         public void SetTarget(double target)
         {
-            double calculatedSteering = regulator.SetTargetValue(target);
+            if (Limiter.LimitAndReturnTrueIfLimitted(ref target, 0, 100))
+            {
+                Logger.Log(this, "target brake is not in range [0, 100]", 1);
+            }
+
+            double calculatedSteering;
+            if (stopModeOn)
+            {
+                calculatedSteering = regulator.SetTargetValue(100);
+            }
+            else
+            {
+                calculatedSteering = regulator.SetTargetValue(target);
+            }
+
             NewBrakeSettingCalculatedEventHandler temp = evNewBrakeSettingCalculated;
             if (temp != null)
             {
@@ -88,11 +133,6 @@ namespace autonomiczny_samochod.Model.Regulators
             {
                 temp(this, new NewBrakeSettingCalculatedEventArgs(calculatedSteering));
             }
-        }
-
-        void ICar_evTargetSteeringWheelAngleChanged(object sender, TargetSteeringWheelAngleChangedEventArgs args)
-        {
-            regulator.targetValue = args.GetTargetWheelAngle();
         }
 
     }

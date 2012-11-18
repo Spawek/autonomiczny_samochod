@@ -32,11 +32,12 @@ namespace autonomiczny_samochod.Model.Car
             //regulators and communicator initiation 
             CarComunicator = new RealCarCommunicator(this); // = new RealCarCommunicator(this);
 
-            //SpeedRegulator = new PIDSpeedRegulator(this);
-            SpeedRegulator = new FakeSpeedRegulator();
+            SpeedRegulator = new PIDSpeedRegulator(this);
+            //SpeedRegulator = new FakeSpeedRegulator();
 
             //SteeringWheelAngleRegulator = new SimpleSteeringWheelRegulator(this);
-            SteeringWheelAngleRegulator = new FakeSteeringWheelRegulator();
+            SteeringWheelAngleRegulator = new PIDSteeringWheelAngleRegulator(this);
+            //SteeringWheelAngleRegulator = new FakeSteeringWheelRegulator();
 
             BrakeRegulator = new PIDBrakeRegulator(this);
 
