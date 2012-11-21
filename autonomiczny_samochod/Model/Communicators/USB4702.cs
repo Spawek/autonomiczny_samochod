@@ -111,7 +111,7 @@ namespace car_communicator
                 }
                 else
                 {
-                    throw new ArgumentException("wrong level value - it should be 0/1", "level")
+                    throw new ArgumentException("wrong level value - it should be 0/1", "level");
                 }
 
             }

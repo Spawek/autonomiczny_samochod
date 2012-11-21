@@ -16,10 +16,30 @@ namespace autonomiczny_samochod
 
         private SpeedRegulatorPIDParameters regulatorConsts { get; set; }
 
+        /// <summary>
+        /// setting this value will also send event "evNewSpeedSettingCalculated"
+        /// </summary>
         public double SpeedSteering
         {
-            get { return lastSteeringSeetingSend; }
+            private set
+            {
+                if (alertBrakeActive)
+                {
+                    __speedSteering__ = ALERT_BRAKE_SPEED;
+                }
+                else
+                {
+                    __speedSteering__ = value;
+                    NewSpeedSettingCalculatedEventHandler newSpeedCalculatedEvent = evNewSpeedSettingCalculated;
+                    if (newSpeedCalculatedEvent != null)
+                    {
+                        newSpeedCalculatedEvent(this, new NewSpeedSettingCalculatedEventArgs(value));
+                    }
+                }
+            }
+            get { return __speedSteering__; }
         }
+        private double __speedSteering__;
 
         //copies of speed informations
         private double targetSpeedLocalCopy = 0.0;
@@ -72,13 +92,6 @@ namespace autonomiczny_samochod
             Car.evTargetSpeedChanged += new TargetSpeedChangedEventHandler(Car_evTargetSpeedChanged);
             evNewSpeedSettingCalculated += new NewSpeedSettingCalculatedEventHandler(SimpleSpeedRegulator_evNewSpeedSettingCalculated);
             CarComunicator.evSpeedInfoReceived += new SpeedInfoReceivedEventHander(CarComunicator_evSpeedInfoReceived);
-            
-            //timer init
-            mTimer.Interval = TIMER_INTERVAL_IN_MS;
-            mTimer.Tick += new EventHandler(mTimer_Tick);
-            mTimer.Start();
-
-            regulatorConsts = new SpeedRegulatorPIDParameters();
         }
 
         //handling external events
@@ -86,53 +99,23 @@ namespace autonomiczny_samochod
         {
             currentSpeedLocalCopy = args.GetSpeedInfo();
             Logger.Log(this, String.Format("new current speed value acquired: {0}", args.GetSpeedInfo()));
-        }
-        void SimpleSpeedRegulator_evNewSpeedSettingCalculated(object sender, NewSpeedSettingCalculatedEventArgs args)
-        {
- 	        Logger.Log(this, String.Format("new speed setting calculated: {0}", args.getSpeedSetting()));
-        }
 
-        /// <summary>
-        /// if ALERT_BRAKE is not active 
-        ///     calculate speed steering
-        ///     if (speed steering changed)
-        ///         send it everywhere (by invoking event)
-        ///     end
-        /// end
-        /// </summary>
-        void mTimer_Tick(object sender, EventArgs e)
-        {
-            if (alertBrakeActive)
-            {
-                NewSpeedSettingCalculatedEventHandler alertBrakeSpeedSendingEvent = evNewSpeedSettingCalculated;
-                if (alertBrakeSpeedSendingEvent != null)
-                {
-                    alertBrakeSpeedSendingEvent(this, new NewSpeedSettingCalculatedEventArgs(ALERT_BRAKE_SPEED));
-                }
-
-                lastSteeringSeetingSend = ALERT_BRAKE_SPEED;
-            }
-            else
-            {
-                double calculatedSteeringSetting = regulator.ProvideObjectCurrentValueToRegulator(currentSpeedLocalCopy);
-
-                if (lastSteeringSeetingSend != calculatedSteeringSetting)
-                {
-                    NewSpeedSettingCalculatedEventHandler newSpeedCalculatedEvent = evNewSpeedSettingCalculated;
-                    if (newSpeedCalculatedEvent != null)
-                    {
-                        newSpeedCalculatedEvent(this, new NewSpeedSettingCalculatedEventArgs(calculatedSteeringSetting));
-                    }
-
-                    lastSteeringSeetingSend = calculatedSteeringSetting;
-                }
-            }
+            //this setter also sends event "evNewSpeedSettingCalculated"
+            SpeedSteering = regulator.ProvideObjectCurrentValueToRegulator(currentSpeedLocalCopy);
         }
 
         void Car_evTargetSpeedChanged(object sender, TargetSpeedChangedEventArgs args)
         {
             targetSpeedLocalCopy = args.GetTargetSpeed();
             Logger.Log(this, String.Format("target speed changed to: {0}", args.GetTargetSpeed()));
+
+            //this setter also sends event "evNewSpeedSettingCalculated"
+            SpeedSteering = regulator.SetTargetValue(targetSpeedLocalCopy);
+        }
+
+        void SimpleSpeedRegulator_evNewSpeedSettingCalculated(object sender, NewSpeedSettingCalculatedEventArgs args)
+        {
+ 	        Logger.Log(this, String.Format("new speed setting calculated: {0}", args.getSpeedSetting()));
         }
 
         void Car_evAlertBrake(object sender, EventArgs e)
