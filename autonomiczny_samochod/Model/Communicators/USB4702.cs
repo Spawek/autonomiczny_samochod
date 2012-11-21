@@ -69,19 +69,18 @@ namespace car_communicator
         }
         
         /// <summary>
-        /// 
+        /// sets "value" voltage on channel no "channel"
         /// </summary>
-        /// <param name="channel"></param>
+        /// <param name="channel">channel no</param>
         /// <param name="value">0-5V (will be checked anyway - throws if bad)</param>
         private void setPortAO(int channel, double value)
         {
-            if (value > 4 || value < 1)
+            if (value > 5 || value < 0)
                 throw new ArgumentException("value is not in range", "value");
 
             try
             {
                 instantAoCtrl.Write(channel, value);
-
             }
             catch (InvalidCastException)
             {
@@ -89,7 +88,12 @@ namespace car_communicator
             }
         }
 
-        private void setPortDO(int port, byte level)
+        /// <summary>
+        /// sets 0/1 "level" on port "port"
+        /// </summary>
+        /// <param name="port">port no</param>
+        /// <param name="level">0/1</param>
+        private void setPortDO(int port, byte level) //TODO: shouldn't it be just bool???
         {
             try
             {
@@ -99,11 +103,15 @@ namespace car_communicator
                     Console.WriteLine(buffer);
                     instantDoCtrl.Write(0, (byte)buffer);
                 }
-                else
+                else if (level == 0)
                 {
                     buffer &= ~(1 << port);
                     Console.WriteLine(buffer);
                     instantDoCtrl.Write(0, (byte)buffer);
+                }
+                else
+                {
+                    throw new ArgumentException("wrong level value - it should be 0/1", "level")
                 }
 
             }
@@ -126,17 +134,18 @@ namespace car_communicator
         }
 
         /// <summary>
-        /// 
+        /// sets power send to steering wheel in percents of power 
+        /// (minus values are counterclockwise, plus values are clockwise)
         /// </summary>
         /// <param name="strength">
-        /// -100 max left [in percents]
-        /// 100 max right [in percents]
+        /// -100 = max counterclockwise [in percents]
+        /// +100 = max clockwise [in percents]
         /// </param>
         public void SetSteeringWheel(double strength)
         {
             if (strength < -100 || strength > 100)
             {
-                Logger.Log(this, "strength is not in range", 2);
+                Logger.Log(this, "steering wheel strength is not in range", 2);
                 throw new ArgumentException("strenght is not in range");
             }
 
@@ -145,6 +154,13 @@ namespace car_communicator
             setPortAO(STEERING_WHEEL_SET_PORT, strength);
         }
 
+        /// <summary>
+        /// sets power send to engine steering brake pedal
+        /// </summary>
+        /// <param name="strength">
+        /// -100 = max pulling brake pedal
+        /// +100 = max pushing brake pedal
+        /// </param>
         public void SetBrake(double strength)
         {
             Logger.Log(this, String.Format("Brake steering value is being set to: {0}%", strength));
@@ -160,7 +176,7 @@ namespace car_communicator
                 strength *= -1;
                 setPortDO(BRAKE_DIRECTION_PORT_NO, BRAKE_BACKWARD_PORT_LEVEL);
             }
-            else
+            else //forward
             {
                 setPortDO(BRAKE_DIRECTION_PORT_NO, BRAKE_FORWARD_PORT_LEVEL);
             }
