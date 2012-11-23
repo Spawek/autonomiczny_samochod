@@ -14,8 +14,6 @@ namespace autonomiczny_samochod
         public ICar Car { get; private set; }
         public ICarCommunicator CarComunicator{ get; private set; }
 
-        private SpeedRegulatorPIDParameters regulatorConsts { get; set; }
-
         /// <summary>
         /// setting this value will also send event "evNewSpeedSettingCalculated"
         /// </summary>

@@ -13,14 +13,8 @@ namespace car_communicator
 {
     public class ServoDriver
     {
-
-        //servos
         public const int GEARBOX_CHANNEL = 0;
         public const int THROTTLE_CHANNEL = 1;
-
-        //extension cards
-        public const int BREAK_CHANNEL = 0;
-        public const int WHEEL_CHANNEL = 1;
 
         public const int MAX_THROTTLE = 7000;
         public const int MIN_THROTTLE = 3900;
@@ -56,18 +50,18 @@ namespace car_communicator
 
         private void setTarget(byte channel, ushort target)
         {
-            if (channel == 0)
+            if (channel == GEARBOX_CHANNEL)
             {
                 if (!(target == GEAR_P || target == GEAR_R || target == GEAR_N || target == GEAR_D))
                 {
                     throw new ApplicationException("wrong target");
                 }
-                else if (channel == 1)
+            }
+            else if (channel == THROTTLE_CHANNEL)
+            {
+                if (target < MIN_THROTTLE || target > MAX_THROTTLE)
                 {
-                    if (target < MIN_THROTTLE || target > MAX_THROTTLE)
-                    {
-                        throw new ApplicationException("wrong target");
-                    }
+                    throw new ApplicationException("wrong target");
                 }
             }
             else
@@ -85,7 +79,7 @@ namespace car_communicator
 
             Helpers.ReScaller.ReScale(ref valueInPercents, 0, 100, (double)MIN_THROTTLE, (double)MAX_THROTTLE);
 
-            setTarget(1, (ushort)valueInPercents);
+            setTarget(THROTTLE_CHANNEL, (ushort)valueInPercents);
         }
 
         /// <summary>
@@ -102,19 +96,19 @@ namespace car_communicator
             switch(gear)
             {
                 case 'p':
-                    setTarget(0, GEAR_P);
+                    setTarget(GEARBOX_CHANNEL, GEAR_P);
                     break;
 
                 case 'r':
-                    setTarget(0, GEAR_R);
+                    setTarget(GEARBOX_CHANNEL, GEAR_R);
                     break;
 
                 case 'n':
-                    setTarget(0, GEAR_N);
+                    setTarget(GEARBOX_CHANNEL, GEAR_N);
                     break;
                 
                 case 'd':
-                    setTarget(0, GEAR_D);
+                    setTarget(GEARBOX_CHANNEL, GEAR_D);
                     break;
             }
         }

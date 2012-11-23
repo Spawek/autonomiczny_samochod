@@ -25,8 +25,8 @@ namespace autonomiczny_samochod.Model.Car
         public RealCar(CarController parent)
         {
             Controller = parent;
-
             CarInfo = new CarInformations();
+
             IsAlertBrakeActive = false;
 
             //regulators and communicator initiation 
