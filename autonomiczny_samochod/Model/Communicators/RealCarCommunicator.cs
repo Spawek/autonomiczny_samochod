@@ -72,6 +72,7 @@ namespace autonomiczny_samochod
             
             SpeedMeasuringTimer.Interval = SPEED_MEASURING_TIMER_INTERVAL_IN_MS;
             SpeedMeasuringTimer.Tick += new EventHandler(SpeedMeasuringTimer_Tick);
+            SpeedMeasuringTimer.Start();
         }
 
         void SpeedMeasuringTimer_Tick(object sender, EventArgs e)

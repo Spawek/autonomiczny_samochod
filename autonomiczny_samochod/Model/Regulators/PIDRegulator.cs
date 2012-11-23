@@ -11,7 +11,6 @@ namespace autonomiczny_samochod.Model.Regulators
         //variables needed in CalculateSteering method
         private double I_Factor_sum = 0.0;
         private double D_Factor_sum = 0.0;
-        private double LastDiffBetwTargetAndCurrentValue = 0.0;
 
         //declared here to make logging possible
         private double P_Factor;
@@ -97,7 +96,7 @@ namespace autonomiczny_samochod.Model.Regulators
             return CalculatedSteering;
         }
 
-        internal IDictionary<string, double> GetRegulatorParameters()
+        public IDictionary<string, double> GetRegulatorParameters()
         {
             Dictionary<string, double> dict = new Dictionary<string, double>();
             dict[reulatorName + "_P_FACTOR"] = P_Factor;

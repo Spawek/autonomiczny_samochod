@@ -54,7 +54,7 @@ namespace car_communicator
                 eventSpeedCounterCtrl.SelectedDevice = new DeviceInformation(deviceDescription);
 
                 eventSpeedCounterCtrl.Channel = 0;
-                eventSpeedCounterCtrl.Enabled = false; // block counter
+                eventSpeedCounterCtrl.Enabled = true; //IMPORTANT: was ----> // false; // block counter
 
                 setPortDO(BRAKE_ENABLE_PORT_NO, BRAKE_ENABLE_ON_PORT_LEVEL); //enabling brake engine
                 setPortDO(BRAKE_STOP_PORT_NO, BRAKE_STOP_ON_PORT_LEVEL);

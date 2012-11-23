@@ -15,7 +15,7 @@ namespace autonomiczny_samochod
         private SerialPort port = new SerialPort("COM5", 9600, Parity.None, 8, StopBits.One); //TODO: add choosing COM no from form
 
         //messages
-        char[] giveMeSteeringWheelAngleMsg = new char[] { '1', 'P', (char)13 };
+        char[] giveMeSteeringWheelAngleMsg = new char[] { '1', 'P', (char)13 }; //TODO: try changing it to byte[] //not necessery, but char[] probably wont work for values > 127...
         char[] giveMeBrakeAngleMsg = new char[] { '2', 'P', (char)13 };
         char[] giveMeSteeringWheelDiagnosisMsg = new char[] { '1', 'D', (char)13 };
         char[] giveMeBrakeDiagnosisMsg = new char[] { '2', 'D', (char)13 };
@@ -134,6 +134,11 @@ namespace autonomiczny_samochod
                     Logger.Log(this, "RS232 timout has occured", 1);
                     //TODO: some timout handling???
                 }
+                catch (Exception e)
+                {
+                    Logger.Log(this, String.Format("RS232 exception has occured: {0}", e.Message), 2);
+                    Logger.Log(this, String.Format("RS232 exception stack trace: {0}", e.StackTrace), 1);
+                }
             }
         }
 
@@ -159,66 +164,68 @@ namespace autonomiczny_samochod
 
         private void ReadBrakesSensors()
         {
-            port.Write(giveMeBrakeAngleMsg, 0, giveMeBrakeAngleMsg.Length);
-
-            List<int> readMsg = readWordFromRS232();
-            if (readMsg.Count != 3)
+            if (!safeWriteToRS232(giveMeBrakeAngleMsg, 0, giveMeBrakeAngleMsg.Length))
             {
-                Logger.Log(this, String.Format("wrong received message length: {0}", readMsg.Count), 1);
-            }
-            else
-            {
-                if (readMsg[0] == 'A')
+                List<int> readMsg = readWordFromRS232();
+                if (readMsg.Count != 3)
                 {
-                    BrakeRead = readMsg[1] * 64 + readMsg[2];
-                    Logger.Log(this, String.Format("Brake possition received from RS232: {0}", BrakeRead));
-                    Logger.Log(this, String.Format("buff[0]: {0}, buff[1]: {1}, buff[2]: {2}", readMsg[0], readMsg[1], readMsg[2]));
+                    Logger.Log(this, String.Format("wrong received message length: {0}", readMsg.Count), 1);
                 }
                 else
                 {
-                    if (readMsg[0] == 'E') //check that condition
+                    if (readMsg[0] == 'A')
                     {
-                        Logger.Log(this, "RS232 received an errror from brakes", 2);
-                        //TODO: some handling?
+                        BrakeRead = readMsg[1] * 64 + readMsg[2];
+                        Logger.Log(this, String.Format("Brake possition received from RS232: {0}", BrakeRead));
+                        Logger.Log(this, String.Format("buff[0]: {0}, buff[1]: {1}, buff[2]: {2}", readMsg[0], readMsg[1], readMsg[2]));
                     }
+                    else
+                    {
+                        if (readMsg[0] == 'E') //check that condition
+                        {
+                            Logger.Log(this, "RS232 received an errror from brakes", 2);
+                            //TODO: some handling?
+                        }
 
-                    port.DiscardInBuffer();
-                    port.DiscardOutBuffer();
-                    Logger.Log(this, String.Format("BRAKE - RS232 is desonchronised! Read is not done. Msg received: {0} {1} {2}", readMsg[0], readMsg[1], readMsg[2]), 1);
+                        port.DiscardInBuffer();
+                        port.DiscardOutBuffer();
+                        Logger.Log(this, String.Format("BRAKE - RS232 is desonchronised! Read is not done. Msg received: {0} {1} {2}", readMsg[0], readMsg[1], readMsg[2]), 1);
+                    }
                 }
+                System.Threading.Thread.Sleep(SLEEP_PER_READ_LOOP);
             }
-            System.Threading.Thread.Sleep(SLEEP_PER_READ_LOOP);
         }
 
         private void ReadSteeringWheelSensor()
         {
-            port.Write(giveMeSteeringWheelAngleMsg, 0, giveMeSteeringWheelAngleMsg.Length);
-
-            List<int> readMsg = readWordFromRS232();
-            if (readMsg.Count != 3)
+            if (!safeWriteToRS232(giveMeSteeringWheelAngleMsg, 0, giveMeSteeringWheelAngleMsg.Length))
             {
-                Logger.Log(this, String.Format("wrong received message length: {0}", readMsg.Count), 1);
-            }
-            else
-            {
-                if (readMsg[0] == 'A')
+                List<int> readMsg = readWordFromRS232();
+                if (readMsg.Count != 3)
                 {
-                    SteeringWheelRead = readMsg[1] * 64 + readMsg[2];
-                    Logger.Log(this, String.Format("Steering wheel possition received from RS232: {0}", SteeringWheelRead));
-                    Logger.Log(this, String.Format("buff[0]: {0}, buff[1]: {1}, buff[2]: {2}", readMsg[0], readMsg[1], readMsg[2]));
+                    Logger.Log(this, String.Format("wrong received message length: {0}", readMsg.Count), 1);
                 }
                 else
                 {
-                    if (readMsg[0] == 'E') //check that condition
+                    if (readMsg[0] == 'A')
                     {
-                        Logger.Log(this, "RS232 received an errror from steering wheel", 2);
-                        //TODO: some handling?
+                        SteeringWheelRead = readMsg[1] * 64 + readMsg[2];
+                        Logger.Log(this, String.Format("Steering wheel possition received from RS232: {0}", SteeringWheelRead));
+                        Logger.Log(this, String.Format("buff[0]: {0}, buff[1]: {1}, buff[2]: {2}", readMsg[0], readMsg[1], readMsg[2]));
                     }
+                    else
+                    {
+                        if (readMsg[0] == 'E') //check that condition
+                        {
+                            Logger.Log(this, "RS232 received an errror from steering wheel", 2);
+                            //TODO: some handling?
+                        }
 
-                    port.DiscardInBuffer();
-                    port.DiscardOutBuffer();
-                    Logger.Log(this, String.Format("STEERING WHEEL - RS232 is desonchronised! Read is not done. Msg received: {0} {1} {2}", readMsg[0], readMsg[1], readMsg[2]), 1);
-                    System.Threading.Thread.Sleep(SLEEP_ON_RS232_DESYNC_IN_MS);
+                        port.DiscardInBuffer();
+                        port.DiscardOutBuffer();
+                        Logger.Log(this, String.Format("STEERING WHEEL - RS232 is desonchronised! Read is not done. Msg received: {0} {1} {2}", readMsg[0], readMsg[1], readMsg[2]), 1);
+                        System.Threading.Thread.Sleep(SLEEP_ON_RS232_DESYNC_IN_MS);
+                    }
                 }
             }
         }
@@ -239,61 +246,63 @@ namespace autonomiczny_samochod
 
         private void DiagnoseSteeringWheel()
         {
-            port.Write(giveMeSteeringWheelDiagnosisMsg, 0, giveMeSteeringWheelDiagnosisMsg.Length);
-
-            List<int> readMsg = readWordFromRS232();
-            if (readMsg.Count != 4)
+            if (!safeWriteToRS232(giveMeSteeringWheelDiagnosisMsg, 0, giveMeSteeringWheelDiagnosisMsg.Length))
             {
-                Logger.Log(this, String.Format("wrong received message length: {0}", readMsg, 1));
+                List<int> readMsg = readWordFromRS232();
+                if (readMsg.Count != 4)
+                {
+                    Logger.Log(this, String.Format("wrong received message length: {0}", readMsg, 1));
+                }
+                else
+                {
+                    if (readMsg[0] == 0)
+                    {
+                        Logger.Log(this, "RS232 sterring wheel diagnosis bit 0 error", 1);
+                    }
+                    if (readMsg[1] == 1)
+                    {
+                        Logger.Log(this, "RS232 sterring wheel diagnosis bit 1 error", 1);
+                    }
+                    if (readMsg[2] == 1)
+                    {
+                        Logger.Log(this, "RS232 sterring wheel diagnosis bit 2 error - magnet is too strong or too close", 1);
+                    }
+                    if (readMsg[3] == 1)
+                    {
+                        Logger.Log(this, "RS232 sterring wheel diagnosis bit 3 error - magnet is too weak or too far", 1);
+                    }
+                }
+                Logger.Log(this, "RS232 Diagnosis done!");
             }
-            else
-            {
-                if (readMsg[0] == 0)
-                {
-                    Logger.Log(this, "RS232 sterring wheel diagnosis bit 0 error", 1);
-                }
-                if (readMsg[1] == 1)
-                {
-                    Logger.Log(this, "RS232 sterring wheel diagnosis bit 1 error", 1);
-                }
-                if (readMsg[2] == 1)
-                {
-                    Logger.Log(this, "RS232 sterring wheel diagnosis bit 2 error - magnet is too strong or too close", 1);
-                }
-                if (readMsg[3] == 1)
-                {
-                    Logger.Log(this, "RS232 sterring wheel diagnosis bit 3 error - magnet is too weak or too far", 1);
-                }
-            }
-            Logger.Log(this, "RS232 Diagnosis done!");
         }
 
         private void DiagnoseBrakes()
         {
-            port.Write(giveMeBrakeDiagnosisMsg, 0, giveMeBrakeDiagnosisMsg.Length);
-
-            List<int> readMsg = readWordFromRS232();
-            if (readMsg.Count != 4)
+            if (!safeWriteToRS232(giveMeBrakeDiagnosisMsg, 0, giveMeBrakeDiagnosisMsg.Length))
             {
-                Logger.Log(this, String.Format("wrong received message length: {0}", readMsg, 1));
-            }
-            else
-            {
-                if (readMsg[0] == 0)
+                List<int> readMsg = readWordFromRS232();
+                if (readMsg.Count != 4)
                 {
-                    Logger.Log(this, "RS232 brake diagnosis bit 0 error", 1);
+                    Logger.Log(this, String.Format("wrong received message length: {0}", readMsg, 1));
                 }
-                if (readMsg[1] == 1)
+                else
                 {
-                    Logger.Log(this, "RS232 brake diagnosis bit 1 error", 1);
-                }
-                if (readMsg[2] == 1)
-                {
-                    Logger.Log(this, "RS232 brake diagnosis bit 2 error - magnet is too strong or too close", 1);
-                }
-                if (readMsg[3] == 1)
-                {
-                    Logger.Log(this, "RS232 brake diagnosis bit 3 error - magnet is too weak or too far", 1);
+                    if (readMsg[0] == 0)
+                    {
+                        Logger.Log(this, "RS232 brake diagnosis bit 0 error", 1);
+                    }
+                    if (readMsg[1] == 1)
+                    {
+                        Logger.Log(this, "RS232 brake diagnosis bit 1 error", 1);
+                    }
+                    if (readMsg[2] == 1)
+                    {
+                        Logger.Log(this, "RS232 brake diagnosis bit 2 error - magnet is too strong or too close", 1);
+                    }
+                    if (readMsg[3] == 1)
+                    {
+                        Logger.Log(this, "RS232 brake diagnosis bit 3 error - magnet is too weak or too far", 1);
+                    }
                 }
             }
         }
@@ -395,6 +404,7 @@ namespace autonomiczny_samochod
                     }
                     catch (System.TimeoutException)
                     {
+                        RS232SignalsInputList.Clear(); //clearing list on timeout should prevent desync
                         Logger.Log(this, "RS232 timeout has occured", 2);
                     }
                     finally
@@ -403,7 +413,6 @@ namespace autonomiczny_samochod
                     }
                 }
                 //else just end 
-          
         }
 
         /// <summary>
@@ -414,8 +423,17 @@ namespace autonomiczny_samochod
         {
             LinkedListNode<int> node;
 
+            int timeoutCounter = 0;
             while ((node = RS232SignalsInputList.Find(13)) == null)
+            {
+                if (timeoutCounter++ > READ_TIMEOUT_IN_MS/SLEEP_WHILE_WAITING_FOR_READ_IN_MS)
+                {
+                    RS232SignalsInputList.Clear(); //clearing list on timeout should prevent desync
+                    throw new TimeoutException("RS232 read custom timeout has occured");
+                }
+
                 Thread.Sleep(SLEEP_WHILE_WAITING_FOR_READ_IN_MS);
+            }
 
             //if some "\n" == 13 == end of line was found cut and send left part of list from 1st node with 13
             List<int> output = new List<int>();
@@ -430,5 +448,36 @@ namespace autonomiczny_samochod
 
             return output;
         }
+
+        /// <summary>
+        /// line standard write, but catches exceptions from inside
+        /// returns:
+        ///     false if OK
+        ///     true if ERROR
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        private bool safeWriteToRS232(char[] buffer, int offset, int count)
+        {
+            try
+            {
+                port.Write(buffer, offset, count);
+                return false;
+            }
+            catch (TimeoutException)
+            {
+                RS232SignalsInputList.Clear(); //clearing list on timeout should prevent desync
+                Logger.Log(this, "timeout on write has occured, message was not sent", 1); //TODO: real exceptions handling
+            }
+            catch(Exception)
+            {
+                Logger.Log(this, "some error has occured on writing msg to RS232", 1);
+            }
+
+            return true;
+        }
+
     }
 }

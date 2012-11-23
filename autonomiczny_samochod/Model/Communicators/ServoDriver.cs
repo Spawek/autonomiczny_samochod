@@ -18,8 +18,6 @@ namespace car_communicator
 
         public const int MAX_THROTTLE = 7000;
         public const int MIN_THROTTLE = 3900;
-        public const double MAX_BRAKE = 5.00;
-        public const double MIN_BRAKE = 0.00;
 
         public const int GEAR_P = 4000;
         public const int GEAR_R = 5500;
@@ -43,33 +41,40 @@ namespace car_communicator
             else //more than 1 device
             {
                 Logger.Log(this, "there are more than 1 USC devices - trying to connect last of them", 2);
-                Driver = new Usc(list[list.Count - 1]);
+                Driver = new Usc(list[list.Count - 1]); //last device
                 //TODO: add device recognising
             }
         }
 
         private void setTarget(byte channel, ushort target)
         {
-            if (channel == GEARBOX_CHANNEL)
+            if (Driver != null) //checking if ServoDriver is Initialized
             {
-                if (!(target == GEAR_P || target == GEAR_R || target == GEAR_N || target == GEAR_D))
+                if (channel == GEARBOX_CHANNEL)
                 {
-                    throw new ApplicationException("wrong target");
+                    if (!(target == GEAR_P || target == GEAR_R || target == GEAR_N || target == GEAR_D))
+                    {
+                        throw new ApplicationException("wrong target");
+                    }
                 }
-            }
-            else if (channel == THROTTLE_CHANNEL)
-            {
-                if (target < MIN_THROTTLE || target > MAX_THROTTLE)
+                else if (channel == THROTTLE_CHANNEL)
                 {
-                    throw new ApplicationException("wrong target");
+                    if (target < MIN_THROTTLE || target > MAX_THROTTLE)
+                    {
+                        throw new ApplicationException("wrong target");
+                    }
                 }
+                else
+                {
+                    throw new ApplicationException("unknown channel");
+                }
+
+                Driver.setTarget(channel, target);
             }
             else
             {
-                throw new ApplicationException("unknown target");
+                Logger.Log(this, "target was not set, because ServoDriver is not initialized", 1);
             }
-
-            Driver.setTarget(channel, target);
         }
 
         public void setThrottle(double valueInPercents)
@@ -109,6 +114,10 @@ namespace car_communicator
                 
                 case 'd':
                     setTarget(GEARBOX_CHANNEL, GEAR_D);
+                    break;
+
+                default:
+                    Logger.Log(this, String.Format("trying to set not-existing gear", gear), 2);
                     break;
             }
         }
