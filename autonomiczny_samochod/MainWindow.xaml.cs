@@ -36,16 +36,38 @@ namespace autonomiczny_samochod
 
             Controller.Model.evTargetSteeringWheelAngleChanged += new TargetSteeringWheelAngleChangedEventHandler(Model_evTargetSteeringWheelAngleChanged);
             Controller.Model.CarComunicator.evSteeringWheelAngleInfoReceived += new SteeringWheelAngleInfoReceivedEventHandler(CarComunicator_evSteeringWheelAngleInfoReceived);
+            Controller.Model.CarComunicator.evBrakePositionReceived += new BrakePositionReceivedEventHandler(CarComunicator_evBrakePositionReceived);
 
-            Controller.Model.SpeedRegulator.evNewSpeedSettingCalculated += new NewSpeedSettingCalculatedEventHandler(SpeedRegulator_evNewSpeedSettingCalculated);
+            Controller.Model.SpeedRegulator.evNewSpeedSettingCalculated += new NewSpeedSettingCalculatedEventHandler(SpeedRegulator_evNewSpeedSettingCalculated); //this is also target for brake regulator
             Controller.Model.SteeringWheelAngleRegulator.evNewSteeringWheelSettingCalculated += new NewSteeringWheelSettingCalculatedEventHandler(SteeringWheelAngleRegulator_evNewSteeringWheelSettingCalculated);
-
+            Controller.Model.BrakeRegulator.evNewBrakeSettingCalculated += new NewBrakeSettingCalculatedEventHandler(BrakeRegulator_evNewBrakeSettingCalculated);
+            
             this.KeyDown += new KeyEventHandler(MainWindow_KeyDown);
 
             //initialize timer
             mTimer.Interval = TIMER_INTERVAL_IN_MS;
             mTimer.Tick += new EventHandler(mTimer_Tick);
             mTimer.Start();
+        }
+
+        void CarComunicator_evBrakePositionReceived(object sender, BrakePositionReceivedEventArgs args)
+        {
+            this.Dispatcher.Invoke(
+                new Action<TextBlock, string>((textBox, val)
+                    => textBox.Text = val),
+                        textBlock_currentBrake,
+                        String.Format("{0:0.###}", args.GetPosition())
+            );
+        }
+
+        void BrakeRegulator_evNewBrakeSettingCalculated(object sender, NewBrakeSettingCalculatedEventArgs args)
+        {
+            this.Dispatcher.Invoke(
+                new Action<TextBlock, string>((textBox, val)
+                    => textBox.Text = val),
+                        textBlock_steeringBrake,
+                        String.Format("{0:0.###}", args.GetBrakeSetting())
+            );
         }
 
         void MainWindow_KeyDown(object sender, KeyEventArgs e)
@@ -100,6 +122,23 @@ namespace autonomiczny_samochod
                     => textBox.Text = val),
                         textBlock_steeringSpeed,
                         String.Format("{0:0.###}", args.getSpeedSetting())
+            );
+
+            //target for brake regulator
+            double targetBrake = args.getSpeedSetting();
+            if(targetBrake < 0)
+            {
+                targetBrake *= -1;
+            }
+            else
+            {
+                targetBrake = 0;
+            }
+            this.Dispatcher.Invoke(
+                new Action<TextBlock, string>((textBlock, val)
+                    => textBlock.Text = val),
+                        textBlock_targetBrake,
+                        String.Format("{0:0.###}", targetBrake)
             );
         }
 
