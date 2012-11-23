@@ -20,5 +20,6 @@
         <TextBlock Height="23" HorizontalAlignment="Left" Margin="72,168,0,0" Name="textBlock_currentBrake" Text="TextBlock" VerticalAlignment="Top" />
         <TextBlock Height="23" Margin="164,168,0,0" Name="textBlock_targetBrake" Text="TextBlock" VerticalAlignment="Top" HorizontalAlignment="Left" Width="50" />
         <TextBlock Height="23" Margin="259,168,0,0" Name="textBlock_steeringBrake" Text="TextBlock" VerticalAlignment="Top" HorizontalAlignment="Left" Width="50" />
+        <TextBlock Height="23" HorizontalAlignment="Left" Margin="336,272,0,0" Name="textBlock_alertBrakeActivated" Text="Alert Brake disactivated" VerticalAlignment="Top" />
     </Grid>
 </Window>

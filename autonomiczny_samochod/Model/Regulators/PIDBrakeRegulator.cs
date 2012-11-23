@@ -21,14 +21,7 @@ namespace autonomiczny_samochod.Model.Regulators
             get{ return __brakeSteering__; }
             private set
             {
-                if (alertBrakeActive)
-                {
-                    __brakeSteering__ = ALERT_BRAKE_BRAKE_SETTING;
-                }
-                else
-                {
-                    __brakeSteering__ = value;
-                }
+                __brakeSteering__ = value;
 
                 NewBrakeSettingCalculatedEventHandler temp = evNewBrakeSettingCalculated;
                 if (temp != null)
@@ -112,10 +105,14 @@ namespace autonomiczny_samochod.Model.Regulators
         {
             double targetSpeed = args.GetTargetSpeed();
 
-            if (targetSpeed > 0.1 && targetSpeed < 0.1)
+            if (targetSpeed > -0.1 && targetSpeed < 0.1)
+            {
                 stopModeOn = true;
+            }
             else
+            {
                 stopModeOn = false;
+            }
 
         }
 
@@ -137,7 +134,11 @@ namespace autonomiczny_samochod.Model.Regulators
             }
 
             double calculatedSteering;
-            if (stopModeOn)
+            if (alertBrakeActive)
+            {
+                calculatedSteering = regulator.SetTargetValue(ALERT_BRAKE_BRAKE_SETTING);
+            }
+            else if (stopModeOn)
             {
                 calculatedSteering = regulator.SetTargetValue(100);
             }

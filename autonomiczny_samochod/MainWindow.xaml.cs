@@ -41,6 +41,8 @@ namespace autonomiczny_samochod
             Controller.Model.SpeedRegulator.evNewSpeedSettingCalculated += new NewSpeedSettingCalculatedEventHandler(SpeedRegulator_evNewSpeedSettingCalculated); //this is also target for brake regulator
             Controller.Model.SteeringWheelAngleRegulator.evNewSteeringWheelSettingCalculated += new NewSteeringWheelSettingCalculatedEventHandler(SteeringWheelAngleRegulator_evNewSteeringWheelSettingCalculated);
             Controller.Model.BrakeRegulator.evNewBrakeSettingCalculated += new NewBrakeSettingCalculatedEventHandler(BrakeRegulator_evNewBrakeSettingCalculated);
+
+            Controller.Model.evAlertBrake += new EventHandler(Model_evAlertBrake);
             
             this.KeyDown += new KeyEventHandler(MainWindow_KeyDown);
 
@@ -48,6 +50,15 @@ namespace autonomiczny_samochod
             mTimer.Interval = TIMER_INTERVAL_IN_MS;
             mTimer.Tick += new EventHandler(mTimer_Tick);
             mTimer.Start();
+        }
+
+        void Model_evAlertBrake(object sender, EventArgs e)
+        {
+            this.Dispatcher.Invoke(
+                new Action<TextBlock>((textBlock)
+                    => textBlock.Text = "ALERT BRAKE ACTIVATED!!!!"),
+                    textBlock_alertBrakeActivated
+            );
         }
 
         void CarComunicator_evBrakePositionReceived(object sender, BrakePositionReceivedEventArgs args)

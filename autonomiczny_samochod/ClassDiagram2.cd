@@ -28,7 +28,7 @@
   <Class Name="autonomiczny_samochod.FakeCarCommunicator" Collapsed="true" HideInheritanceLine="true">
     <Position X="23.5" Y="6.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>CgQADBAAAAAAAAABACAAABAABIAAAABAgAABACgsAAA=</HashCode>
+      <HashCode>CgQADBAAAAAAAAABACAAEBAABIAAAABAgAABACgsAAA=</HashCode>
       <FileName>Test\Fakes\FakeCarCommunicator.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -48,7 +48,7 @@
       </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AIAAAASgAQACIAEAAAAAABAAgAAAAAAAAAAAAAAEAgA=</HashCode>
+      <HashCode>AIAAAASgAQACIAEAAAAAABAAgAAAAAAgAAAAAAAEAgA=</HashCode>
       <FileName>MainWindow.xaml.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -60,8 +60,15 @@
     <Members>
       <Property Name="SpeedSteering" Hidden="true" />
     </Members>
+    <NestedTypes>
+      <Enum Name="autonomiczny_samochod.PIDSpeedRegulator.RideMode" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\Regulators\PIDSpeedRegulator.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>EACQAACAAAQAQAAAAgAAABAAgEAAAGAgAAAAICAIEgA=</HashCode>
+      <HashCode>EACQAACAAIQAQAAAAgAAABAQqEAAAGIAAAAAICAIEgA=</HashCode>
       <FileName>Model\Regulators\PIDSpeedRegulator.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -77,7 +84,7 @@
   <Class Name="autonomiczny_samochod.RealCarCommunicator" Collapsed="true" HideInheritanceLine="true">
     <Position X="23.5" Y="5.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>CogALBAAAIAEAAAJAGAAAAFAAAgBAABAAAABICgmAAA=</HashCode>
+      <HashCode>CogALBAAAIAEAAAJAGAAEAFAAAgBAABAAAABICgmAAA=</HashCode>
       <FileName>Model\Communicators\RealCarCommunicator.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -159,7 +166,7 @@
   <Class Name="autonomiczny_samochod.CarModel" Collapsed="true">
     <Position X="26.25" Y="6.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAQBQAAAAAAAACACAgAAAhgJABBBAgBUAAAAIAAAgAQ=</HashCode>
+      <HashCode>AAQBQAAAAAAAACACAgAAAhgBABBBAgJUAAAAIAAAgQQ=</HashCode>
       <FileName>Test\Fakes\CarModel.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -345,12 +352,12 @@
     <Position X="20.25" Y="5" Width="2.5" />
     <AssociationLine Name="ICar" Type="autonomiczny_samochod.ICar" FixedFromPoint="true">
       <Path>
-        <Point X="20.25" Y="5.812" />
-        <Point X="18.75" Y="5.812" />
+        <Point X="20.25" Y="5.874" />
+        <Point X="18.75" Y="5.874" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AgAADBAAAAAAAAAAACAAAAAAAAAAAAAAAAABAAggAAA=</HashCode>
+      <HashCode>AgAADBAAAAAAAAAAACAAEAAAAAAAAAAAAAABAAggAAA=</HashCode>
       <FileName>Model\Communicators\ICarComunicator.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>

@@ -1,11 +1,10 @@
 ﻿TODO:
 	now:
+		- making moving backward and stopping possible!
 		- adding brake H-bridge configuration ports to USB4702 (brakes engine is not working for now)
-		- alert brake rework
 		- stats gathering update
 		- making FakeCarModel working like real model (Kubon???)
 		- starting sequence (using IsInitialized()) + some barier to sync everything
-		- making moving backward possible!
 
 	future:
 		- real time charts drawing (from gathered stats) (it would make regulators tuning much easier)

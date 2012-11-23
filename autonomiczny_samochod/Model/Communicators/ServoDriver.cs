@@ -96,23 +96,23 @@ namespace car_communicator
         /// n - neutral
         /// d - tylko 1 bieg
         /// </param>
-        public void setGear(char gear) //TODO: make some enum
+        public void setGear(Gear gear) //TODO: make some enum
         {
             switch(gear)
             {
-                case 'p':
+                case Gear.parking:
                     setTarget(GEARBOX_CHANNEL, GEAR_P);
                     break;
 
-                case 'r':
+                case Gear.reverse:
                     setTarget(GEARBOX_CHANNEL, GEAR_R);
                     break;
 
-                case 'n':
+                case Gear.neutral:
                     setTarget(GEARBOX_CHANNEL, GEAR_N);
                     break;
                 
-                case 'd':
+                case Gear.drive:
                     setTarget(GEARBOX_CHANNEL, GEAR_D);
                     break;
 

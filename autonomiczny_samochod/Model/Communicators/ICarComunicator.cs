@@ -6,6 +6,13 @@ using Helpers;
 
 namespace autonomiczny_samochod
 {
+    public enum Gear
+    {
+        parking,
+        reverse,
+        neutral,
+        drive
+    }
     //evSpeedInfoReceived
     public delegate void SpeedInfoReceivedEventHander(object sender, SpeedInfoReceivedEventArgs args);
     public class SpeedInfoReceivedEventArgs
@@ -81,5 +88,7 @@ namespace autonomiczny_samochod
         void InitRegulatorsEventsHandling();
 
         bool IsInitiated();
+
+        void SetGear(Gear gear);
     }
 }

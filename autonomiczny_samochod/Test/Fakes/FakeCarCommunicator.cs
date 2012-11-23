@@ -134,6 +134,10 @@ namespace autonomiczny_samochod
             return true; //its fake anyway
         }
 
+        public void SetGear(Gear gear)
+        {
+            model.Gear = gear;
+        }
     }
 }
 

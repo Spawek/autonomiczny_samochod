@@ -167,5 +167,10 @@ namespace autonomiczny_samochod
                 brakePosReceived(this, new BrakePositionReceivedEventArgs(position));
             }
         }
+
+        public void SetGear(Gear gear)
+        {
+            servoDriver.setGear(gear);
+        }
     }
 }

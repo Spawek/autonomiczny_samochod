@@ -19,6 +19,8 @@ namespace autonomiczny_samochod
         public double WheelAngleSteering { get; set; }
         public double BrakeSteering { get; set; }
 
+        public Gear Gear { get; set; }
+
         //actual car parameters
         private double __wheelAngle__ = 0.0;
         private double __carAngle__ = 0.0;
@@ -46,6 +48,8 @@ namespace autonomiczny_samochod
         {
             communicator = carComunicator;
 
+            Gear = Gear.drive; //initial gear
+
             BrakePosition = 0;
             WheelAngle = 0;
             SteeringWheelAngle = 0;
@@ -61,9 +65,17 @@ namespace autonomiczny_samochod
             //brake posiotion
             BrakePosition += BrakeSteering * BRAKE_PUSHING_OR_PULLING_SPEED_FACTOR;
 
-            //speed
             Speed *= SLOWING_DOWN_FACTOR;
-            Speed += SpeedSteering * ACCELERATING_FACTOR;
+
+            if (Gear == Gear.drive)
+            {
+                Speed += SpeedSteering * ACCELERATING_FACTOR;
+            }
+            else if (Gear == Gear.reverse)
+            {
+                Speed -= SpeedSteering * ACCELERATING_FACTOR;
+            }
+
             if (Speed > 0)
             {
                 Speed -= BrakePosition * BRAKING_DOWN_WITH_BRAKES_FACTOR;
@@ -79,7 +91,5 @@ namespace autonomiczny_samochod
             WheelAngle = SteeringWheelAngle * STEERING_WHEEL_TO_WHEELS_TRANSMISSION;
             Logger.Log(this, String.Format("new speed has been modeled: {0}   (current speed steering: {1})", WheelAngle, WheelAngleSteering));
         }
-
-        private DateTime StartingDateTime = DateTime.Now;
     }
 }

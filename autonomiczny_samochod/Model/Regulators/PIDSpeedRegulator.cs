@@ -27,7 +27,18 @@ namespace autonomiczny_samochod
                 }
                 else
                 {
-                    __speedSteering__ = value;
+                    if (Mode == RideMode.forward)
+                    {
+                        __speedSteering__ = value;
+                    }
+                    else if (Mode == RideMode.backward)
+                    {
+                        __speedSteering__ = value * -1;
+                    }
+                    else if (Mode == RideMode.standStill)
+                    {
+                        __speedSteering__ = Math.Abs(value) * -1; //this value has to be < 0 - only braking is allowed, its not dependent on direction of current move; //TODO: check it
+                    }
                 }
 
                 NewSpeedSettingCalculatedEventHandler newSpeedCalculatedEvent = evNewSpeedSettingCalculated;
@@ -52,6 +63,51 @@ namespace autonomiczny_samochod
         //timer initialization
         private System.Windows.Forms.Timer mTimer = new System.Windows.Forms.Timer();
         private const int TIMER_INTERVAL_IN_MS = 10;
+
+        //consts
+        private const double MAX_STAND_STILL_SPEED_IN_MPS = 1; //MPS = meter per s = m/s = 3.6km/h
+        private const double MIN_STAND_STILL_SPEED_IN_MPS = -1;
+
+        private enum RideMode
+        {
+            forward,
+            standStill,
+            backward
+        }
+
+        /// <summary>
+        /// changing mode also changes gear
+        /// </summary>
+        private RideMode Mode
+        {
+            get
+            {
+                return __mode__;
+            }
+            set
+            {
+                if (__mode__ != value)
+                {
+                    switch (value)
+                    {
+                        case RideMode.forward:
+                            Car.CarComunicator.SetGear(Gear.drive);
+                            break;
+
+                        case RideMode.standStill:
+                            Car.CarComunicator.SetGear(Gear.neutral); //it should be better than park - no blocade -> //TODO: check it
+                            break;
+
+                        case RideMode.backward:
+                            Car.CarComunicator.SetGear(Gear.reverse);
+                            break;
+                    }
+                    __mode__ = value;
+                    Logger.Log(this, String.Format("Mode has been changed to: {0}, gear has been changed", value.ToString()), 1);
+                }
+            }
+        }
+        private RideMode __mode__;
 
         private class Settings : PIDSettings
         {
@@ -89,7 +145,7 @@ namespace autonomiczny_samochod
 
             Car.evAlertBrake += new EventHandler(Car_evAlertBrake);
             Car.evTargetSpeedChanged += new TargetSpeedChangedEventHandler(Car_evTargetSpeedChanged);
-            evNewSpeedSettingCalculated += new NewSpeedSettingCalculatedEventHandler(SimpleSpeedRegulator_evNewSpeedSettingCalculated);
+            evNewSpeedSettingCalculated += new NewSpeedSettingCalculatedEventHandler(PIDSpeedRegulator_evNewSpeedSettingCalculated);
             CarComunicator.evSpeedInfoReceived += new SpeedInfoReceivedEventHander(CarComunicator_evSpeedInfoReceived);
         }
 
@@ -103,16 +159,37 @@ namespace autonomiczny_samochod
             SpeedSteering = regulator.ProvideObjectCurrentValueToRegulator(currentSpeedLocalCopy);
         }
 
+        /// <summary>
+        /// depending on what is target speed it can have different meanings
+        /// speed >> 0 ---> going forward
+        /// speed ~= 0 ---> stand still mode
+        /// speed << 0 ---> going backward
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         void Car_evTargetSpeedChanged(object sender, TargetSpeedChangedEventArgs args)
         {
             targetSpeedLocalCopy = args.GetTargetSpeed();
             Logger.Log(this, String.Format("target speed changed to: {0}", args.GetTargetSpeed()));
 
+            if (targetSpeedLocalCopy < MAX_STAND_STILL_SPEED_IN_MPS && targetSpeedLocalCopy > MIN_STAND_STILL_SPEED_IN_MPS)
+            {
+                Mode = RideMode.standStill;
+            }
+            else if (targetSpeedLocalCopy > MAX_STAND_STILL_SPEED_IN_MPS)
+            {
+                Mode = RideMode.forward;
+            }
+            else //if targetSpeedLocalCopy < MIN_STAND_STILL_SPEED_IN_MPS
+            {
+                Mode = RideMode.backward;
+            }
+
             //this setter also sends event "evNewSpeedSettingCalculated"
             SpeedSteering = regulator.SetTargetValue(targetSpeedLocalCopy);
         }
 
-        void SimpleSpeedRegulator_evNewSpeedSettingCalculated(object sender, NewSpeedSettingCalculatedEventArgs args)
+        void PIDSpeedRegulator_evNewSpeedSettingCalculated(object sender, NewSpeedSettingCalculatedEventArgs args)
         {
  	        Logger.Log(this, String.Format("new speed setting calculated: {0}", args.getSpeedSetting()));
         }
