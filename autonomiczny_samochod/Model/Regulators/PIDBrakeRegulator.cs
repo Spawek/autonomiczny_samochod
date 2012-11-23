@@ -13,13 +13,31 @@ namespace autonomiczny_samochod.Model.Regulators
     {
         public event NewBrakeSettingCalculatedEventHandler evNewBrakeSettingCalculated;
 
+        /// <summary>
+        /// setting this property will also send evNewBrakeSettingCalculated event with set value
+        /// </summary>
         public double BrakeSteering
         {
-            get
+            get{ return __brakeSteering__; }
+            private set
             {
-                return regulator.CalculatedSteering;
+                if (alertBrakeActive)
+                {
+                    __brakeSteering__ = ALERT_BRAKE_BRAKE_SETTING;
+                }
+                else
+                {
+                    __brakeSteering__ = value;
+                }
+
+                NewBrakeSettingCalculatedEventHandler temp = evNewBrakeSettingCalculated;
+                if (temp != null)
+                {
+                    temp(this, new NewBrakeSettingCalculatedEventArgs(__brakeSteering__));
+                }
             }
         }
+        private double __brakeSteering__;
 
         public ICar ICar { get; private set; }
 
@@ -27,6 +45,9 @@ namespace autonomiczny_samochod.Model.Regulators
         {
             return regulator.GetRegulatorParameters();
         }
+
+        private bool alertBrakeActive = false;
+        private const double ALERT_BRAKE_BRAKE_SETTING = 100;
 
         private class Settings : PIDSettings
         {
@@ -64,6 +85,13 @@ namespace autonomiczny_samochod.Model.Regulators
             ICar.SpeedRegulator.evNewSpeedSettingCalculated += new NewSpeedSettingCalculatedEventHandler(SpeedRegulator_evNewSpeedSettingCalculated);
             ICar.CarComunicator.evBrakePositionReceived += new BrakePositionReceivedEventHandler(CarComunicator_evBrakePositionReceived);
             evNewBrakeSettingCalculated += new NewBrakeSettingCalculatedEventHandler(PIDBrakeRegulator_evNewBrakeSettingCalculated);
+            ICar.evAlertBrake += new EventHandler(ICar_evAlertBrake);
+        }
+
+        void ICar_evAlertBrake(object sender, EventArgs e)
+        {
+            alertBrakeActive = true;
+            Logger.Log(this, "ALERT BRAKE ACTIVATED!", 2);
         }
 
         void SpeedRegulator_evNewSpeedSettingCalculated(object sender, NewSpeedSettingCalculatedEventArgs args)
@@ -118,21 +146,14 @@ namespace autonomiczny_samochod.Model.Regulators
                 calculatedSteering = regulator.SetTargetValue(target);
             }
 
-            NewBrakeSettingCalculatedEventHandler temp = evNewBrakeSettingCalculated;
-            if (temp != null)
-            {
-                temp(this, new NewBrakeSettingCalculatedEventArgs(calculatedSteering));
-            }
+            //this will also invoke evNewBrakeSettingCalculated event
+            BrakeSteering = calculatedSteering;
         }
 
         void CarComunicator_evBrakePositionReceived(object sender, BrakePositionReceivedEventArgs args)
         {
-            double calculatedSteering = regulator.ProvideObjectCurrentValueToRegulator(args.GetPosition());
-            NewBrakeSettingCalculatedEventHandler temp = evNewBrakeSettingCalculated;
-            if (temp != null)
-            {
-                temp(this, new NewBrakeSettingCalculatedEventArgs(calculatedSteering));
-            }
+            //this will also invoke evNewBrakeSettingCalculated event
+            BrakeSteering = regulator.ProvideObjectCurrentValueToRegulator(args.GetPosition());
         }
 
     }

@@ -13,21 +13,28 @@ namespace autonomiczny_samochod
         public event SteeringWheelAngleInfoReceivedEventHandler evSteeringWheelAngleInfoReceived;
         public event BrakePositionReceivedEventHandler evBrakePositionReceived;
 
-        private FakeCarModel model;
+        private CarModel model;
 
         public ICar ICar { get; private set; }
-        public ISpeedRegulator ISpeedRegulator
+        public ISpeedRegulator SpeedRegulator
         {
             get
             {
                 return ICar.SpeedRegulator;
             }
         }
-        public ISteeringWheelAngleRegulator ISteeringWheelAngleRegulator
+        public ISteeringWheelAngleRegulator SteeringWheelAngleRegulator
         {
             get
             {
                 return ICar.SteeringWheelAngleRegulator;
+            }
+        }
+        public IBrakeRegulator BrakeRegulator
+        {
+            get
+            {
+                return ICar.BrakeRegulator;
             }
         }
 
@@ -40,7 +47,7 @@ namespace autonomiczny_samochod
             //mFakeThread = new System.Threading.Thread(new ThreadStart(mFakeThreadTasks));
             //mFakeThread.Start();
 
-            model = new FakeCarModel(this);
+            model = new CarModel(this);
 
             timer.Interval = TIMER_INTERVAL_IN_MS;
             timer.Tick += new EventHandler(timer_Tick);
@@ -52,8 +59,14 @@ namespace autonomiczny_samochod
         /// </summary>
         public void InitRegulatorsEventsHandling()
         {
-            ISpeedRegulator.evNewSpeedSettingCalculated += new NewSpeedSettingCalculatedEventHandler(ISpeedRegulator_evNewSpeedSettingCalculated);
-            ISteeringWheelAngleRegulator.evNewSteeringWheelSettingCalculated += new NewSteeringWheelSettingCalculatedEventHandler(ISteeringWheelAngleRegulator_evNewSteeringWheelSettingCalculated);
+            SpeedRegulator.evNewSpeedSettingCalculated += new NewSpeedSettingCalculatedEventHandler(ISpeedRegulator_evNewSpeedSettingCalculated);
+            SteeringWheelAngleRegulator.evNewSteeringWheelSettingCalculated += new NewSteeringWheelSettingCalculatedEventHandler(ISteeringWheelAngleRegulator_evNewSteeringWheelSettingCalculated);
+            BrakeRegulator.evNewBrakeSettingCalculated += new NewBrakeSettingCalculatedEventHandler(BrakeRegulator_evNewBrakeSettingCalculated);
+        }
+
+        void BrakeRegulator_evNewBrakeSettingCalculated(object sender, NewBrakeSettingCalculatedEventArgs args)
+        {
+            model.BrakeSteering = args.GetBrakeSetting();
         }
 
         void ISteeringWheelAngleRegulator_evNewSteeringWheelSettingCalculated(object sender, NewSteeringWheelSettingCalculateddEventArgs args)
@@ -79,8 +92,13 @@ namespace autonomiczny_samochod
             {
                 tempSpeedEvent(this, new SpeedInfoReceivedEventArgs(model.Speed));
             }
-        }
 
+            BrakePositionReceivedEventHandler temp = evBrakePositionReceived;
+            if (temp != null)
+            {
+                temp(this, new BrakePositionReceivedEventArgs(model.BrakePosition));
+            }
+        }
 
         void mFakeThreadTasks()
         {
@@ -107,6 +125,7 @@ namespace autonomiczny_samochod
         public void SendNewSteeringWheelAngleSettingMessage(double angleSetting)
         {
             Logger.Log(this, String.Format("new steering angle setting has been send: {0}", angleSetting));
+
             model.WheelAngleSteering = angleSetting;
         }
 

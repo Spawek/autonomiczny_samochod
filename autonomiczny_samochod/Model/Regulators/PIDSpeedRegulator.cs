@@ -23,16 +23,17 @@ namespace autonomiczny_samochod
             {
                 if (alertBrakeActive)
                 {
-                    __speedSteering__ = ALERT_BRAKE_SPEED;
+                    __speedSteering__ = ALERT_BRAKE_SPEED_STEERING;
                 }
                 else
                 {
                     __speedSteering__ = value;
-                    NewSpeedSettingCalculatedEventHandler newSpeedCalculatedEvent = evNewSpeedSettingCalculated;
-                    if (newSpeedCalculatedEvent != null)
-                    {
-                        newSpeedCalculatedEvent(this, new NewSpeedSettingCalculatedEventArgs(value));
-                    }
+                }
+
+                NewSpeedSettingCalculatedEventHandler newSpeedCalculatedEvent = evNewSpeedSettingCalculated;
+                if (newSpeedCalculatedEvent != null)
+                {
+                    newSpeedCalculatedEvent(this, new NewSpeedSettingCalculatedEventArgs(__speedSteering__));
                 }
             }
             get { return __speedSteering__; }
@@ -45,7 +46,7 @@ namespace autonomiczny_samochod
         private double lastSteeringSeetingSend = 0.0;
 
         //alert brake fields
-        private const double ALERT_BRAKE_SPEED = 0.0;
+        private const double ALERT_BRAKE_SPEED_STEERING = 0.0;
         private bool alertBrakeActive = false;
 
         //timer initialization
@@ -119,7 +120,8 @@ namespace autonomiczny_samochod
         void Car_evAlertBrake(object sender, EventArgs e)
         {
             alertBrakeActive = true;
-            Logger.Log(this, "ALERT BRAKE!");
+            SpeedSteering = ALERT_BRAKE_SPEED_STEERING;
+            Logger.Log(this, "ALERT BRAKE ACRIVATED!", 2);
         }
 
         public IDictionary<string, double> GetRegulatorParameters()

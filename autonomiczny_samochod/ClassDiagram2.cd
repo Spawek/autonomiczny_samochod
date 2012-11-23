@@ -28,7 +28,7 @@
   <Class Name="autonomiczny_samochod.FakeCarCommunicator" Collapsed="true" HideInheritanceLine="true">
     <Position X="23.5" Y="6.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>CgQADBAAAAAAAAAAAGAAABAAAAAAAABAgAABICgoAAA=</HashCode>
+      <HashCode>CgQADBAAAAAAAAABACAAABAABIAAAABAgAABACgsAAA=</HashCode>
       <FileName>Test\Fakes\FakeCarCommunicator.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -61,7 +61,7 @@
       <Property Name="SpeedSteering" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>EACQAACAAAQAQACAAgAAABAAgEAAAGAgAAAAICAIAgA=</HashCode>
+      <HashCode>EACQAACAAAQAQAAAAgAAABAAgEAAAGAgAAAAICAIEgA=</HashCode>
       <FileName>Model\Regulators\PIDSpeedRegulator.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -156,11 +156,11 @@
       <FileName>Model\Regulators\ISteeringWheelAngleRegulator.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="autonomiczny_samochod.FakeCarModel" Collapsed="true">
+  <Class Name="autonomiczny_samochod.CarModel" Collapsed="true">
     <Position X="26.25" Y="6.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAQBQAAABAAAACACCAAAAhAJAABBAiBUAAAAIAAAgAQ=</HashCode>
-      <FileName>Test\Fakes\FakeCarModel.cs</FileName>
+      <HashCode>AAQBQAAAAAAAACACAgAAAhgJABBBAgBUAAAAIAAAgAQ=</HashCode>
+      <FileName>Test\Fakes\CarModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="autonomiczny_samochod.FakeSpeedRegulator" Collapsed="true">
@@ -182,7 +182,7 @@
   <Class Name="autonomiczny_samochod.Model.Regulators.PIDBrakeRegulator" Collapsed="true">
     <Position X="15.75" Y="12" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AIAAARAAAAACQAAAAAAAAAgCAIAAAAAAAAAAACACAAI=</HashCode>
+      <HashCode>AIAQARAEAAACSAAAAAAgAAgCAIAAAAAAAAAAACACAAI=</HashCode>
       <FileName>Model\Regulators\PIDBrakeRegulator.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />

@@ -6,7 +6,7 @@ using Helpers;
 
 namespace autonomiczny_samochod
 {
-    public class FakeCarModel
+    public class CarModel
     {
         private ICarCommunicator communicator;
         private System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
@@ -15,72 +15,41 @@ namespace autonomiczny_samochod
         private static int TIMER_INTERVAL_IN_MS = 15;
 
         //steering parameters
-        private double __speedSteering__ = 0;
-        private double __wheelAngleSteering__ = 0;
-
-        //steering parameters
-        public double SpeedSteering
-        {
-            get
-            {
-                return __speedSteering__;
-            }
-            set
-            {
-                __speedSteering__ = value;
-            }
-        }
-        public double WheelAngleSteering
-        {
-            get 
-            { 
-                return __wheelAngleSteering__; 
-            }
-            set 
-            { 
-                __wheelAngleSteering__ = value; 
-            }
-        }
+        public double SpeedSteering { get; set; }
+        public double WheelAngleSteering { get; set; }
+        public double BrakeSteering { get; set; }
 
         //actual car parameters
-        private double __speed__ = 0.0;
         private double __wheelAngle__ = 0.0;
         private double __carAngle__ = 0.0;
         private double __carX__ = 0.0;
         private double __carY__ = 0.0;
 
-        public double Speed
-        {
-            get { return __speed__; }
-            private set
-            {
-                __speed__ = value;
-            }
-        }
+        public double Speed { get; private set; }
 
-        public double SteeringWheelAngle
-        {
-            get; set;
-        }
-        public double WheelAngle
-        {
-            get { return __wheelAngle__; }
-            set
-            {
-                __wheelAngle__ = value;
-            }
-        }
+        public double SteeringWheelAngle{ get; private set; }
+        public double WheelAngle { get; private set; }
+        public double BrakePosition { get; private set; }
         //TODO: implement accessors/mutators for car parameters
 
         //model constants
         private const double SLOWING_DOWN_FACTOR = 0.991;
         private const double ACCELERATING_FACTOR = 0.002;
+
+        private const double BRAKE_PUSHING_OR_PULLING_SPEED_FACTOR = 0.01;
+        private const double BRAKING_DOWN_WITH_BRAKES_FACTOR = 0.04;
+
         private const double STEERING_WHEEL_TO_WHEELS_TRANSMISSION = 0.2;
         private const double STEERING_WHEEL_STEERING_FACTOR = 0.08;
 
-        public FakeCarModel(ICarCommunicator carComunicator)
+        public CarModel(ICarCommunicator carComunicator)
         {
             communicator = carComunicator;
+
+            BrakePosition = 0;
+            WheelAngle = 0;
+            SteeringWheelAngle = 0;
+            Speed = 0;
             
             timer.Interval = TIMER_INTERVAL_IN_MS;
             timer.Tick += new EventHandler(timer_Tick);
@@ -89,9 +58,20 @@ namespace autonomiczny_samochod
 
         void timer_Tick(object sender, EventArgs e)
         {
+            //brake posiotion
+            BrakePosition += BrakeSteering * BRAKE_PUSHING_OR_PULLING_SPEED_FACTOR;
+
             //speed
             Speed *= SLOWING_DOWN_FACTOR;
             Speed += SpeedSteering * ACCELERATING_FACTOR;
+            if (Speed > 0)
+            {
+                Speed -= BrakePosition * BRAKING_DOWN_WITH_BRAKES_FACTOR;
+            }
+            else
+            {
+                Speed += BrakePosition * BRAKING_DOWN_WITH_BRAKES_FACTOR;
+            }
             Logger.Log(this, String.Format("new wheel angle has been modeled: {0}   (current angle steering: {1})", Speed, SpeedSteering));
 
             //wheels angle

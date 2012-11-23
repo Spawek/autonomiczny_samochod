@@ -75,7 +75,6 @@ namespace autonomiczny_samochod.Model.Car
             Logger.Log(this, "ALERT BRAKE!");
         }
 
-        //vehicle steering
         public void ActivateAlertBrake()
         {
             EventHandler temp = evAlertBrake;
@@ -103,6 +102,8 @@ namespace autonomiczny_samochod.Model.Car
             {
                 temp(this, new TargetSteeringWheelAngleChangedEventArgs(angle));
             }
+
+            Logger.Log(this, "alert brake activated!", 2);
         }
 
     }

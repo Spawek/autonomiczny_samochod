@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using autonomiczny_samochod.Model.Regulators;
+using Helpers;
 
 namespace autonomiczny_samochod
 {
@@ -61,8 +62,10 @@ namespace autonomiczny_samochod
             EventHandler temp = evAlertBrake;
             if (temp != null)
             {
-                temp(this, new EventArgs());
+                temp(this, EventArgs.Empty);
             }
+
+            Logger.Log(this, "alert brake activated!", 2);
         }
     }
 }

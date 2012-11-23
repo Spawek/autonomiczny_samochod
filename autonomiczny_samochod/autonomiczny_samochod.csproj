@@ -85,7 +85,7 @@
     <Compile Include="Model\Regulators\PIDRegulator.cs" />
     <Compile Include="Model\Regulators\PIDSettings.cs" />
     <Compile Include="Model\Regulators\PIDBrakeRegulator.cs" />
-    <Compile Include="Test\Fakes\FakeCarModel.cs" />
+    <Compile Include="Test\Fakes\CarModel.cs" />
     <Compile Include="Model\Regulators\PIDSpeedRegulator.cs" />
     <Compile Include="Model\Regulators\PIDSteeringWheelAngleRegulator.cs" />
     <Compile Include="Model\Communicators\RealCarCommunicator.cs" />
@@ -137,6 +137,9 @@
       <Project>{AC8330CF-3F32-45C6-B8E8-5BE9F8AFF33D}</Project>
       <Name>Helpers</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="TODO_list.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
