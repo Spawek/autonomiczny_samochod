@@ -110,11 +110,9 @@ namespace autonomiczny_samochod
             model.WheelAngleSteering = angleSetting;
         }
 
-
-
         public bool IsInitiated()
         {
-            throw new NotImplementedException();
+            return true; //its fake anyway
         }
 
     }

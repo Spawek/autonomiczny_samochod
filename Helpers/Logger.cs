@@ -11,7 +11,8 @@ namespace Helpers
         private static string logFileName = "Log";
         private static string logFileExtension = ".txt";
         private static bool isItFirstLog = true;
-        private static int MAX_PRIORITY = 10;
+        private const int MAX_PRIORITY = 10;
+        private const int MIN_PRIORITY_TO_SHOW_IN_CONSOLE = 1; //in range[0, 10]
 
         /// <summary>
         /// 
@@ -58,7 +59,10 @@ namespace Helpers
                 msg
             );
             
-            Console.WriteLine(msgWithDateAndObjectName);
+            if(priority >= MIN_PRIORITY_TO_SHOW_IN_CONSOLE)
+            {
+                Console.WriteLine(msgWithDateAndObjectName);
+            }
 
             for (int i = 0; i <= priority; i++)
             {

@@ -130,7 +130,13 @@ namespace car_communicator
 
         public int getSpeedCounterStatus()
         {
+            if (!eventSpeedCounterCtrl.Initialized)
+            {
+                Logger.Log(this, "Speed counter is not initialized and cannot provide any data", 2);
+                return -666;
+            }
             return eventSpeedCounterCtrl.Value;
+            
         }
 
         /// <summary>

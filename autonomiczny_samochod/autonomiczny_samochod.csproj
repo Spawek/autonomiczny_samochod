@@ -70,7 +70,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="FakeBrakeRegulator.cs" />
+    <Compile Include="Test\Fakes\CarWithFakeCommunicator.cs" />
+    <Compile Include="Test\Fakes\CarWithFakeRegulators.cs" />
+    <Compile Include="Test\Fakes\FakeBrakeRegulator.cs" />
     <Compile Include="Model\Car\CarInformations.cs" />
     <Compile Include="Model\Regulators\IBrakeRegulator.cs" />
     <Compile Include="Model\Communicators\RS232.cs" />
@@ -99,7 +101,7 @@
     </Compile>
     <Compile Include="Model\Car\ICar.cs" />
     <Compile Include="Model\Communicators\ICarComunicator.cs" />
-    <Compile Include="Model\Communicators\FakeCarCommunicator.cs" />
+    <Compile Include="Test\Fakes\FakeCarCommunicator.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
