@@ -70,6 +70,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="FakeBrakeRegulator.cs" />
     <Compile Include="Model\Car\CarInformations.cs" />
     <Compile Include="Model\Regulators\IBrakeRegulator.cs" />
     <Compile Include="Model\Communicators\RS232.cs" />

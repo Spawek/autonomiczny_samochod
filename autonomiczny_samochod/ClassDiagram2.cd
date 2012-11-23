@@ -33,7 +33,7 @@
       </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AIAAAASgAQAAIAEAAAAAABAAgAAAAAAAAAAAAAAAAgA=</HashCode>
+      <HashCode>AIAAAASgAQACIAEAAAAAABAAgAAAAAAAAAAAAAAEAgA=</HashCode>
       <FileName>MainWindow.xaml.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -41,12 +41,12 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="autonomiczny_samochod.PIDSpeedRegulator" Collapsed="true" HideInheritanceLine="true">
-    <Position X="11.5" Y="8.5" Width="1.5" />
+    <Position X="12.5" Y="10.75" Width="1.5" />
     <Members>
       <Property Name="SpeedSteering" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>EACQAACAAAQAQACAAgAAQBAAgEAAAGAgAAAAICAIAgA=</HashCode>
+      <HashCode>EACQAACAAAQAQACAAgAAABAAgEAAAGAgAAAAICAIAgA=</HashCode>
       <FileName>Model\Regulators\PIDSpeedRegulator.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -149,7 +149,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="autonomiczny_samochod.FakeSpeedRegulator" Collapsed="true">
-    <Position X="13.25" Y="11" Width="1.5" />
+    <Position X="14.25" Y="10.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAQAQAAAAgAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>Test\Fakes\FakeSpeedRegulator.cs</FileName>
@@ -165,7 +165,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="autonomiczny_samochod.Model.Regulators.PIDBrakeRegulator" Collapsed="true">
-    <Position X="16.5" Y="12" Width="1.5" />
+    <Position X="15.75" Y="12" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AIAAARAAAAACQAAAAAAAAAgCAIAAAAAAAAAAACACAAI=</HashCode>
       <FileName>Model\Regulators\PIDBrakeRegulator.cs</FileName>
@@ -182,7 +182,7 @@
   <Class Name="autonomiczny_samochod.RS232Controller" Collapsed="true">
     <Position X="26.25" Y="2" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>QEAAgJAQAkAAASABCBgYykJAAAQgQAggAAAADQBIgEA=</HashCode>
+      <HashCode>QEAAgJAQAkAAASABCBgYykJAAAQgQAggAAACDQBIgEA=</HashCode>
       <FileName>Model\Communicators\RS232.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -215,19 +215,27 @@
       <FileName>Model\Communicators\USB4702.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="autonomiczny_samochod.Model.Regulators.PIDRegulator" Collapsed="true">
+  <Class Name="autonomiczny_samochod.Model.Regulators.PIDRegulator">
     <Position X="11.25" Y="12.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>BAABIAAAAhAAQEQAAAgAEABAAAQAAABCAAAAAMAAAAA=</HashCode>
+      <HashCode>BAABIAAAAgAAQEQAAAgAEABAAAQAAABCAAAAAMAAAAA=</HashCode>
       <FileName>Model\Regulators\PIDRegulator.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="autonomiczny_samochod.Model.Regulators.PIDSettings" Collapsed="true">
+  <Class Name="autonomiczny_samochod.Model.Regulators.PIDSettings">
     <Position X="9.5" Y="12.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAABAAAgEAAAAAAAgAAAAAEQEEAAACAoA=</HashCode>
       <FileName>Model\Regulators\PIDSettings.cs</FileName>
     </TypeIdentifier>
+  </Class>
+  <Class Name="autonomiczny_samochod.FakeBrakeRegulator" Collapsed="true">
+    <Position X="17.5" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAARAAAAAAQAAAAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>FakeBrakeRegulator.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Interface Name="autonomiczny_samochod.ICar">
     <Position X="17" Y="5" Width="1.75" />
@@ -236,10 +244,23 @@
         <Position X="-1.161" Y="0.939" />
       </MemberNameLabel>
     </AssociationLine>
+    <AssociationLine Name="SpeedRegulator" Type="autonomiczny_samochod.ISpeedRegulator" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="17.125" Y="7.776" />
+        <Point X="17.125" Y="8.438" />
+        <Point X="15.5" Y="8.438" />
+      </Path>
+    </AssociationLine>
     <AssociationLine Name="Controller" Type="autonomiczny_samochod.CarController">
       <MemberNameLabel ManuallyPlaced="true" ManuallySized="true">
         <Position X="-0.985" Y="0.2" Height="0.162" Width="0.783" />
       </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="BrakeRegulator" Type="autonomiczny_samochod.IBrakeRegulator" FixedFromPoint="true">
+      <Path>
+        <Point X="17.812" Y="7.776" />
+        <Point X="17.812" Y="9.25" />
+      </Path>
     </AssociationLine>
     <TypeIdentifier>
       <HashCode>AAAAAAIAAQAAgAABABAAIAgABIAAAEAAAEAAAAAEAAA=</HashCode>
@@ -255,9 +276,14 @@
   </Interface>
   <Interface Name="autonomiczny_samochod.ISteeringWheelAngleRegulator">
     <Position X="19.25" Y="8.25" Width="2.5" />
-    <AssociationLine Name="Car" Type="autonomiczny_samochod.ICar">
+    <AssociationLine Name="Car" Type="autonomiczny_samochod.ICar" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="19.25" Y="8.812" />
+        <Point X="18.688" Y="8.812" />
+        <Point X="18.688" Y="7.776" />
+      </Path>
       <MemberNameLabel ManuallyPlaced="true">
-        <Position X="-0.609" Y="0.091" />
+        <Position X="0.091" Y="-0.609" />
       </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
@@ -306,6 +332,12 @@
   </Interface>
   <Interface Name="autonomiczny_samochod.IBrakeRegulator">
     <Position X="16.5" Y="9.25" Width="2" />
+    <AssociationLine Name="ICar" Type="autonomiczny_samochod.ICar" FixedFromPoint="true">
+      <Path>
+        <Point X="17.75" Y="9.25" />
+        <Point X="17.75" Y="7.776" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
       <HashCode>AAAAARAAAAAAQAAAAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Model\Regulators\IBrakeRegulator.cs</FileName>

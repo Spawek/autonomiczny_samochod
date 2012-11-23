@@ -9,9 +9,9 @@ namespace autonomiczny_samochod
     {
         public event NewSpeedSettingCalculatedEventHandler evNewSpeedSettingCalculated;
 
-        public ICar Car { get; set; }
+        public ICar Car { get; private set; }
 
-        public double SpeedSteering { get; set; }
+        public double SpeedSteering { get; private set; }
 
         public IDictionary<string, double> GetRegulatorParameters()
         {
