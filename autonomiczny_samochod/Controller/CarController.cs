@@ -25,16 +25,21 @@ namespace autonomiczny_samochod
             MainWindow = window;
 
             //Model = new ExampleFakeCar(this);
-            //Model = new autonomiczny_samochod.Model.Car.RealCar(this);
+            Model = new autonomiczny_samochod.Model.Car.RealCar(this);
             //Model = new CarWithFakeRegulators(this);
-            Model = new CarWithFakeCommunicator(this);
+            //Model = new CarWithFakeCommunicator(this);
+
+            Model.SetTargetSpeed(0.0);
+            Model.SetTargetWheelAngle(0.0);
 
             mStatsCollectorTimer.Interval = TIMER_INTERVAL_IN_MS;
             mStatsCollectorTimer.Tick += new EventHandler(mStatsCollectorTimer_Tick);
             mStatsCollectorTimer.Start();
 
-            mFakeSignalsSenderThread = new System.Threading.Thread(new System.Threading.ThreadStart(mFakeSignalsSenderFoo));
-            mFakeSignalsSenderThread.Start();
+
+
+            //mFakeSignalsSenderThread = new System.Threading.Thread(new System.Threading.ThreadStart(mFakeSignalsSenderFoo));
+            //mFakeSignalsSenderThread.Start();
         }
 
         void mStatsCollectorTimer_Tick(object sender, EventArgs e)

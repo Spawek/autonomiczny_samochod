@@ -12,7 +12,7 @@ namespace autonomiczny_samochod
     public class RS232Controller
     {
         // Create the serial port with basic settings 
-        private SerialPort port = new SerialPort("COM5", 9600, Parity.None, 8, StopBits.One); //TODO: add choosing COM no from form
+        private SerialPort port = new SerialPort("COM4", 9600, Parity.None, 8, StopBits.One); //TODO: add choosing COM no from form
 
         //messages
         char[] giveMeSteeringWheelAngleMsg = new char[] { '1', 'P', (char)13 }; //TODO: try changing it to byte[] //not necessery, but char[] probably wont work for values > 127...
@@ -21,7 +21,7 @@ namespace autonomiczny_samochod
         char[] giveMeBrakeDiagnosisMsg = new char[] { '2', 'D', (char)13 };
 
         //consts
-        private TimeSpan SLEEP_PER_READ_LOOP = new TimeSpan(0, 0, 0, 0, 5); //5ms
+        private TimeSpan SLEEP_PER_READ_LOOP = new TimeSpan(0, 0, 0, 0, 10); //10ms
         private const int LOOPS_BETWEEN_DIAGNOSIS = 100; //mby go more
         private const int READ_TIMEOUT_IN_MS = 100;
         private const int WRITE_TIMEOUT_IN_MS = 100;
@@ -30,6 +30,22 @@ namespace autonomiczny_samochod
         private const int SLEEP_WHILE_WAITING_FOR_READ_IN_MS = 2;
         private const int SLEEP_ON_FAILED_PORT_OPPENING_BEFORE_NEXT_TRY_AT_APP_INIT_IN_MS = 1000; //to dont spam so many messages when it fails anyway
         private const int SLEEP_ON_FAILED_PORT_OPPENING_BEFORE_NEXT_TRY_AT_APP_WORKING_IN_MS = 0; //needed ASAP
+        private const int SLEEP_BETWEEN_2_READS_IN_MS = 10;
+
+        private const bool DIAGNOSIS_ENABLED = false;
+
+        private const int WHEEL_OUTPUT_WHEN_MAX_RIGHT = 15490; //increased by 100
+        private const double WHEEL_ANGLE_ON_MAX_RIGHT = 30.0; //IMPORTANT: TODO: check it in documentation
+
+        private const int WHEEL_OUTPUT_WHEN_MAX_LEFT = 1250; //decreased by 100
+        private const double WHEEL_ANGLE_ON_MAX_LEFT = -30.0; //IMPORTANT: TODO: check it in documentation
+
+        //brake
+        private const int BRAKE_OUTPUT_MAX_PUSHED = 11170;
+        private const double BRAKE_POWER_WHEN_MAX_PUSHED = 100;
+
+        private const int BRAKE_OUTPUT_MAX_PULLED = 10729; //decreased by 6
+        private const double BRAKE_POWER_WHEN_MAX_PULLED = 0;
 
         //read values
         /// <summary>
@@ -51,8 +67,8 @@ namespace autonomiczny_samochod
 
         private double ConvertReceivedSteeringWheelAngleToRealWheelAngle(int value)
         {
-            //IMPORTANT: TODO: test it and make it working
-            return value;
+            double val = Convert.ToDouble(value);
+            return ReScaller.ReScale(ref val, WHEEL_OUTPUT_WHEN_MAX_LEFT, WHEEL_OUTPUT_WHEN_MAX_RIGHT, WHEEL_ANGLE_ON_MAX_LEFT, WHEEL_ANGLE_ON_MAX_RIGHT);
         }
 
         /// <summary>
@@ -75,8 +91,8 @@ namespace autonomiczny_samochod
 
         private double ConvertReceivedBrakeAngleToRealBrakePosition(int value)
         {
-            //IMPORTANT: TODO: test it and make it working
-            return value;
+            double val = Convert.ToDouble(value);
+            return ReScaller.ReScale(ref val, BRAKE_OUTPUT_MAX_PULLED, BRAKE_OUTPUT_MAX_PUSHED, BRAKE_POWER_WHEN_MAX_PULLED, BRAKE_POWER_WHEN_MAX_PUSHED); 
         }
 
 
@@ -125,7 +141,10 @@ namespace autonomiczny_samochod
                     }
                     else
                     {
-                        DiagnoseSensors();
+                        if (DIAGNOSIS_ENABLED)
+                        {
+                            DiagnoseSensors();
+                        }
                         loopsFromLastDiagnosis = 0;
                     }
                 }
@@ -153,6 +172,7 @@ namespace autonomiczny_samochod
                 }
 
                 ReadSteeringWheelSensor(); //there 2 methods should remain 2 methods, because they can be customed in some way in future
+                Thread.Sleep(SLEEP_BETWEEN_2_READS_IN_MS);
                 ReadBrakesSensors();
             }
             catch (Exception e)
@@ -249,25 +269,25 @@ namespace autonomiczny_samochod
             if (!safeWriteToRS232(giveMeSteeringWheelDiagnosisMsg, 0, giveMeSteeringWheelDiagnosisMsg.Length))
             {
                 List<int> readMsg = readWordFromRS232();
-                if (readMsg.Count != 4)
+                if (readMsg.Count != 2)
                 {
                     Logger.Log(this, String.Format("wrong received message length: {0}", readMsg, 1));
                 }
                 else
                 {
-                    if (readMsg[0] == 0)
+                    if (readMsg[1]%2 == 0)
                     {
                         Logger.Log(this, "RS232 sterring wheel diagnosis bit 0 error", 1);
                     }
-                    if (readMsg[1] == 1)
+                    if ((readMsg[1]/2)%2 == 1)
                     {
                         Logger.Log(this, "RS232 sterring wheel diagnosis bit 1 error", 1);
                     }
-                    if (readMsg[2] == 1)
+                    if ((readMsg[1]/4)%2 == 1)
                     {
                         Logger.Log(this, "RS232 sterring wheel diagnosis bit 2 error - magnet is too strong or too close", 1);
                     }
-                    if (readMsg[3] == 1)
+                    if ((readMsg[1]/8)%2 == 1)
                     {
                         Logger.Log(this, "RS232 sterring wheel diagnosis bit 3 error - magnet is too weak or too far", 1);
                     }
@@ -433,6 +453,12 @@ namespace autonomiczny_samochod
                 }
 
                 Thread.Sleep(SLEEP_WHILE_WAITING_FOR_READ_IN_MS);
+            }
+
+            if (node == RS232SignalsInputList.First) //if 1st == 13 == \n 
+            {
+                RS232SignalsInputList.RemoveFirst(); //remove it
+                return readWordFromRS232(); //and try again
             }
 
             //if some "\n" == 13 == end of line was found cut and send left part of list from 1st node with 13

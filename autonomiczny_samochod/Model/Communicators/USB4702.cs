@@ -26,17 +26,17 @@ namespace car_communicator
         const double BRAKE_MIN_SET_VALUE_IN_VOLTS = 0;
         const double BRAKE_MAX_SET_VALUE_IN_VOLST = 5;
 
-        const int BRAKE_ENABLE_PORT_NO = 666; //TODO: check it!!!!
-        const byte BRAKE_ENABLE_ON_PORT_LEVEL = 66; //TODO: check it!!!!
-        const byte BRAKE_ENABLE_OFF_PORT_LEVEL = 66; //TODO: check it!!!!
+        const int BRAKE_ENABLE_PORT_NO = 66;//0; //TODO: check it!!!!
+        const byte BRAKE_ENABLE_ON_PORT_LEVEL = 1; //TODO: check it!!!!
+        const byte BRAKE_ENABLE_OFF_PORT_LEVEL = 0; //TODO: check it!!!!
 
-        const int BRAKE_STOP_PORT_NO = 666; //TODO: check it!!!!
-        const byte BRAKE_STOP_ON_PORT_LEVEL = 66; //TODO: check it!!!!
-        const byte BRAKE_STOP_OFF_PORT_LEVEL = 66; //TODO: check it!!!!
+        const int BRAKE_STOP_PORT_NO = 66;//2; //TODO: check it!!!!
+        const byte BRAKE_STOP_ON_PORT_LEVEL = 1; //TODO: check it!!!!
+        const byte BRAKE_STOP_OFF_PORT_LEVEL = 0; //TODO: check it!!!!
 
-        const int BRAKE_DIRECTION_PORT_NO = 666; //TODO: check it!!!!
-        const int BRAKE_BACKWARD_PORT_LEVEL = 66; //TODO: check it!!!!
-        const int BRAKE_FORWARD_PORT_LEVEL = 66; //TODO: check it!!!!
+        const int BRAKE_DIRECTION_PORT_NO = 66;//1; //TODO: check it!!!!
+        const int BRAKE_BACKWARD_PORT_LEVEL = 1; //TODO: check it!!!!
+        const int BRAKE_FORWARD_PORT_LEVEL = 0; //TODO: check it!!!!
 
         public void Initialize()
         {
@@ -57,7 +57,7 @@ namespace car_communicator
                 eventSpeedCounterCtrl.Enabled = true; //IMPORTANT: was ----> // false; // block counter
 
                 setPortDO(BRAKE_ENABLE_PORT_NO, BRAKE_ENABLE_ON_PORT_LEVEL); //enabling brake engine
-                setPortDO(BRAKE_STOP_PORT_NO, BRAKE_STOP_ON_PORT_LEVEL);
+                setPortDO(BRAKE_STOP_PORT_NO, BRAKE_STOP_OFF_PORT_LEVEL);
             }
             catch (Exception e)
             {
@@ -100,13 +100,11 @@ namespace car_communicator
                 if (level == 1)
                 {
                     buffer |= (1 << port);
-                    Console.WriteLine(buffer);
                     instantDoCtrl.Write(0, (byte)buffer);
                 }
                 else if (level == 0)
                 {
                     buffer &= ~(1 << port);
-                    Console.WriteLine(buffer);
                     instantDoCtrl.Write(0, (byte)buffer);
                 }
                 else

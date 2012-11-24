@@ -102,8 +102,6 @@ namespace autonomiczny_samochod.Model.Car
             {
                 temp(this, new TargetSteeringWheelAngleChangedEventArgs(angle));
             }
-
-            Logger.Log(this, "alert brake activated!", 2);
         }
 
     }

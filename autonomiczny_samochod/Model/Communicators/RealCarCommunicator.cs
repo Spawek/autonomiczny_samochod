@@ -38,7 +38,7 @@ namespace autonomiczny_samochod
 
         //CONST
         const int SPEED_MEASURING_TIMER_INTERVAL_IN_MS = 10; //in ms
-        const int SPEED_TABLE_SIZE = 100;
+        const int SPEED_TABLE_SIZE = 30;
         const double WHEEL_CIRCUIT_IN_M = 1.3822996; //44cm * pi //TODO: check it - its probably wrong
         const int NO_OF_HAAL_METERS = 5;
         const int TICKS_TO_RESTART = 10000; 
@@ -82,11 +82,10 @@ namespace autonomiczny_samochod
 
             //calculations
             lastTicksMeasurements[tickTableIterator] = ticks - lastTicks;
-            lastTicks = ticks;
+            
+            tickTableIterator = (tickTableIterator + 1) % SPEED_TABLE_SIZE;
 
-            tickTableIterator = (tickTableIterator++) % SPEED_TABLE_SIZE;
-
-            double speed = WHEEL_CIRCUIT_IN_M / NO_OF_HAAL_METERS * lastTicksMeasurements.Sum() / (SPEED_TABLE_SIZE * SPEED_MEASURING_TIMER_INTERVAL_IN_MS);
+            double speed = Convert.ToDouble(WHEEL_CIRCUIT_IN_M) / Convert.ToDouble(NO_OF_HAAL_METERS) * Convert.ToDouble(lastTicksMeasurements.Sum()) / (Convert.ToDouble(SPEED_TABLE_SIZE) * Convert.ToDouble(SPEED_MEASURING_TIMER_INTERVAL_IN_MS) / 1000.0);
 
             if(ticks > TICKS_TO_RESTART)
             {
@@ -100,6 +99,7 @@ namespace autonomiczny_samochod
             {
                 SpeedEvent(this, new SpeedInfoReceivedEventArgs(speed));
             }
+            lastTicks = ticks;
         }
 
         /// <summary>

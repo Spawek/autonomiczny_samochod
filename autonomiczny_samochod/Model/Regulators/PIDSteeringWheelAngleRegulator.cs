@@ -25,19 +25,19 @@ namespace autonomiczny_samochod
             public Settings()
             {
                 //P part settings
-                P_FACTOR_MULTIPLER = 1;
+                P_FACTOR_MULTIPLER = 5;
 
                 //I part settings
                 I_FACTOR_MULTIPLER = 0; //hypys radzi, żeby to wyłączyć bo może być niestabilny (a tego baardzo nie chcemy)
                 I_FACTOR_SUM_MAX_VALUE = 0;
                 I_FACTOR_SUM_MIN_VALUE = 0;
-                I_FACTOR_SUM_SUPPRESSION_PER_SEC = 0; // = 0.88; //1.0 = suppresing disabled
+                I_FACTOR_SUM_SUPPRESSION_PER_SEC = 1; // = 0.88; //1.0 = suppresing disabled
 
                 //D part settings
-                D_FACTOR_MULTIPLER = 0;
-                D_FACTOR_SUPPRESSION_PER_SEC = 0;
-                D_FACTOR_SUM_MIN_VALUE = 0;
-                D_FACTOR_SUM_MAX_VALUE = 0;
+                D_FACTOR_MULTIPLER = 4;
+                D_FACTOR_SUPPRESSION_PER_SEC = 0.3;
+                D_FACTOR_SUM_MIN_VALUE = -1000;
+                D_FACTOR_SUM_MAX_VALUE = 1000;
 
                 //steering limits
                 MAX_FACTOR_CONST = 100; // = 100.0;
