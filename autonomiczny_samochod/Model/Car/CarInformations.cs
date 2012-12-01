@@ -11,6 +11,11 @@ namespace autonomiczny_samochod
         public double CurrentSpeed { get; set; }
         public double TargetSpeed { get; set; }
         public double SpeedSteering { get; set; }
+        
+        //brake
+        public double CurrentBrake { get; set; }
+        public double TargetBrake { get; set; }
+        public double BrakeSteering { get; set; }
 
         //wheel angle
         public double CurrentWheelAngle { get; set; }
@@ -25,6 +30,10 @@ namespace autonomiczny_samochod
             CurrentSpeed = double.NaN;
             TargetSpeed = double.NaN;
             SpeedSteering = double.NaN;
+
+            CurrentBrake = double.NaN;
+            TargetBrake = double.NaN;
+            BrakeSteering = double.NaN;
 
             CurrentWheelAngle = double.NaN;
             TargetSpeed = double.NaN;

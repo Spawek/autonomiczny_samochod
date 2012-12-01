@@ -19,7 +19,7 @@ namespace autonomiczny_samochod
 
         public CarController Controller { get; private set; }
         public ICarCommunicator CarComunicator { get; private set; }
-        public CarInformations CarInfo { get; private set; }
+        public CarInformations CarInfo { get; set; }
 
         public CarWithFakeCommunicator(CarController parent)
         {

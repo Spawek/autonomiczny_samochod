@@ -48,7 +48,7 @@
       </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AIAAAASgAQACIAEAAAAAABAAgAAAAAAgAAAAAAAEAgA=</HashCode>
+      <HashCode>AIABAASgAQACIAEAAAAAABAAgAAAAAAgAAAAAAAEAgA=</HashCode>
       <FileName>MainWindow.xaml.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -57,16 +57,6 @@
   </Class>
   <Class Name="autonomiczny_samochod.PIDSpeedRegulator" Collapsed="true" HideInheritanceLine="true">
     <Position X="12.5" Y="10.75" Width="1.5" />
-    <Members>
-      <Property Name="SpeedSteering" Hidden="true" />
-    </Members>
-    <NestedTypes>
-      <Enum Name="autonomiczny_samochod.PIDSpeedRegulator.RideMode" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Model\Regulators\PIDSpeedRegulator.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Enum>
-    </NestedTypes>
     <TypeIdentifier>
       <HashCode>EACQAACAAIQAQAAAAgAAABAQqEAAAGIAAAAAICAIEgA=</HashCode>
       <FileName>Model\Regulators\PIDSpeedRegulator.cs</FileName>
@@ -105,7 +95,9 @@
     <Position X="17" Y="0.5" Width="1.75" />
     <AssociationLine Name="Model" Type="autonomiczny_samochod.ICar" FixedToPoint="true">
       <Path>
-        <Point X="18.188" Y="4.363" />
+        <Point X="17.875" Y="0.5" />
+        <Point X="17.875" Y="0.25" />
+        <Point X="18.188" Y="0.25" />
         <Point X="18.188" Y="5" />
       </Path>
       <MemberNameLabel ManuallyPlaced="true">
@@ -113,7 +105,7 @@
       </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAAAQAIAAAAAAAAAIBAOABgEAAAAAAIAAAgAAAAAACA=</HashCode>
+      <HashCode>AIAAQAKgAgACAAAAIBAOABgEAAAAAAIACAgAAAAEAiA=</HashCode>
       <FileName>Controller\CarController.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -204,7 +196,7 @@
   <Class Name="autonomiczny_samochod.RS232Controller" Collapsed="true">
     <Position X="25.25" Y="4" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>QEAAgJAQAkAAASABCBgYykJAAAQgQAggAAACDQBIgEA=</HashCode>
+      <HashCode>QECAgJAQAkQAJyABCBgcymJEAAQgQBggAAACDQBIgEA=</HashCode>
       <FileName>Model\Communicators\RS232.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -218,7 +210,7 @@
   <Class Name="autonomiczny_samochod.Model.Car.RealCar" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="13.5" Y="5.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ACAAAAKgAQAAgEABABAAIAgABJEAAEAAAEAAAAAEAAA=</HashCode>
+      <HashCode>ACAAAAIAAQAAgEABABAAIAgABJEAAEAAAEAAAAAEAAA=</HashCode>
       <FileName>Model\Car\RealCar.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -262,7 +254,7 @@
   <Class Name="autonomiczny_samochod.CarInformations" Collapsed="true">
     <Position X="14.5" Y="3.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAgAAAAAAAAAAAAAAAAAAEBBAAIAAAAAAIAAAEAA=</HashCode>
+      <HashCode>AAAAAgAAAAAAAAgAAAAAAAgAEBBAAIAAACAAIAAAEAA=</HashCode>
       <FileName>Model\Car\CarInformations.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -298,7 +290,7 @@
     </AssociationLine>
     <AssociationLine Name="Controller" Type="autonomiczny_samochod.CarController">
       <MemberNameLabel ManuallyPlaced="true" ManuallySized="true">
-        <Position X="-0.985" Y="0.2" Height="0.162" Width="0.783" />
+        <Position X="0.2" Y="-0.985" Height="0.162" Width="0.783" />
       </MemberNameLabel>
     </AssociationLine>
     <AssociationLine Name="CarComunicator" Type="autonomiczny_samochod.ICarCommunicator" FixedFromPoint="true">

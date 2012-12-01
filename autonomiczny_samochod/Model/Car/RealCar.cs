@@ -47,21 +47,8 @@ namespace autonomiczny_samochod.Model.Car
             evAlertBrake += new EventHandler(ExampleFakeCar_evAlertBrake);
             evTargetSpeedChanged += new TargetSpeedChangedEventHandler(ExampleFakeCar_evTargetSpeedChanged);
             evTargetSteeringWheelAngleChanged += new TargetSteeringWheelAngleChangedEventHandler(ExampleFakeCar_evTargetSteeringWheelAngleChanged);
-
-            //external event handling initialization
-            CarComunicator.evSpeedInfoReceived += new SpeedInfoReceivedEventHander(CarComunicator_evSpeedInfoReceived);
-            CarComunicator.evSteeringWheelAngleInfoReceived += new SteeringWheelAngleInfoReceivedEventHandler(CarComunicator_evSteeringWheelAngleInfoReceived);
         }
 
-        //event handlers
-        private void CarComunicator_evSteeringWheelAngleInfoReceived(object sender, SteeringWheelAngleInfoReceivedEventArgs args)
-        {
-            CarInfo.CurrentWheelAngle = args.GetAngle();
-        }
-        private void CarComunicator_evSpeedInfoReceived(object sender, SpeedInfoReceivedEventArgs args)
-        {
-            CarInfo.CurrentSpeed = args.GetSpeedInfo();
-        }
         private void ExampleFakeCar_evTargetSteeringWheelAngleChanged(object sender, TargetSteeringWheelAngleChangedEventArgs args)
         {
             Logger.Log(this, String.Format("target wheel angle changed to: {0}", args.GetTargetWheelAngle()));

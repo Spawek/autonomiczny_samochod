@@ -25,22 +25,62 @@ namespace autonomiczny_samochod
             MainWindow = window;
 
             //Model = new ExampleFakeCar(this);
-            Model = new autonomiczny_samochod.Model.Car.RealCar(this);
+            //Model = new autonomiczny_samochod.Model.Car.RealCar(this);
             //Model = new CarWithFakeRegulators(this);
-            //Model = new CarWithFakeCommunicator(this);
+            Model = new CarWithFakeCommunicator(this);
 
             Model.SetTargetSpeed(0.0);
             Model.SetTargetWheelAngle(0.0);
 
+            EventHandlingForStatsCollectingInit();
+
+            //timer init
             mStatsCollectorTimer.Interval = TIMER_INTERVAL_IN_MS;
             mStatsCollectorTimer.Tick += new EventHandler(mStatsCollectorTimer_Tick);
             mStatsCollectorTimer.Start();
 
-
-
             //mFakeSignalsSenderThread = new System.Threading.Thread(new System.Threading.ThreadStart(mFakeSignalsSenderFoo));
             //mFakeSignalsSenderThread.Start();
         }
+
+        private void EventHandlingForStatsCollectingInit()
+        {
+            Model.CarComunicator.evSpeedInfoReceived += new SpeedInfoReceivedEventHander(CarComunicator_evSpeedInfoReceived);
+            Model.CarComunicator.evSteeringWheelAngleInfoReceived += new SteeringWheelAngleInfoReceivedEventHandler(CarComunicator_evSteeringWheelAngleInfoReceived);
+            Model.CarComunicator.evBrakePositionReceived += new BrakePositionReceivedEventHandler(CarComunicator_evBrakePositionReceived);
+
+            Model.SteeringWheelAngleRegulator.evNewSteeringWheelSettingCalculated += new NewSteeringWheelSettingCalculatedEventHandler(SteeringWheelAngleRegulator_evNewSteeringWheelSettingCalculated);
+            Model.SpeedRegulator.evNewSpeedSettingCalculated += new NewSpeedSettingCalculatedEventHandler(SpeedRegulator_evNewSpeedSettingCalculated);
+            Model.BrakeRegulator.evNewBrakeSettingCalculated += new NewBrakeSettingCalculatedEventHandler(BrakeRegulator_evNewBrakeSettingCalculated);
+        }
+
+        private void SteeringWheelAngleRegulator_evNewSteeringWheelSettingCalculated(object sender, NewSteeringWheelSettingCalculateddEventArgs args)
+        {
+            Model.CarInfo.WheelAngleSteering = args.getSteeringWheelAngleSetting();
+        }
+
+        private void BrakeRegulator_evNewBrakeSettingCalculated(object sender, NewBrakeSettingCalculatedEventArgs args)
+        {
+            Model.CarInfo.BrakeSteering = args.GetBrakeSetting();
+        }
+        private void SpeedRegulator_evNewSpeedSettingCalculated(object sender, NewSpeedSettingCalculatedEventArgs args)
+        {
+            Model.CarInfo.SpeedSteering = args.getSpeedSetting();
+            Model.CarInfo.TargetBrake = args.getSpeedSetting() * -1; //TODO: check this
+        }
+        private void CarComunicator_evBrakePositionReceived(object sender, BrakePositionReceivedEventArgs args)
+        {
+            Model.CarInfo.CurrentBrake = args.GetPosition();
+        }
+        private void CarComunicator_evSteeringWheelAngleInfoReceived(object sender, SteeringWheelAngleInfoReceivedEventArgs args)
+        {
+            Model.CarInfo.CurrentWheelAngle = args.GetAngle();
+        }
+        private void CarComunicator_evSpeedInfoReceived(object sender, SpeedInfoReceivedEventArgs args)
+        {
+            Model.CarInfo.CurrentSpeed = args.GetSpeedInfo();
+        }
+
 
         void mStatsCollectorTimer_Tick(object sender, EventArgs e)
         {
@@ -52,6 +92,9 @@ namespace autonomiczny_samochod
             statsCollector.PutNewStat("current angle", Model.CarInfo.CurrentWheelAngle);
             statsCollector.PutNewStat("target angle", Model.CarInfo.TargetWheelAngle);
             statsCollector.PutNewStat("angle steering", Model.CarInfo.WheelAngleSteering);
+            statsCollector.PutNewStat("current brake", Model.CarInfo.CurrentBrake);
+            statsCollector.PutNewStat("target brake", Model.CarInfo.TargetBrake);
+            statsCollector.PutNewStat("brake steering", Model.CarInfo.BrakeSteering);
 
             //collecting speed regulator parameters
             var speedRegulatorParameters = Model.SpeedRegulator.GetRegulatorParameters();
@@ -59,21 +102,20 @@ namespace autonomiczny_samochod
             {
                 statsCollector.PutNewStat(String.Format("SpeedRegulator_{0}", key), speedRegulatorParameters[key]);
             }
+        }
 
-            if (TICKS_TO_SAVE_STATS-- == 0)
-            {
-                statsCollector.WriteStatsToFile("stats.txt");
-                Logger.Log(this, "----------------------------------------------------------------");
-                Logger.Log(this, "----------------------------------------------------------------");
-                Logger.Log(this, "----------------------------------------------------------------");
-                Logger.Log(this, "----------------------------------------------------------------");
-                Logger.Log(this, String.Format("STATS HAS BEEN WRITTEN TO FILE: stats.txt"));
-                Logger.Log(this, "----------------------------------------------------------------");
-                Logger.Log(this, "----------------------------------------------------------------");
-                Logger.Log(this, "----------------------------------------------------------------");
-                Logger.Log(this, "----------------------------------------------------------------");
-            }
-
+        public void SaveStatsToFile(string fileName)
+        {
+            statsCollector.WriteStatsToFile(fileName);
+            Logger.Log(this, "----------------------------------------------------------------");
+            Logger.Log(this, "----------------------------------------------------------------");
+            Logger.Log(this, "----------------------------------------------------------------");
+            Logger.Log(this, "----------------------------------------------------------------");
+            Logger.Log(this, String.Format("STATS HAS BEEN WRITTEN TO FILE: stats.txt"));
+            Logger.Log(this, "----------------------------------------------------------------");
+            Logger.Log(this, "----------------------------------------------------------------");
+            Logger.Log(this, "----------------------------------------------------------------");
+            Logger.Log(this, "----------------------------------------------------------------");
         }
 
         void mFakeSignalsSenderFoo()
