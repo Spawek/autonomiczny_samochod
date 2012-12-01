@@ -28,9 +28,21 @@ namespace autonomiczny_samochod
         public MainWindow()
         {
             Controller = new CarController(this);
-
+            
             InitializeComponent();
 
+            ExternalEventsHandlingInit();
+            
+            this.KeyDown += new KeyEventHandler(MainWindow_KeyDown);
+
+            //initialize timer
+            mTimer.Interval = TIMER_INTERVAL_IN_MS;
+            mTimer.Tick += new EventHandler(mTimer_Tick);
+            mTimer.Start();
+        }
+
+        private void ExternalEventsHandlingInit()
+        {
             Controller.Model.evTargetSpeedChanged += new TargetSpeedChangedEventHandler(Model_evTargetSpeedChanged);
             Controller.Model.CarComunicator.evSpeedInfoReceived += new SpeedInfoReceivedEventHander(CarComunicator_evSpeedInfoReceived);
 
@@ -43,13 +55,6 @@ namespace autonomiczny_samochod
             Controller.Model.BrakeRegulator.evNewBrakeSettingCalculated += new NewBrakeSettingCalculatedEventHandler(BrakeRegulator_evNewBrakeSettingCalculated);
 
             Controller.Model.evAlertBrake += new EventHandler(Model_evAlertBrake);
-            
-            this.KeyDown += new KeyEventHandler(MainWindow_KeyDown);
-
-            //initialize timer
-            mTimer.Interval = TIMER_INTERVAL_IN_MS;
-            mTimer.Tick += new EventHandler(mTimer_Tick);
-            mTimer.Start();
         }
 
         void Model_evAlertBrake(object sender, EventArgs e)
@@ -191,6 +196,12 @@ namespace autonomiczny_samochod
                         textBlock_targetSpeed,
                         String.Format("{0:0.###}", args.GetTargetSpeed())
             );
+        }
+
+        private void button_saveStats_Click(object sender, RoutedEventArgs e)
+        {
+            Controller.SaveStatsToFile("stats.txt");
+            Logger.Log(this, "STATS HAS BEEN WRITTEN TO FILE!", 1);
         }
     }
 }
