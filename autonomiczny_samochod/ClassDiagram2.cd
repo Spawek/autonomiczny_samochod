@@ -91,13 +91,11 @@
       <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Class>
-  <Class Name="autonomiczny_samochod.CarController">
-    <Position X="17" Y="0.5" Width="1.75" />
+  <Class Name="autonomiczny_samochod.CarController" Collapsed="true">
+    <Position X="17" Y="2.5" Width="1.75" />
     <AssociationLine Name="Model" Type="autonomiczny_samochod.ICar" FixedToPoint="true">
       <Path>
-        <Point X="17.875" Y="0.5" />
-        <Point X="17.875" Y="0.25" />
-        <Point X="18.188" Y="0.25" />
+        <Point X="18.188" Y="3.062" />
         <Point X="18.188" Y="5" />
       </Path>
       <MemberNameLabel ManuallyPlaced="true">
@@ -276,7 +274,12 @@
   </Class>
   <Interface Name="autonomiczny_samochod.ICar">
     <Position X="17" Y="5" Width="1.75" />
-    <AssociationLine Name="SteeringWheelAngleRegulator" Type="autonomiczny_samochod.ISteeringWheelAngleRegulator">
+    <AssociationLine Name="SteeringWheelAngleRegulator" Type="autonomiczny_samochod.ISteeringWheelAngleRegulator" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="18.656" Y="7.776" />
+        <Point X="18.656" Y="8.75" />
+        <Point X="19.25" Y="8.75" />
+      </Path>
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="-1.245" Y="0.663" />
       </MemberNameLabel>
@@ -290,7 +293,7 @@
     </AssociationLine>
     <AssociationLine Name="Controller" Type="autonomiczny_samochod.CarController">
       <MemberNameLabel ManuallyPlaced="true" ManuallySized="true">
-        <Position X="0.2" Y="-0.985" Height="0.162" Width="0.783" />
+        <Position X="-0.985" Y="0.2" Height="0.162" Width="0.783" />
       </MemberNameLabel>
     </AssociationLine>
     <AssociationLine Name="CarComunicator" Type="autonomiczny_samochod.ICarCommunicator" FixedFromPoint="true">
@@ -325,8 +328,8 @@
     <AssociationLine Name="Car" Type="autonomiczny_samochod.ICar" FixedFromPoint="true" FixedToPoint="true">
       <Path>
         <Point X="19.25" Y="8.812" />
-        <Point X="18.688" Y="8.812" />
-        <Point X="18.688" Y="7.776" />
+        <Point X="18.625" Y="8.812" />
+        <Point X="18.625" Y="7.776" />
       </Path>
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="0.115" Y="0.218" />
