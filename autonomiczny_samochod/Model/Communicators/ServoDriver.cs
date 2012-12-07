@@ -69,7 +69,14 @@ namespace car_communicator
                     throw new ApplicationException("unknown channel");
                 }
 
-                Driver.setTarget(channel, target);
+                try
+                {
+                    Driver.setTarget(channel, target);
+                }
+                catch (Exception)
+                {
+                    Logger.Log(this, "couldnt send msg to servo!", 2);
+                }
             }
             else
             {

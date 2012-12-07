@@ -427,6 +427,10 @@ namespace autonomiczny_samochod
                         RS232SignalsInputList.Clear(); //clearing list on timeout should prevent desync
                         Logger.Log(this, "RS232 timeout has occured", 2);
                     }
+                    catch (Exception)
+                    {
+                       // Logger.Log(this, String.Format("RS232 error: {0}, {1}", e.Message, e.StackTrace)); //TODO: //IMPORTANT: tempporary
+                    }
                     finally
                     {
                         RS232dataIsBeingRead = false;

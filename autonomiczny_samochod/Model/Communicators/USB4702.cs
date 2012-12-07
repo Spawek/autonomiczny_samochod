@@ -23,20 +23,20 @@ namespace car_communicator
         const double STEERING_WHEEL_MAX_SET_VALUE_IN_VOLTS = 3.8; //4.0 is teoretical max
 
         const int BRAKE_STRENGTH_SET_PORT = 1;
-        const double BRAKE_MIN_SET_VALUE_IN_VOLTS = 0;
-        const double BRAKE_MAX_SET_VALUE_IN_VOLST = 5;
+        const double BRAKE_MIN_SET_VALUE_IN_VOLTS = 0.4; //from 0
+        const double BRAKE_MAX_SET_VALUE_IN_VOLST = 4.6; //from 5
 
-        const int BRAKE_ENABLE_PORT_NO = 66;//0; //TODO: check it!!!!
-        const byte BRAKE_ENABLE_ON_PORT_LEVEL = 1; //TODO: check it!!!!
-        const byte BRAKE_ENABLE_OFF_PORT_LEVEL = 0; //TODO: check it!!!!
+        const int BRAKE_ENABLE_PORT_NO = 0;
+        const byte BRAKE_ENABLE_ON_PORT_LEVEL = 0; 
+        const byte BRAKE_ENABLE_OFF_PORT_LEVEL = 1;
 
-        const int BRAKE_STOP_PORT_NO = 66;//2; //TODO: check it!!!!
-        const byte BRAKE_STOP_ON_PORT_LEVEL = 1; //TODO: check it!!!!
-        const byte BRAKE_STOP_OFF_PORT_LEVEL = 0; //TODO: check it!!!!
+        const int BRAKE_STOP_PORT_NO = 2;
+        const byte BRAKE_STOP_ON_PORT_LEVEL = 0;
+        const byte BRAKE_STOP_OFF_PORT_LEVEL = 1;
 
-        const int BRAKE_DIRECTION_PORT_NO = 66;//1; //TODO: check it!!!!
-        const int BRAKE_BACKWARD_PORT_LEVEL = 1; //TODO: check it!!!!
-        const int BRAKE_FORWARD_PORT_LEVEL = 0; //TODO: check it!!!!
+        const int BRAKE_DIRECTION_PORT_NO = 1;
+        const int BRAKE_BACKWARD_PORT_LEVEL = 1; 
+        const int BRAKE_FORWARD_PORT_LEVEL = 0;
 
         public void Initialize()
         {
@@ -188,6 +188,8 @@ namespace car_communicator
             Helpers.ReScaller.ReScale(ref strength, 0, 100, BRAKE_MIN_SET_VALUE_IN_VOLTS, BRAKE_MAX_SET_VALUE_IN_VOLST);
 
             setPortAO(BRAKE_STRENGTH_SET_PORT, strength);
+            //setPortDO(BRAKE_DIRECTION_PORT_NO, BRAKE_FORWARD_PORT_LEVEL);
+            //setPortAO(BRAKE_STRENGTH_SET_PORT, 2);
         }
     }
 
